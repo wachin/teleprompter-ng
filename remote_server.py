@@ -152,7 +152,7 @@ class RemoteServer:
     def start(self):
         """Inicia el servidor en un hilo separado."""
         if self._running:
-            log.info("El servidor remoto ya está activo en %s", self.url)
+            log.info("The remote server is already running at %s", self.url)
             return self._thread
 
         self._running = True
@@ -162,7 +162,7 @@ class RemoteServer:
             name="remote-server",
         )
         self._thread.start()
-        log.info("Servidor iniciado en %s", self.url)
+        log.info("Server started at %s", self.url)
         return self._thread
 
     def _run_server(self):
@@ -178,7 +178,7 @@ class RemoteServer:
             )
             self._wsgi_server.serve_forever()
         except Exception as e:
-            log.error("El servidor remoto se detuvo: %s", e)
+            log.error("The remote server stopped: %s", e)
         finally:
             self._running = False
 
@@ -186,13 +186,13 @@ class RemoteServer:
         """Detiene el servidor remoto."""
         if not self._running and self._wsgi_server is None:
             return
-        log.info("Deteniendo servidor remoto…")
+        log.info("Stopping the remote server…")
         try:
             if self._wsgi_server is not None:
                 self._wsgi_server.shutdown()
                 self._wsgi_server = None
         except Exception as e:
-            log.warning("Error al detener el servidor remoto: %s", e)
+            log.warning("Error stopping the remote server: %s", e)
         self._running = False
 
     def is_running(self):

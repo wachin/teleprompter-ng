@@ -121,11 +121,11 @@ class Teleprompter(QMainWindow):
         toolbar_layout.setContentsMargins(15, 5, 15, 5)
 
         # Botón de selector de guion
-        self.script_label = QLabel("📄 " + (os.path.basename(script_path) if script_path else "Sin guion"))
+        self.script_label = QLabel("📄 " + (os.path.basename(script_path) if script_path else self.tr("No script")))
         self.script_label.setStyleSheet("color: #AAA; font-size: 14px; background: transparent;")
         toolbar_layout.addWidget(self.script_label)
 
-        self.open_btn = QLabel("  [O] Abrir guion")
+        self.open_btn = QLabel("  " + self.tr("[O] Open script"))
         self.open_btn.setStyleSheet("color: #FFD700; font-size: 14px; background: transparent; font-weight: bold;")
         toolbar_layout.addWidget(self.open_btn)
 
@@ -200,7 +200,7 @@ class Teleprompter(QMainWindow):
         bottom_layout.setContentsMargins(15, 5, 15, 5)
 
         # Estado
-        self.status_label = QLabel("⏸ Pausado")
+        self.status_label = QLabel(self.tr("⏸ Paused"))
         self.status_label.setStyleSheet("color: #FFFFFF; font-size: 16px; font-weight: bold; background: transparent;")
         bottom_layout.addWidget(self.status_label)
 
@@ -304,7 +304,7 @@ class Teleprompter(QMainWindow):
         """Inicia la cuenta regresiva 3-2-1."""
         self.countdown_active = True
         self.countdown_value = 3
-        self.status_label.setText("🔴 Preparado...")
+        self.status_label.setText(self.tr("🔴 Ready..."))
         self.status_label.setStyleSheet("color: #FF4444; font-size: 16px; font-weight: bold; background: transparent;")
         self.countdown_timer.start(1000)  # 1 segundo
 
@@ -316,7 +316,7 @@ class Teleprompter(QMainWindow):
         else:
             self.countdown_timer.stop()
             self.countdown_active = False
-            self.status_label.setText("▶ Reproduciendo")
+            self.status_label.setText(self.tr("▶ Playing"))
             self.status_label.setStyleSheet("color: #44FF44; font-size: 16px; font-weight: bold; background: transparent;")
             self.is_running = True
             self._update_timer_interval()
@@ -330,7 +330,7 @@ class Teleprompter(QMainWindow):
             # Cancelar cuenta regresiva
             self.countdown_timer.stop()
             self.countdown_active = False
-            self.status_label.setText("⏸ Pausado")
+            self.status_label.setText(self.tr("⏸ Paused"))
             self.status_label.setStyleSheet("color: #FFFFFF; font-size: 16px; font-weight: bold; background: transparent;")
             return
 
@@ -338,7 +338,7 @@ class Teleprompter(QMainWindow):
             # Pausar
             self.is_running = False
             self.scroll_timer.stop()
-            self.status_label.setText("⏸ Pausado")
+            self.status_label.setText(self.tr("⏸ Paused"))
             self.status_label.setStyleSheet("color: #FFFFFF; font-size: 16px; font-weight: bold; background: transparent;")
         else:
             # Iniciar con cuenta regresiva
@@ -364,7 +364,7 @@ class Teleprompter(QMainWindow):
         self.scroll_timer.stop()
         self.countdown_timer.stop()
         self.text_widget.verticalScrollBar().setValue(0)
-        self.status_label.setText("⏸ Pausado")
+        self.status_label.setText(self.tr("⏸ Paused"))
         self.status_label.setStyleSheet("color: #FFFFFF; font-size: 16px; font-weight: bold; background: transparent;")
 
     def font_bigger(self):
@@ -395,9 +395,9 @@ class Teleprompter(QMainWindow):
         )
         file_path, _ = QFileDialog.getOpenFileName(
             self,
-            "Abrir guion",
+            self.tr("Open script"),
             start_dir,
-            "Archivos de texto (*.txt);;Todos los archivos (*)"
+            self.tr("Text files (*.txt);;All files (*)")
         )
         if file_path:
             self._load_script(os.path.abspath(file_path))
@@ -415,7 +415,7 @@ class Teleprompter(QMainWindow):
             self.reset()
             self.words_label.setText(f"📝 0 / {self.total_words}")
         except Exception as e:
-            self.status_label.setText(f"❌ Error: {e}")
+            self.status_label.setText(self.tr("❌ Error: {0}").format(e))
 
     def toggle_guide_line(self):
         """Mostrar/ocultar línea guía."""
@@ -431,7 +431,7 @@ class Teleprompter(QMainWindow):
             if self.speech_sync:
                 self.speech_sync.stop()
             self.speech_sync_active = False
-            self.voice_sync_label.setText("🎤 V: Off")
+            self.voice_sync_label.setText(self.tr("🎤 V: Off"))
             self.voice_sync_label.setStyleSheet("color: #888; font-size: 14px; background: transparent;")
         else:
             # Activar
@@ -448,13 +448,13 @@ class Teleprompter(QMainWindow):
             if self.speech_sync.model:
                 if self.speech_sync.start():
                     self.speech_sync_active = True
-                    self.voice_sync_label.setText("🎤 V: On")
+                    self.voice_sync_label.setText(self.tr("🎤 V: On"))
                     self.voice_sync_label.setStyleSheet("color: #44FF44; font-size: 14px; font-weight: bold; background: transparent;")
             else:
-                log.warning("Modelo de voz no disponible. Colócalo en models/model-es")
-                self.voice_sync_label.setText("🎤 V: Error")
+                log.warning("Voice model not available. Place it in models/model-es")
+                self.voice_sync_label.setText(self.tr("🎤 V: Error"))
                 self.voice_sync_label.setStyleSheet("color: #FF4444; font-size: 14px; background: transparent;")
-                self.status_label.setText("⚠️ Modelo de voz no encontrado (models/model-es)")
+                self.status_label.setText(self.tr("⚠️ Voice model not found (models/model-es)"))
 
     def _on_wpm_update(self, current_wpm, target_wpm):
         """Callback cuando se actualiza el WPM (hilo principal de Qt)."""
@@ -463,10 +463,10 @@ class Teleprompter(QMainWindow):
     def _on_sync_status_change(self, status):
         """Callback cuando cambia el estado de sincronización (hilo Qt)."""
         if status == "active":
-            self.voice_sync_label.setText("🎤 V: Listening")
+            self.voice_sync_label.setText(self.tr("🎤 V: Listening"))
             self.voice_sync_label.setStyleSheet("color: #44FF44; font-size: 14px; font-weight: bold; background: transparent;")
         else:
-            self.voice_sync_label.setText("🎤 V: Off")
+            self.voice_sync_label.setText(self.tr("🎤 V: Off"))
             self.voice_sync_label.setStyleSheet("color: #888; font-size: 14px; background: transparent;")
 
     def _apply_speed_suggestion(self, new_speed):
@@ -556,7 +556,7 @@ class Teleprompter(QMainWindow):
             return self.remote_server
         except Exception as e:
             log.error("Error al iniciar el servidor remoto: %s", e)
-            self.status_label.setText(f"❌ Control remoto: {e}")
+            self.status_label.setText(self.tr("❌ Remote control: {0}").format(e))
             return None
 
     def show_qr_code(self):
@@ -567,7 +567,7 @@ class Teleprompter(QMainWindow):
                 return
 
         dialog = QDialog(self)
-        dialog.setWindowTitle("Control Remoto")
+        dialog.setWindowTitle(self.tr("Remote Control"))
         dialog.setMinimumSize(350, 450)
         dialog.setStyleSheet("background-color: #1a1a2e;")
 
@@ -575,7 +575,7 @@ class Teleprompter(QMainWindow):
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         # Título
-        title = QLabel("📱 Conecta tu teléfono")
+        title = QLabel(self.tr("📱 Connect your phone"))
         title.setStyleSheet("color: #FFD700; font-size: 18px; font-weight: bold; background: transparent;")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(title)
@@ -606,13 +606,17 @@ class Teleprompter(QMainWindow):
         layout.addWidget(url_label)
 
         # Instrucciones
-        instructions = QLabel("1. Conéctate a la misma red WiFi\n2. Abre la cámara del teléfono\n3. Escanea el código QR")
+        instructions = QLabel(self.tr(
+            "1. Connect to the same WiFi network\n"
+            "2. Open your phone camera\n"
+            "3. Scan the QR code"
+        ))
         instructions.setStyleSheet("color: #aaa; font-size: 14px; background: transparent; margin-top: 10px;")
         instructions.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(instructions)
 
         # Botón cerrar
-        close_btn = QPushButton("Cerrar")
+        close_btn = QPushButton(self.tr("Close"))
         close_btn.setStyleSheet("""
             QPushButton {
                 background-color: #FFD700;

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -186,17 +186,17 @@
     </style>
 </head>
 <body>
-    <div class="connection-status disconnected" id="connectionStatus">● Desconectado</div>
+    <div class="connection-status disconnected" id="connectionStatus">● Disconnected</div>
 
     <h1>🎬 Teleprompter Remote</h1>
 
     <div class="status-card">
         <div class="status-row">
-            <span class="status-label">Estado:</span>
-            <span class="status-value paused" id="statusText">Pausado</span>
+            <span class="status-label">State:</span>
+            <span class="status-value paused" id="statusText">Paused</span>
         </div>
         <div class="status-row">
-            <span class="status-label">Progreso:</span>
+            <span class="status-label">Progress:</span>
             <span class="status-value" id="progressText">0%</span>
         </div>
         <div class="progress-bar">
@@ -205,53 +205,53 @@
     </div>
 
     <div class="speed-display">
-        <div class="speed-label">Velocidad</div>
+        <div class="speed-label">Speed</div>
         <div class="speed-value" id="speedValue">3</div>
     </div>
 
     <div class="controls">
         <button class="btn btn-play" id="btnPlay" onclick="togglePlay()">
             <span class="btn-icon">▶</span>
-            <span>Iniciar</span>
+            <span>Start</span>
         </button>
 
         <button class="btn btn-speed-up" onclick="speedUp()">
             <span class="btn-icon">🔼</span>
-            <span>+Velocidad</span>
+            <span>+Speed</span>
         </button>
 
         <button class="btn btn-speed-down" onclick="speedDown()">
             <span class="btn-icon">🔽</span>
-            <span>-Velocidad</span>
+            <span>-Speed</span>
         </button>
 
         <button class="btn btn-reset" onclick="resetScroll()">
             <span class="btn-icon">🔄</span>
-            <span>Reiniciar</span>
+            <span>Restart</span>
         </button>
     </div>
 
     <div class="hint">
-        Desliza verticalmente para cambiar velocidad
+        Swipe up and down to change speed
     </div>
 
     <script>
         const socket = io();
         let isRunning = false;
 
-        // Conexión
+        // Connection
         socket.on('connect', () => {
             document.getElementById('connectionStatus').className = 'connection-status connected';
-            document.getElementById('connectionStatus').textContent = '● Conectado';
+            document.getElementById('connectionStatus').textContent = '● Connected';
             socket.emit('get_status');
         });
 
         socket.on('disconnect', () => {
             document.getElementById('connectionStatus').className = 'connection-status disconnected';
-            document.getElementById('connectionStatus').textContent = '● Desconectado';
+            document.getElementById('connectionStatus').textContent = '● Disconnected';
         });
 
-        // Actualizar estado
+        // Update status
         socket.on('status', (data) => {
             isRunning = data.is_running;
             updateUI(data);
@@ -265,19 +265,19 @@
             const progressFill = document.getElementById('progressFill');
 
             if (data.countdown_active) {
-                statusText.textContent = '🔴 Preparando...';
+                statusText.textContent = '🔴 Getting ready...';
                 statusText.className = 'status-value paused';
-                btnPlay.innerHTML = '<span class="btn-icon">⏹</span><span>Cancelar</span>';
+                btnPlay.innerHTML = '<span class="btn-icon">⏹</span><span>Cancel</span>';
                 btnPlay.className = 'btn btn-play running';
             } else if (data.is_running) {
-                statusText.textContent = '▶ Reproduciendo';
+                statusText.textContent = '▶ Playing';
                 statusText.className = 'status-value running';
-                btnPlay.innerHTML = '<span class="btn-icon">⏸</span><span>Pausar</span>';
+                btnPlay.innerHTML = '<span class="btn-icon">⏸</span><span>Pause</span>';
                 btnPlay.className = 'btn btn-play running';
             } else {
-                statusText.textContent = '⏸ Pausado';
+                statusText.textContent = '⏸ Paused';
                 statusText.className = 'status-value paused';
-                btnPlay.innerHTML = '<span class="btn-icon">▶</span><span>Iniciar</span>';
+                btnPlay.innerHTML = '<span class="btn-icon">▶</span><span>Start</span>';
                 btnPlay.className = 'btn btn-play';
             }
 
@@ -286,7 +286,7 @@
             progressFill.style.width = data.progress + '%';
         }
 
-        // Controles
+        // Controls
         function togglePlay() {
             socket.emit('toggle');
         }
@@ -303,7 +303,7 @@
             socket.emit('reset');
         }
 
-        // Control con gestos táctiles
+        // Touch gesture control
         let touchStartY = 0;
         document.addEventListener('touchstart', (e) => {
             touchStartY = e.touches[0].clientY;
@@ -324,7 +324,7 @@
             }
         }, { passive: false });
 
-        // Actualización periódica
+        // Periodic update
         setInterval(() => {
             socket.emit('get_status');
         }, 1000);

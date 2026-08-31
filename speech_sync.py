@@ -91,7 +91,7 @@ class SpeechSync:
         if VOSK_AVAILABLE:
             self._init_model(model_path)
         else:
-            log.info("Vosk no instalado. Instala vosk y sounddevice para usar esta función")
+            log.info("Vosk not installed. Install vosk and sounddevice to use this feature")
 
     def _init_model(self, model_path=None):
         """Inicializa el modelo de reconocimiento de voz."""
@@ -105,8 +105,8 @@ class SpeechSync:
                 log.info("Modelo de voz cargado: %s", model_path)
             else:
                 log.warning(
-                    "Modelo de voz no encontrado. Descárgalo de "
-                    "https://alphacephei.com/vosk/models y colócalo en models/model-es"
+                    "Voice model not found. Download it from "
+                    "https://alphacephei.com/vosk/models and place it in models/model-es"
                 )
         except Exception as e:
             log.error("Error al cargar el modelo de voz: %s", e)
@@ -124,7 +124,7 @@ class SpeechSync:
             return False
 
         if self.is_active:
-            log.info("La sincronización ya está activa")
+            log.info("Voice sync is already active")
             return True
 
         try:
@@ -151,14 +151,14 @@ class SpeechSync:
             )
             self._process_thread.start()
 
-            log.info("Sincronización de voz activada")
+            log.info("Voice synchronization activated")
             if self.on_status_change:
                 self.on_status_change("active")
             return True
 
         except Exception as e:
             log.error("Error al iniciar la captura de audio: %s", e)
-            log.error("Verifica que el micrófono esté disponible y conectado")
+            log.error("Check that the microphone is available and connected")
             self._release_stream()
             return False
 
@@ -169,7 +169,7 @@ class SpeechSync:
         if self._process_thread is not None:
             self._process_thread.join(timeout=2)
             self._process_thread = None
-        log.info("Sincronización de voz desactivada")
+        log.info("Voice synchronization deactivated")
         if self.on_status_change:
             self.on_status_change("inactive")
 
@@ -180,14 +180,14 @@ class SpeechSync:
                 self._stream.stop()
                 self._stream.close()
             except Exception as e:
-                log.warning("Error al cerrar el stream de audio: %s", e)
+                log.warning("Error closing the audio stream: %s", e)
             finally:
                 self._stream = None
 
     def _audio_callback(self, indata, frames, time_info, status):
         """Callback para capturar audio del micrófono."""
         if status:
-            log.warning("Estado del audio: %s", status)
+            log.warning("Audio status: %s", status)
         self.audio_queue.put(bytes(indata))
 
     def _process_audio(self):
@@ -209,7 +209,7 @@ class SpeechSync:
                 continue
             except Exception as e:
                 if self.is_active:
-                    log.error("Error procesando audio: %s", e)
+                    log.error("Error processing audio: %s", e)
 
     def _process_recognized_text(self, text, partial=False):
         """Procesa el texto reconocido y ajusta la velocidad."""
