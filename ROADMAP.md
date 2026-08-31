@@ -550,6 +550,7 @@ Grabar cámara y micrófono sincronizados en un archivo reproducible.
 15. Documentar limitaciones reales de hardware y sistema.
 16. Usar nombres propios del proyecto, por ejemplo `Teleprompter`, `BigPrompt` o el nombre que confirme el mantenedor.
 17. Mantener licencia MIT si el propietario del repositorio la confirma.
+18. **Regla de instalación de paquetes (obligatoria)**: cuando el desarrollo requiera instalar un paquete nuevo (`apt`, `pip` o cualquier otro gestor), el agente debe **detener el proceso inmediatamente y avisar al mantenedor** indicando el nombre exacto del paquete y el comando de instalación. El mantenedor es la única persona que puede instalar paquetes porque debe introducir su contraseña de administrador. El agente nunca debe intentar instalar paquetes por sí mismo, ni pedirlos de forma indirecta. Mientras el paquete no esté instalado y confirmado por el mantenedor, el agente debe limitarse a tareas que no dependan de él.
 
 ## 8. Formato de cada entrega del Agente
 

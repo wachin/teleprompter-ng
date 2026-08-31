@@ -48,6 +48,25 @@ DEFAULTS = {
     "mirror_mode": False,
     "fullscreen": True,
     "script_dir": "scripts",
+    "remote_enabled": False,
+}
+
+# Tipos esperados por clave; si el archivo guardado no coincide, se
+# usa el valor por defecto en lugar de propagar un tipo inválido.
+_TYPES = {
+    "font_family": str,
+    "font_size": int,
+    "font_weight": str,
+    "text_color": str,
+    "bg_color": str,
+    "scroll_speed": int,
+    "margin_x": int,
+    "margin_y": int,
+    "wpm": int,
+    "mirror_mode": bool,
+    "fullscreen": bool,
+    "script_dir": str,
+    "remote_enabled": bool,
 }
 
 
@@ -67,9 +86,10 @@ def load_config(path=None):
         try:
             with open(path, "r", encoding="utf-8") as f:
                 saved = json.load(f)
-            # Solo tomamos claves que existen en DEFAULTS
+            # Solo tomamos claves que existen en DEFAULTS y con el
+            # tipo correcto (Fase 0: evita config corrupta que rompe la UI)
             for key in DEFAULTS:
-                if key in saved:
+                if key in saved and isinstance(saved[key], _TYPES[key]):
                     config[key] = saved[key]
         except (json.JSONDecodeError, IOError):
             pass  # Archivo corrupto → usar defaults

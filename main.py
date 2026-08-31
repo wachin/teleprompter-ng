@@ -8,10 +8,15 @@ Uso:
 
 import sys
 import os
-from PyQt6.QtWidgets import QApplication
+
+from PyQt6.QtWidgets import QApplication, QMessageBox
 
 from config import load_config, get_config_path
+from logging_setup import setup_logging, get_logger
+from paths import get_app_dir, resolve_script_path
 from ui import Teleprompter
+
+log = get_logger("Main")
 
 
 def load_script(path):
@@ -21,24 +26,35 @@ def load_script(path):
 
 
 def main():
+    setup_logging()
     config = load_config()
 
     # Determinar qué guion cargar
     if len(sys.argv) > 1:
-        script_path = sys.argv[1]
+        script_path = os.path.abspath(sys.argv[1])
     else:
-        script_dir = config["script_dir"]
-        script_path = os.path.join(script_dir, "guion_actual.txt")
+        script_path = resolve_script_path()
 
-    if not os.path.exists(script_path):
-        print(f"Error: No se encontró el archivo '{script_path}'")
-        print("Uso: python main.py [ruta/al/guion.txt]")
+    if not script_path or not os.path.exists(script_path):
+        searched = script_path or os.path.join(get_app_dir(), "scripts", "guion_actual.txt")
+        log.error("No se encontró el guion: %s", searched)
+        # Mostrar el error también en la interfaz si es posible
+        app = QApplication.instance() or QApplication(sys.argv)
+        box = QMessageBox()
+        box.setIcon(QMessageBox.Icon.Critical)
+        box.setWindowTitle("Teleprompter Pro")
+        box.setText("No se encontró el guion")
+        box.setInformativeText(
+            f"No existe el archivo:\n{searched}\n\n"
+            "Uso: python main.py [ruta/al/guion.txt]"
+        )
+        box.exec()
         sys.exit(1)
 
     text = load_script(script_path)
-    print(f"Guion cargado: {script_path}")
-    print(f"Palabras: {len(text.split())}")
-    print(f"Config: {get_config_path()}")
+    log.info("Guion cargado: %s", script_path)
+    log.info("Palabras: %s", len(text.split()))
+    log.info("Config: %s", get_config_path())
 
     app = QApplication(sys.argv)
     window = Teleprompter(text, config, script_path)

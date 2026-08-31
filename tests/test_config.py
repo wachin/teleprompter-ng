@@ -60,6 +60,18 @@ class TestLoadConfig:
             config = load_config(config_path)
             assert config == DEFAULTS
 
+    def test_wrong_types_fall_back_to_defaults(self):
+        """Fase 0: un tipo incorrecto en el archivo cae al valor por defecto."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            config_path = os.path.join(tmpdir, "config.json")
+            saved = {"font_size": "grande", "scroll_speed": None, "wpm": [1, 2]}
+            with open(config_path, "w") as f:
+                json.dump(saved, f)
+            config = load_config(config_path)
+            assert config["font_size"] == DEFAULTS["font_size"]
+            assert config["scroll_speed"] == DEFAULTS["scroll_speed"]
+            assert config["wpm"] == DEFAULTS["wpm"]
+
 
 class TestSaveConfig:
     """Tests para save_config."""
