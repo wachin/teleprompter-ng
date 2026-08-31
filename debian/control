@@ -1,0 +1,62 @@
+Source: teleprompter-pro
+Section: x11
+Priority: optional
+Maintainer: Juan Salazar Flores <wachin@debian.org>
+Build-Depends: debhelper-compat (= 13),
+               dh-python,
+               python3-all,
+               python3-setuptools,
+               python3-pyqt6,
+               python3-flask,
+               python3-flask-socketio,
+               python3-qrcode,
+               python3-vosk,
+               python3-sounddevice,
+               python3-pyinstaller | dh-virtualenv
+Standards-Version: 4.6.2
+Homepage: https://github.com/wachin/teleprompter
+Vcs-Git: https://github.com/wachin/teleprompter.git
+Vcs-Browser: https://github.com/wachin/teleprompter
+Rules-Requires-Root: no
+
+Package: teleprompter-pro
+Architecture: all
+Depends: ${python3:Depends},
+         ${misc:Depends},
+         python3 (>= 3.10),
+         python3-pyqt6,
+         python3-flask,
+         python3-flask-socketio,
+         python3-qrcode,
+         python3-vosk,
+         python3-sounddevice
+Recommends: teleprompter-pro-model-es
+Suggests: python3-pyinstaller
+Description: Desktop teleprompter with remote control and voice sync
+ Teleprompter Pro is a desktop teleprompter designed for real-world
+ presentation and recording workflows. The computer reads the script
+ while the phone records the video.
+ .
+ Features include:
+  * Countdown 3-2-1 before scroll starts
+  * Progress bar with estimated time remaining
+  * Remote control from phone via QR code and WebSocket
+  * Voice synchronization using Vosk (adjusts speed to speaker)
+  * Multiple speed controls (keyboard, mouse wheel, touch)
+  * Script selector with file dialog
+  * Guide line for eye focus
+  * Mirror mode for physical teleprompter setups
+  * Persistent configuration per platform
+  * PyQt6 modern interface
+
+Package: teleprompter-pro-model-es
+Architecture: all
+Depends: ${misc:Depends},
+         teleprompter-pro
+Description: Spanish speech recognition model for Teleprompter Pro
+ This package contains the Vosk Spanish language model required for
+ the voice synchronization feature of Teleprompter Pro.
+ .
+ The model enables local speech recognition without internet access,
+ allowing the teleprompter to automatically adjust scroll speed
+ based on the speaker's pace.

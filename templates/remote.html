@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Teleprompter Remote</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            user-select: none;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #FFD700;
+        }
+
+        .status-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            width: 100%;
+            max-width: 350px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .status-label {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        .status-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .status-value.running {
+            color: #44FF44;
+        }
+
+        .status-value.paused {
+            color: #FF4444;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #333;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FFD700, #FFA500);
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            width: 100%;
+            max-width: 350px;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 15px;
+            padding: 25px 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-icon {
+            font-size: 2rem;
+        }
+
+        .btn-play {
+            background: linear-gradient(135deg, #44FF44, #22CC22);
+            color: #000;
+            grid-column: span 2;
+        }
+
+        .btn-play.running {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+        }
+
+        .btn-speed-up {
+            background: linear-gradient(135deg, #00BFFF, #0088CC);
+            color: white;
+        }
+
+        .btn-speed-down {
+            background: linear-gradient(135deg, #FF6B6B, #CC4444);
+            color: white;
+        }
+
+        .btn-reset {
+            background: linear-gradient(135deg, #9B59B6, #8E44AD);
+            color: white;
+            grid-column: span 2;
+        }
+
+        .speed-display {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255, 215, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        .speed-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #FFD700;
+        }
+
+        .speed-label {
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        .connection-status {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .connection-status.connected {
+            color: #44FF44;
+            border: 1px solid #44FF44;
+        }
+
+        .connection-status.disconnected {
+            color: #FF4444;
+            border: 1px solid #FF4444;
+        }
+
+        .hint {
+            margin-top: 20px;
+            color: #666;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="connection-status disconnected" id="connectionStatus">● Desconectado</div>
+
+    <h1>🎬 Teleprompter Remote</h1>
+
+    <div class="status-card">
+        <div class="status-row">
+            <span class="status-label">Estado:</span>
+            <span class="status-value paused" id="statusText">Pausado</span>
+        </div>
+        <div class="status-row">
+            <span class="status-label">Progreso:</span>
+            <span class="status-value" id="progressText">0%</span>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+    </div>
+
+    <div class="speed-display">
+        <div class="speed-label">Velocidad</div>
+        <div class="speed-value" id="speedValue">3</div>
+    </div>
+
+    <div class="controls">
+        <button class="btn btn-play" id="btnPlay" onclick="togglePlay()">
+            <span class="btn-icon">▶</span>
+            <span>Iniciar</span>
+        </button>
+
+        <button class="btn btn-speed-up" onclick="speedUp()">
+            <span class="btn-icon">🔼</span>
+            <span>+Velocidad</span>
+        </button>
+
+        <button class="btn btn-speed-down" onclick="speedDown()">
+            <span class="btn-icon">🔽</span>
+            <span>-Velocidad</span>
+        </button>
+
+        <button class="btn btn-reset" onclick="resetScroll()">
+            <span class="btn-icon">🔄</span>
+            <span>Reiniciar</span>
+        </button>
+    </div>
+
+    <div class="hint">
+        Desliza verticalmente para cambiar velocidad
+    </div>
+
+    <script>
+        const socket = io();
+        let isRunning = false;
+
+        // Conexión
+        socket.on('connect', () => {
+            document.getElementById('connectionStatus').className = 'connection-status connected';
+            document.getElementById('connectionStatus').textContent = '● Conectado';
+            socket.emit('get_status');
+        });
+
+        socket.on('disconnect', () => {
+            document.getElementById('connectionStatus').className = 'connection-status disconnected';
+            document.getElementById('connectionStatus').textContent = '● Desconectado';
+        });
+
+        // Actualizar estado
+        socket.on('status', (data) => {
+            isRunning = data.is_running;
+            updateUI(data);
+        });
+
+        function updateUI(data) {
+            const statusText = document.getElementById('statusText');
+            const btnPlay = document.getElementById('btnPlay');
+            const speedValue = document.getElementById('speedValue');
+            const progressText = document.getElementById('progressText');
+            const progressFill = document.getElementById('progressFill');
+
+            if (data.countdown_active) {
+                statusText.textContent = '🔴 Preparando...';
+                statusText.className = 'status-value paused';
+                btnPlay.innerHTML = '<span class="btn-icon">⏹</span><span>Cancelar</span>';
+                btnPlay.className = 'btn btn-play running';
+            } else if (data.is_running) {
+                statusText.textContent = '▶ Reproduciendo';
+                statusText.className = 'status-value running';
+                btnPlay.innerHTML = '<span class="btn-icon">⏸</span><span>Pausar</span>';
+                btnPlay.className = 'btn btn-play running';
+            } else {
+                statusText.textContent = '⏸ Pausado';
+                statusText.className = 'status-value paused';
+                btnPlay.innerHTML = '<span class="btn-icon">▶</span><span>Iniciar</span>';
+                btnPlay.className = 'btn btn-play';
+            }
+
+            speedValue.textContent = data.speed;
+            progressText.textContent = data.progress + '%';
+            progressFill.style.width = data.progress + '%';
+        }
+
+        // Controles
+        function togglePlay() {
+            socket.emit('toggle');
+        }
+
+        function speedUp() {
+            socket.emit('speed_up');
+        }
+
+        function speedDown() {
+            socket.emit('speed_down');
+        }
+
+        function resetScroll() {
+            socket.emit('reset');
+        }
+
+        // Control con gestos táctiles
+        let touchStartY = 0;
+        document.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const touchY = e.touches[0].clientY;
+            const diff = touchStartY - touchY;
+
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) {
+                    speedUp();
+                } else {
+                    speedDown();
+                }
+                touchStartY = touchY;
+            }
+        }, { passive: false });
+
+        // Actualización periódica
+        setInterval(() => {
+            socket.emit('get_status');
+        }, 1000);
+    </script>
+</body>
+</html>

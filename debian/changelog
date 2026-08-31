@@ -1,0 +1,12 @@
+teleprompter-pro (1.0.0-1) unstable; urgency=medium
+
+  * Initial release.
+  * PyQt6 based teleprompter with remote control and voice sync.
+  * Remote control via QR code and WebSocket (Flask).
+  * Voice synchronization using Vosk for local speech recognition.
+  * Cross-platform configuration (Windows, Linux, macOS).
+  * Persistent settings including scroll speed.
+  * 27 unit tests included.
+  * Desktop teleprompter for presentations and recordings.
+
+ -- Juan Salazar Flores <wachin@debian.org>  Sat, 30 Aug 2026 12:00:00 +0000

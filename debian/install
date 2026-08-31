@@ -1,0 +1,7 @@
+main.py usr/share/teleprompter-pro
+ui.py usr/share/teleprompter-pro
+config.py usr/share/teleprompter-pro
+remote_server.py usr/share/teleprompter-pro
+speech_sync.py usr/share/teleprompter-pro
+scripts/ usr/share/teleprompter-pro
+templates/ usr/share/teleprompter-pro

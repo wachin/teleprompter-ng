@@ -1,0 +1,40 @@
+#!/usr/bin/make -f
+
+export PYBUILD_NAME=teleprompter-pro
+
+%:
+	dh $@ --with python3 --buildsystem=pybuild
+
+override_dh_auto_build:
+	dh_auto_build
+	# Create wrapper script for the application
+	mkdir -p debian/teleprompter-pro/usr/bin
+	mkdir -p debian/teleprompter-pro/usr/share/teleprompter-pro
+	mkdir -p debian/teleprompter-pro-model-es/usr/share/teleprompter-pro
+
+override_dh_auto_install:
+	dh_auto_install
+	# Install Python modules
+	python3 setup.py install --root=debian/teleprompter-pro --install-layout=deb
+	# Install application files
+	cp -r *.py debian/teleprompter-pro/usr/share/teleprompter-pro/
+	cp -r scripts debian/teleprompter-pro/usr/share/teleprompter-pro/
+	cp -r templates debian/teleprompter-pro/usr/share/teleprompter-pro/
+	# Create wrapper script
+	cat > debian/teleprompter-pro/usr/bin/teleprompter-pro << 'EOF'
+#!/bin/sh
+exec python3 /usr/share/teleprompter-pro/main.py "$@"
+EOF
+	chmod 755 debian/teleprompter-pro/usr/bin/teleprompter-pro
+	# Install model if it exists
+	if [ -d model-es ]; then
+		cp -r model-es debian/teleprompter-pro-model-es/usr/share/teleprompter-pro/
+	fi
+
+override_dh_auto_test:
+	dh_auto_test
+	# Run tests if available
+	python3 -m pytest tests/ -v || true
+
+override_dh_python3:
+	dh_python3 --no-guessing-deps

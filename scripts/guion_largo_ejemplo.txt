@@ -1,0 +1,37 @@
+Estimados miembros del jurado, colegas emprendedores y público presente.
+
+Hoy quiero hablarles sobre un tema que nos afecta a todos: la eficiencia energética en Latinoamérica, y cómo la tecnología puede ser nuestra aliada más poderosa para enfrentar la crisis climática que vivimos.
+
+Permítanme comenzar con una cifra que debería preocuparnos a todos. Según datos de la Agencia Internacional de la Energía, Latinoamérica desperdicia anualmente más de 100 teravatios-hora de energía solo por ineficiencia en los sistemas de climatización. Eso equivale al consumo eléctrico completo de países como Uruguay o Paraguay.
+
+¿Por qué sucede esto? La respuesta es simple pero dolorosa: los equipos de climatización que usamos diariamente operan con tecnología obsoleta. Los sistemas Split convencionales, que representan más del 70% del mercado regional, tienen un rendimiento energético que podría mejorar dramáticamente con una intervención mínima.
+
+Y aquí es donde entramos nosotros. Mi nombre es Juan Salazar Flores, ingeniero en sistemas computacionales egresado de la ESPOL, y fundador de JCSF-Home. No vendo hardware. No fabrico cajas metálicas. Nosotros inyectamos inteligencia pura en la infraestructura que ya existe.
+
+Nuestro producto es un firmware ciberfísico que se instala directamente en el microcontrolador de fábrica de equipos Split-Inverter. Sin modificar hardware. Sin agregar sensores. Sin capital expenditure para el usuario final. Cero dólares adicionales.
+
+¿Cómo es posible esto? La clave está en nuestra innovación central: un gemelo digital termodinámico que se ejecuta dentro del propio microcontrolador del equipo. Este gemelo digital utiliza modelos matemáticos de Transferencia de Calor por Conducción, Convección y Radiación para simular en tiempo real el comportamiento del refrigerante, del aceite lubricante, y de los componentes electrónicos del inversor.
+
+Pero no es solo un modelo teórico. Nuestro sistema incorpora un Filtro de Kalman Extendido Dual que procesa las señales eléctricas del compresor para estimar parámetros termodinámicos que normalmente requerirían sensores físicos costosos. Y utilizamos la Entropía de Shannon para cuantificar la incertidumbre de estas estimaciones, garantizando que el diagnóstico sea confiable incluso en condiciones de operación variables.
+
+Permítanme explicarles el problema que resolvemos con un ejemplo concreto. Imaginen un equipo Split Inverter de 12,000 BTU instalado en un apartamento en Guayaquil. Después de dos años de operación, el nivel de aceite en el compresor ha disminuido entre un 8% y un 12% debido al fenómeno conocido como oil-logging, o atrapamiento de aceite.
+
+Este fenómeno es silencioso pero devastador. El aceite atrapado en las aletas del evaporador y en las tuberías de conexión reduce la eficiencia de transferencia de calor en un 10% a 15%. El compresor trabaja más horas para alcanzar la temperatura deseada, consumiendo más energía y desgastándose prematuramente.
+
+Nuestro firmware detecta este fenómeno antes de que se vuelva crítico. Utilizando el análisis de las armónicas de corriente del inversor, identificamos patrones que correlacionan directamente con la degradación del intercambio térmico. Y lo hacemos con una precisión del 94.7%, según nuestros ensayos en el Laboratorio de Energías Renovables de la ESPOL.
+
+Ahora bien, ¿cuál es el mercado al que nos dirigimos? Ecuador tiene aproximadamente 1.2 millones de hogares con equipos Split. Latinoamérica tiene más de 80 millones. Y a nivel global, la cifra supera los 500 millones de unidades activas.
+
+Nuestro modelo de negocio es escalable porque duplicar nuestro software tiene un costo marginal de cero dólares. Licenciamos directamente a fabricantes OEM y al mercado de Aftermarket, con márgenes que superan el 85%.
+
+En estos momentos nos encontramos en el nivel TRL 4, habiendo validado toda nuestra matemática estocástica en simuladores de alta fidelidad. El siguiente paso es construir el banco de pruebas físico que nos permita saltar del silicio al mercado.
+
+Para eso necesitamos una inversión semilla de $31,730 dólares, destinados íntegramente a la construcción de un banco de pruebas termodinámico, la certificación bajo la norma IEC/UL 60730-1 Clase B, y la validación de campo con tres aliados estratégicos que ya hemos identificado.
+
+Una vez certificados, el camino de ventas es exponencial. No necesitamos fuerza de ventas masiva. Nuestro software se distribuye por over-the-air update, directamente al microcontrolador del equipo. El fabricante no necesita modificar nada. Solo necesita aceptar nuestra licencia.
+
+Y hay un componente social que nos enorgullece especialmente. El 1.5% de nuestras regalías netas se destinará al Endowment de la AEI, fortaleciendo la investigación energética en Ecuador y creando un ciclo virtuoso de innovación.
+
+Señores del jurado, no estamos inventando la rueda. Estamos poniendo inteligencia donde solo había metal. No competimos con los fabricantes, los hacemos más eficientes. No vendemos hardware, vendemos precisión. Y no pedimos caridad, pedimos una oportunidad para demostrar que Ecuador puede exportar tecnología de clase mundial.
+
+Muchas gracias por su atención. Estoy listo para responder sus preguntas.
