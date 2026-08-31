@@ -1,69 +1,69 @@
-# ROADMAP.md — Teleprompter para Linux con cámara y flujo de creación de vídeo
+# ROADMAP.md — Teleprompter for Linux with camera and video creation workflow
 
-> Documento para un Agente de IA de programación.
->
-> Objetivo: transformar el proyecto existente `teleprompter`/`Teleprompter Pro` en una aplicación Linux de escritorio, escrita en **Python + PyQt6**, que combine teleprompter, cámara web, grabación, edición básica, subtítulos y publicación/exportación
+> Document for a programming AI agent.
 
-## 1. Contexto del proyecto existente
+Objective: transform the existing project `teleprompter`/`Teleprompter Pro` into a Linux desktop application, written in **Python + PyQt6**, that combines teleprompter, webcam, recording, basic editing, subtitles, and publishing/export.
 
-El código actual ya contiene:
+## 1. Context of the existing project
 
-- Interfaz PyQt6 en `ui.py`.
-- Entrada en `main.py`.
-- Configuración persistente en `config.py`.
-- Carga de guiones UTF-8 desde archivos `.txt`.
-- Desplazamiento automático con velocidad ajustable.
-- Cuenta regresiva 3-2-1.
-- Barra de progreso, tiempo estimado y contador de palabras.
-- Línea guía y modo espejo.
-- Control remoto local mediante Flask, Socket.IO y código QR.
-- Sincronización experimental por voz usando Vosk y `sounddevice`.
-- Empaquetado preliminar con PyInstaller.
-- Pruebas unitarias existentes.
+The current code already contains:
 
-Antes de añadir funciones, el agente debe estudiar el código real del repositorio, corregir errores y conservar la compatibilidad de las funciones que ya funcionan.
+- PyQt6 interface in `ui.py`.
+- Entry point in `main.py`.
+- Persistent configuration in `config.py`.
+- UTF-8 script loading from `.txt` files.
+- Automatic scrolling with adjustable speed.
+- 3-2-1 countdown.
+- Progress bar, estimated time, and word counter.
+- Guide line and mirror mode.
+- Local remote control using Flask, Socket.IO, and QR code.
+- Experimental voice sync using Vosk and `sounddevice`.
+- Preliminary packaging with PyInstaller.
+- Existing unit tests.
 
-## 2. Resultado deseado
+Before adding features, the agent must study the actual repository code, fix bugs, and preserve compatibility with the features that already work.
 
-El usuario debe poder realizar este flujo completo:
+## 2. Desired outcome
 
-1. Crear un proyecto.
-2. Escribir, pegar, importar o generar un guion.
-3. Elegir una cámara web integrada o USB.
-4. Verse en directo dentro de la ventana.
-5. Leer el guion superpuesto sobre la imagen de la cámara, cerca de la lente.
-6. Ajustar tamaño, color, posición, opacidad, velocidad y espejo del texto.
-7. Grabar vídeo y audio en un archivo local.
-8. Revisar la grabación.
-9. Cortar silencios y fragmentos no deseados.
-10. Generar subtítulos automáticamente.
-11. Añadir logo, colores, introducción, cierre, música y recursos visuales.
-12. Exportar en formatos habituales para YouTube, Instagram, TikTok y LinkedIn.
-13. Guardar el proyecto para continuar editándolo.
-14. Controlar la grabación y el teleprompter con teclado, ratón, botones grandes y teléfono.
+The user must be able to complete this full workflow:
 
-## 3. Principios técnicos obligatorios
+1. Create a project.
+2. Write, paste, import, or generate a script.
+3. Choose a built-in or USB webcam.
+4. See themselves live inside the window.
+5. Read the script superimposed over the camera image, near the lens.
+6. Adjust text size, color, position, opacity, speed, and mirroring.
+7. Record video and audio to a local file.
+8. Review the recording.
+9. Cut silences and unwanted segments.
+10. Generate subtitles automatically.
+11. Add logo, colors, intro, outro, music, and visual assets.
+12. Export in the usual formats for YouTube, Instagram, TikTok, and LinkedIn.
+13. Save the project to continue editing it later.
+14. Control the recording and the teleprompter with keyboard, mouse, large buttons, and phone.
 
-### 3.1 Plataforma
+## 3. Mandatory technical principles
 
-- Primera plataforma: Debian 13 y derivados compatibles.
-- Arquitectura inicial: x86_64; no bloquear ARM64 innecesariamente.
-- Soportar X11 y Wayland siempre que las bibliotecas lo permitan.
-- No depender de servicios web para las funciones básicas.
-- La grabación, el teleprompter, la vista previa y el guardado local deben funcionar sin Internet.
+### 3.1 Platform
 
-### 3.2 Interfaz
+- First platform: Debian 13 and compatible derivatives.
+- Initial architecture: x86_64; do not block ARM64 unnecessarily.
+- Support X11 and Wayland whenever the libraries allow it.
+- Do not depend on web services for basic features.
+- Recording, teleprompter, preview, and local saving must work without Internet.
 
-- Usar exclusivamente **PyQt6** para la interfaz nativa.
-- Usar señales y slots para comunicar hilos y widgets.
-- No bloquear el hilo principal de Qt.
-- Mantener una interfaz clara, traducible y accesible.
-- Añadir modo oscuro y controles con buen contraste.
-- Usar `QSettings` o una configuración compatible con XDG; mantener migración desde el `config.json` actual.
+### 3.2 Interface
 
-### 3.3 Arquitectura
+- Use **PyQt6** exclusively for the native interface.
+- Use signals and slots to communicate threads and widgets.
+- Do not block the main Qt thread.
+- Keep a clear, translatable, accessible interface.
+- Add dark mode and high-contrast controls.
+- Use `QSettings` or XDG-compatible configuration; keep migration from the current `config.json`.
 
-Separar el programa en módulos con responsabilidades claras:
+### 3.3 Architecture
+
+Separate the program into modules with clear responsibilities:
 
 ```text
 teleprompter/
@@ -97,15 +97,15 @@ teleprompter/
 └── ROADMAP.md
 ```
 
-El agente puede conservar nombres actuales durante una migración gradual, pero debe evitar que toda la lógica permanezca en `ui.py`.
+The agent may keep current names during a gradual migration, but must avoid having all the logic remain in `ui.py`.
 
-## 4. Dependencias permitidas en Debian 13
+## 4. Dependencies allowed on Debian 13
 
-### 4.1 Preferencia por paquetes Debian
+### 4.1 Preference for Debian packages
 
-Usar primero bibliotecas disponibles en los repositorios Debian 13 y documentar sus nombres `apt` cuando corresponda. No compilar manualmente componentes multimedia si existe una solución mantenida por Debian.
+Use libraries available in the Debian 13 repositories first, and document their `apt` names where applicable. Do not manually compile multimedia components if a Debian-maintained solution exists.
 
-Paquetes de sistema candidatos:
+Candidate system packages:
 
 ```text
 python3
@@ -120,63 +120,63 @@ python3-pytest
 python3-venv
 ffmpeg
 v4l-utils
-pulseaudio-utils o pipewire-pulse
+pulseaudio-utils or pipewire-pulse
 portaudio19-dev
 libportaudio2
 ```
 
-El agente debe verificar los nombres exactos disponibles en Debian 13 antes de fijarlos como requisito. No asumir que todos los módulos Python tienen exactamente el mismo nombre en `apt` y en PyPI.
+The agent must verify the exact names available on Debian 13 before setting them as requirements. Do not assume that all Python modules have exactly the same name in `apt` and in PyPI.
 
-### 4.2 Paquetes pip aceptables
+### 4.2 Acceptable pip packages
 
-Usar `pip` dentro de un entorno virtual, nunca modificar de forma irresponsable el Python del sistema. Evaluar:
+Use `pip` inside a virtual environment; never irresponsibly modify the system Python. Evaluate:
 
-- `PyQt6` si la versión de Debian no basta.
-- `opencv-python` únicamente si `python3-opencv` no ofrece lo necesario.
-- `sounddevice` o `soundcard` para audio.
-- `vosk` para reconocimiento local existente.
-- `faster-whisper` como backend opcional de subtítulos, si el rendimiento y el tamaño son aceptables.
-- `qrcode` para control remoto.
-- `pytest`, `pytest-qt`, `ruff`, `mypy` y herramientas de desarrollo.
-- `pyinstaller` solo como opción de distribución, no como sustituto del empaquetado Debian.
+- `PyQt6` if the Debian version is not enough.
+- `opencv-python` only if `python3-opencv` does not offer what is needed.
+- `sounddevice` or `soundcard` for audio.
+- `vosk` for the existing local recognition.
+- `faster-whisper` as an optional subtitle backend, if performance and size are acceptable.
+- `qrcode` for remote control.
+- `pytest`, `pytest-qt`, `ruff`, `mypy`, and development tools.
+- `pyinstaller` only as a distribution option, not as a replacement for Debian packaging.
 
-Cada dependencia debe tener una justificación, licencia compatible y alternativa opcional cuando sea posible.
+Each dependency must have a justification, a compatible license, and an optional alternative whenever possible.
 
 ### 4.3 Multimedia
 
-Preferir **FFmpeg** ejecutado como proceso externo para muxing, conversión, extracción de audio, escalado y exportación. No implementar manualmente códecs.
+Prefer **FFmpeg** executed as an external process for muxing, conversion, audio extraction, scaling, and export. Do not implement codecs manually.
 
-Usar OpenCV o Qt Multimedia para captura de cámara según pruebas reales en Debian 13. La solución debe:
+Use OpenCV or Qt Multimedia for camera capture, according to real testing on Debian 13. The solution must:
 
-- Detectar cámaras V4L2.
-- Mostrar `/dev/video*` disponibles.
-- Elegir resolución y FPS compatibles.
-- Informar claramente si una cámara está ocupada o no tiene permisos.
-- Evitar afirmar que una cámara USB funciona sin comprobar sus capacidades.
+- Detect V4L2 cameras.
+- Show the available `/dev/video*` devices.
+- Choose a compatible resolution and FPS.
+- Clearly report when a camera is busy or has no permissions.
+- Avoid claiming that a USB camera works without checking its capabilities.
 
-## 5. Modelo funcional de la aplicación
+## 5. Functional model of the application
 
-### 5.1 Pantallas principales
+### 5.1 Main screens
 
-Implementar estas vistas:
+Implement these views:
 
-1. **Inicio/Proyectos**: crear, abrir, duplicar, renombrar y eliminar proyectos.
-2. **Guion**: editor de texto con contador de palabras, duración estimada, búsqueda, importación y guardado.
-3. **Cámara**: vista previa con teleprompter superpuesto.
-4. **Grabación**: controles, cuenta regresiva, indicadores de cámara/micrófono y estado.
-5. **Revisión**: reproducir, volver a grabar o pasar al editor.
-6. **Editor**: recorte, subtítulos, branding, audio y exportación.
-7. **Configuración**: cámara, micrófono, idioma, accesos directos, privacidad y almacenamiento.
+1. **Home/Projects**: create, open, duplicate, rename, and delete projects.
+2. **Script**: text editor with word counter, estimated duration, search, import, and saving.
+3. **Camera**: live preview with the teleprompter superimposed.
+4. **Recording**: controls, countdown, camera/microphone indicators, and status.
+5. **Review**: play, re-record, or move on to the editor.
+6. **Editor**: trimming, subtitles, branding, audio, and export.
+7. **Settings**: camera, microphone, language, shortcuts, privacy, and storage.
 
-### 5.2 Proyecto persistente
+### 5.2 Persistent project
 
-Crear un formato de proyecto versionado, por ejemplo:
+Create a versioned project format, for example:
 
 ```text
-MiProyecto.bigprompt/
+MyProject.bigprompt/
 ├── project.json
 ├── scripts/
-│   └── guion.txt
+│   └── script.txt
 ├── media/
 │   ├── raw/
 │   ├── exports/
@@ -185,435 +185,439 @@ MiProyecto.bigprompt/
 └── thumbnails/
 ```
 
-`project.json` debe guardar, como mínimo:
+`project.json` must store, at minimum:
 
-- Versión del esquema.
-- Nombre y fecha de creación.
-- Ruta relativa del guion.
-- Configuración del teleprompter.
-- Cámara y micrófono elegidos.
-- Resolución y FPS.
-- Clips grabados.
-- Segmentos cortados.
-- Estilo de subtítulos.
+- Schema version.
+- Name and creation date.
+- Relative path of the script.
+- Teleprompter settings.
+- Chosen camera and microphone.
+- Resolution and FPS.
+- Recorded clips.
+- Cut segments.
+- Subtitle style.
 - Branding.
-- Música y niveles de audio.
-- Historial de exportaciones.
+- Music and audio levels.
+- Export history.
 
-Nunca guardar rutas absolutas cuando una ruta relativa sea suficiente.
+Never store absolute paths when a relative path is sufficient.
 
-## 6. Fases de implementación
+## 6. Implementation phases
 
-## Fase 0 — Auditoría y seguridad del código
+## Phase 0 — Audit and code safety
 
-### Objetivo
-Establecer una base fiable antes de ampliar funciones.
+### Objective
 
-### Tareas
+Establish a reliable base before adding features.
 
-- Leer todos los archivos existentes, no sobrescribir funciones útiles sin analizarlas.
-- Ejecutar las pruebas actuales y registrar el estado inicial.
-- Corregir errores evidentes, especialmente:
-  - Gestión de hilos y recursos de audio.
-  - Detención real de `RawInputStream`.
-  - Actualización de widgets PyQt6 desde hilos secundarios.
-  - Compatibilidad de rutas al empaquetar.
-  - Carga de plantillas y modelos desde rutas instaladas.
-  - Implementación real del modo espejo; no confundir dirección de layout con transformación visual.
-  - Selección de guion que dependa del directorio de trabajo.
-- Eliminar secretos fijos como `SECRET_KEY` estática si no son necesarios.
-- Añadir registro estructurado con niveles DEBUG, INFO, WARNING y ERROR.
-- Añadir comprobaciones de permisos para cámara, micrófono y directorios.
+### Tasks
 
-### Criterios de aceptación
+- Read all existing files; do not overwrite useful functions without analyzing them.
+- Run the current tests and record the initial state.
+- Fix obvious bugs, especially:
+  - Thread and audio resource management.
+  - Actual stopping of `RawInputStream`.
+  - Updating PyQt6 widgets from secondary threads.
+  - Path compatibility when packaging.
+  - Loading templates and models from installed paths.
+  - Real implementation of mirror mode; do not confuse layout direction with visual transformation.
+  - Script selection that depends on the working directory.
+- Remove fixed secrets such as a static `SECRET_KEY` if they are not needed.
+- Add structured logging with DEBUG, INFO, WARNING, and ERROR levels.
+- Add permission checks for camera, microphone, and directories.
 
-- Las pruebas existentes pasan.
-- La aplicación inicia desde el repositorio y desde otra carpeta.
-- La aplicación no se congela al activar/desactivar voz o cerrar una grabación.
-- Los fallos de dispositivos se explican en español y ofrecen una acción correctiva.
+### Acceptance criteria
 
-## Fase 1 — Base PyQt6 y gestión de proyectos
+- Existing tests pass.
+- The application starts from the repository and from another folder.
+- The application does not freeze when toggling voice or closing a recording.
+- Device failures are explained in Spanish and offer a corrective action.
 
-### Tareas
+## Phase 1 — PyQt6 base and project management
 
-- Crear `MainWindow` con navegación entre Inicio, Guion, Cámara, Revisión y Editor.
-- Implementar `ProjectService`.
-- Añadir nuevo/abrir/guardar/cerrar proyecto.
-- Migrar configuración actual al nuevo modelo.
-- Mantener importación de `.txt` y UTF-8.
-- Añadir importación opcional de `.md`, `.html` y `.docx` solo si se dispone de una dependencia fiable; el texto debe limpiarse sin introducir formato peligroso.
-- Añadir plantillas de guion: tutorial, presentación, clase, noticia, reseña y anuncio.
-- Calcular duración aproximada usando WPM y mostrarla junto al contador.
+### Tasks
 
-### Criterios de aceptación
+- Create a `MainWindow` with navigation between Home, Script, Camera, Review, and Editor.
+- Implement `ProjectService`.
+- Add new/open/save/close project.
+- Migrate the current configuration to the new model.
+- Keep `.txt` import and UTF-8.
+- Add optional import of `.md`, `.html`, and `.docx` only if a reliable dependency is available; the text must be cleaned without introducing dangerous formatting.
+- Add script templates: tutorial, presentation, class, news, review, and advertisement.
+- Calculate the approximate duration using WPM and display it next to the counter.
 
-- Un proyecto se abre en otra sesión con todos sus ajustes.
-- Un guion con ñ, acentos, emojis y saltos de línea se conserva correctamente.
-- Los archivos temporales se separan de los archivos finales.
+### Acceptance criteria
 
-## Fase 2 — Cámara web en directo
+- A project opens in another session with all its settings.
+- A script with ñ, accents, emojis, and line breaks is preserved correctly.
+- Temporary files are kept separate from final files.
 
-### Objetivo
-Mostrar la imagen de la cámara integrada o USB y superponer el guion.
+## Phase 2 — Live webcam
 
-### Tareas
+### Objective
 
-- Detectar cámaras mediante V4L2 y/o OpenCV.
-- Mostrar nombre, dispositivo, resolución y FPS.
-- Permitir elegir cámara integrada o USB.
-- Implementar `CameraService` en un hilo seguro.
-- Mostrar la imagen en un widget PyQt6 con conversión correcta BGR/RGB y escalado respetando proporción.
-- Permitir seleccionar resolución y FPS entre los modos realmente ofrecidos por la cámara.
-- Añadir controles de brillo, contraste y espejo de la previsualización cuando sean compatibles.
-- Mostrar mensajes para:
-  - Cámara no encontrada.
-  - Permiso denegado.
-  - Cámara utilizada por otra aplicación.
-  - Formato no compatible.
-- Liberar la cámara al cambiar de dispositivo, cerrar la ventana o iniciar otra aplicación.
+Show the built-in or USB camera image and superimpose the script.
 
-### Criterios de aceptación
+### Tasks
 
-- Funciona con la cámara integrada y con una cámara USB V4L2 probada.
-- El selector no muestra como disponibles resoluciones que el dispositivo no soporta.
-- La vista permanece fluida sin bloquear la interfaz.
+- Detect cameras through V4L2 and/or OpenCV.
+- Show name, device, resolution, and FPS.
+- Allow choosing the built-in or USB camera.
+- Implement `CameraService` in a thread-safe way.
+- Show the image in a PyQt6 widget with correct BGR/RGB conversion and scaling that preserves the aspect ratio.
+- Allow selecting resolution and FPS among the modes the camera actually offers.
+- Add brightness, contrast, and preview mirror controls when supported.
+- Show messages for:
+  - Camera not found.
+  - Permission denied.
+  - Camera in use by another application.
+  - Unsupported format.
+- Release the camera when switching devices, closing the window, or starting another application.
 
-## Fase 3 — Teleprompter superpuesto a la cámara
+### Acceptance criteria
 
-### Objetivo
-Que el usuario se vea a sí mismo y lea el texto cerca de la lente.
+- It works with the built-in camera and with a tested USB V4L2 camera.
+- The selector does not show as available resolutions that the device does not support.
+- The preview remains smooth without blocking the interface.
 
-### Tareas
+## Phase 3 — Teleprompter superimposed on the camera
 
-- Crear `TeleprompterOverlay` como capa sobre la vista de cámara.
-- Mantener el texto en una región configurable próxima a la lente.
-- Permitir:
-  - Tamaño de letra.
-  - Familia tipográfica.
-  - Negrita.
+### Objective
+
+Let the user see themselves and read the text near the lens.
+
+### Tasks
+
+- Create `TeleprompterOverlay` as a layer over the camera view.
+- Keep the text in a configurable region close to the lens.
+- Allow:
+  - Font size.
+  - Font family.
+  - Bold.
   - Color.
-  - Fondo transparente, semitransparente o sólido.
-  - Ancho de columna.
-  - Espaciado de líneas.
-  - Alineación.
-  - Línea guía.
-  - Márgenes.
-  - Espejo horizontal del texto.
-  - Posición vertical y horizontal.
-  - Inversión de la interfaz para accesorios de cristal reflectante.
-- Añadir dos modos:
-  - **Lectura**: texto grande, controles mínimos.
-  - **Cámara**: vídeo y teleprompter visibles con controles.
-- Implementar desplazamiento suave independiente de la frecuencia de refresco.
-- Usar tiempo monotónico y velocidad en palabras por minuto cuando sea posible, no solo píxeles arbitrarios.
-- Añadir marcadores y salto a párrafos.
-- Permitir pausar, reanudar, reiniciar y desplazarse manualmente.
+  - Transparent, semi-transparent, or solid background.
+  - Column width.
+  - Line spacing.
+  - Alignment.
+  - Guide line.
+  - Margins.
+  - Horizontal mirroring of the text.
+  - Vertical and horizontal position.
+  - Interface inversion for reflective glass accessories.
+- Add two modes:
+  - **Reading**: large text, minimal controls.
+  - **Camera**: video and teleprompter visible with controls.
+- Implement smooth scrolling independent of the refresh rate.
+- Use monotonic time and speed in words per minute when possible, not just arbitrary pixels.
+- Add markers and jumping to paragraphs.
+- Allow pausing, resuming, restarting, and manual scrolling.
 
-### Criterios de aceptación
+### Acceptance criteria
 
-- El texto es legible sobre fondos claros y oscuros.
-- El usuario puede colocar el texto cerca de la cámara sin ocultar completamente su rostro.
-- La velocidad se mantiene estable durante varios minutos.
-- Los atajos actuales siguen funcionando y también existen botones visibles.
+- The text is legible over light and dark backgrounds.
+- The user can place the text near the camera without completely hiding their face.
+- The speed remains stable over several minutes.
+- The current shortcuts still work and visible buttons also exist.
 
-## Fase 4 — Controles, cuenta regresiva y control remoto
+## Phase 4 — Controls, countdown, and remote control
 
-### Tareas
+### Tasks
 
-- Mantener Space, flechas, Ctrl/Shift, Home/R, +/-, F, O, G, Q y V, documentándolos en la interfaz.
-- Añadir botones grandes para Play/Pausa, velocidad, reinicio y salto.
-- Cuenta regresiva configurable: 0, 3, 5 o 10 segundos.
-- Añadir pedal USB/HID opcional si se puede implementar sin depender de hardware propietario.
-- Mejorar el servidor local:
-  - Vincularlo por defecto a la red local solo cuando el usuario lo active.
-  - Mostrar IP y puerto.
-  - Generar QR.
-  - Añadir token temporal o código de emparejamiento.
-  - Desactivar el servidor al cerrar.
-  - No exponerlo a Internet.
-  - Validar comandos y limitar frecuencia.
-- Control remoto móvil:
-  - Play/Pausa.
-  - Velocidad +/-.
-  - Reinicio.
-  - Progreso.
-  - Cuenta regresiva.
-  - Botón para iniciar y detener grabación.
-  - Indicador de conexión.
+- Keep Space, arrows, Ctrl/Shift, Home/R, +/-, F, O, G, Q, and V, documenting them in the interface.
+- Add large buttons for Play/Pause, speed, restart, and jumping.
+- Configurable countdown: 0, 3, 5, or 10 seconds.
+- Add an optional USB/HID pedal if it can be implemented without depending on proprietary hardware.
+- Improve the local server:
+  - Bind it to the local network by default only when the user activates it.
+  - Show IP and port.
+  - Generate QR.
+  - Add a temporary token or pairing code.
+  - Shut the server down on close.
+  - Do not expose it to the Internet.
+  - Validate commands and limit their frequency.
+- Mobile remote control:
+  - Play/Pause.
+  - Speed +/-.
+  - Restart.
+  - Progress.
+  - Countdown.
+  - Button to start and stop recording.
+  - Connection indicator.
 
-### Criterios de aceptación
+### Acceptance criteria
 
-- El control remoto funciona en la misma red Wi-Fi sin nube.
-- Un teléfono no autorizado no puede controlar la sesión si el emparejamiento está activado.
-- La aplicación continúa funcionando si el teléfono se desconecta.
+- The remote control works on the same Wi-Fi network without any cloud.
+- An unauthorized phone cannot control the session if pairing is enabled.
+- The application keeps working if the phone disconnects.
 
-## Fase 5 — Captura de audio y grabación de vídeo
+## Phase 5 — Audio capture and video recording
 
-### Objetivo
-Grabar cámara y micrófono sincronizados en un archivo reproducible.
+### Objective
 
-### Tareas
+Record camera and microphone, synchronized, into a playable file.
 
-- Implementar selección de micrófono mediante PipeWire/PulseAudio/ALSA según disponibilidad.
-- Mostrar medidor de nivel y detectar saturación.
-- Permitir elegir cámara y micrófono por separado.
-- Añadir comprobación previa de audio y vídeo.
-- Implementar `RecordingService` con cola de frames y cierre seguro.
-- Grabar en formato intermedio fiable, preferentemente mediante FFmpeg cuando simplifique la sincronización.
-- Guardar grabación original sin destruirla.
-- Añadir nombre automático con fecha y hora.
-- Mostrar duración, espacio disponible y estado de grabación.
-- Permitir detener, cancelar y recuperar una grabación incompleta cuando sea posible.
-- No mezclar la imagen del teleprompter en el vídeo final por defecto; el texto debe servir de ayuda durante la grabación.
-- Ofrecer opción explícita para incrustar el texto si el usuario la solicita.
+### Tasks
 
-### Criterios de aceptación
+- Implement microphone selection through PipeWire/PulseAudio/ALSA depending on availability.
+- Show a level meter and detect clipping.
+- Allow choosing camera and microphone separately.
+- Add pre-flight checks for audio and video.
+- Implement `RecordingService` with a frame queue and safe shutdown.
+- Record in a reliable intermediate format, preferably through FFmpeg when it simplifies synchronization.
+- Keep the original recording without destroying it.
+- Add automatic naming with date and time.
+- Show duration, available space, and recording status.
+- Allow stopping, canceling, and recovering an incomplete recording when possible.
+- Do not mix the teleprompter image into the final video by default; the text is an aid during recording.
+- Offer an explicit option to embed the text if the user requests it.
 
-- La grabación tiene audio y vídeo sincronizados.
-- Cerrar la ventana durante una grabación no deja procesos FFmpeg huérfanos.
-- El archivo original puede reproducirse con VLC y FFplay.
-- Se informa al usuario antes de grabar si no hay micrófono o espacio suficiente.
+### Acceptance criteria
 
-## Fase 6 — Revisión y editor no destructivo
+- The recording has synchronized audio and video.
+- Closing the window during a recording leaves no orphan FFmpeg processes.
+- The original file can be played with VLC and FFplay.
+- The user is informed before recording if there is no microphone or not enough space.
 
-### Tareas
+## Phase 6 — Review and non-destructive editor
 
-- Crear reproductor de revisión con controles de reproducción.
-- Mostrar miniatura, duración y tamaño del clip.
-- Permitir marcar inicio/fin y eliminar segmentos.
-- Añadir recorte de principio y final.
-- Añadir eliminación de pausas/silencios como función opcional, siempre con vista previa.
-- Mantener edición no destructiva mediante una lista de segmentos en `project.json`.
-- Permitir volver a grabar solo un segmento.
-- Añadir deshacer/rehacer.
-- No destruir el original hasta que el usuario lo solicite expresamente.
+### Tasks
 
-## Fase 7 — Subtítulos automáticos
+- Create a review player with playback controls.
+- Show thumbnail, duration, and clip size.
+- Allow marking start/end and deleting segments.
+- Add head and tail trimming.
+- Add optional pause/silence removal, always with a preview.
+- Keep non-destructive editing through a segment list in `project.json`.
+- Allow re-recording a single segment only.
+- Add undo/redo.
+- Do not destroy the original until the user explicitly requests it.
 
-### Tareas
+## Phase 7 — Automatic subtitles
 
-- Mantener Vosk como backend local ligero opcional.
-- Añadir backend opcional basado en Whisper/faster-whisper si se puede instalar y ejecutar de forma razonable en Debian 13.
-- Permitir elegir idioma y modelo.
-- Generar subtítulos con marcas de tiempo.
-- Importar/exportar `.srt` y `.vtt`.
-- Editar manualmente texto y tiempos.
-- Resaltar palabras o frases.
-- Elegir posición, tipografía, color, fondo y animación sencilla.
-- Permitir subtítulos como pista editable y como incrustación final.
-- Procesar en segundo plano y mostrar progreso, cancelación y tamaño del modelo.
-- No descargar modelos sin consentimiento claro del usuario.
+### Tasks
 
-### Criterios de aceptación
+- Keep Vosk as the optional lightweight local backend.
+- Add an optional backend based on Whisper/faster-whisper if it can be reasonably installed and run on Debian 13.
+- Allow choosing language and model.
+- Generate subtitles with timestamps.
+- Import/export `.srt` and `.vtt`.
+- Manually edit text and times.
+- Highlight words or phrases.
+- Choose position, typography, color, background, and a simple animation.
+- Allow subtitles both as an editable track and as a final burn-in.
+- Process in the background and show progress, cancellation, and model size.
+- Do not download models without the user's clear consent.
 
-- Un vídeo en español produce un `.srt` revisable.
-- Los errores de reconocimiento se pueden corregir antes de exportar.
-- El programa explica si el modelo no está instalado.
+### Acceptance criteria
 
-## Fase 8 — Branding y edición visual
+- A Spanish-language video produces a reviewable `.srt`.
+- Recognition errors can be corrected before exporting.
+- The program explains when the model is not installed.
 
-### Tareas
+## Phase 8 — Branding and visual editing
 
-- Crear Kit de Marca local:
+### Tasks
+
+- Create a local Brand Kit:
   - Logo.
-  - Colores.
-  - Tipografías disponibles.
+  - Colors.
+  - Available fonts.
   - Intro.
   - Outro.
-  - Nombre y datos de contacto.
-- Añadir logo como superposición con posición y opacidad.
-- Añadir títulos, subtítulos y lower thirds.
-- Añadir imágenes y clips B-roll locales.
-- Añadir biblioteca opcional de recursos libres, sin descargar contenido sin autorización.
-- Añadir música local con control de volumen y fundido.
-- Normalizar niveles de audio con FFmpeg cuando proceda.
-- Añadir relación de aspecto:
+  - Name and contact details.
+- Add the logo as an overlay with position and opacity.
+- Add titles, subtitles, and lower thirds.
+- Add local images and B-roll clips.
+- Add an optional free-asset library, without downloading content without authorization.
+- Add local music with volume control and fades.
+- Normalize audio levels with FFmpeg where appropriate.
+- Add aspect ratios:
   - Vertical 9:16.
   - Horizontal 16:9.
-  - Cuadrado 1:1.
-- Añadir previsualización de recorte para redes sociales.
-- Añadir autozoom simple basado en cortes o posiciones, sin prometer seguimiento facial hasta implementar una solución fiable.
+  - Square 1:1.
+- Add a crop preview for social media.
+- Add simple autozoom based on cuts or positions, without promising face tracking until a reliable solution is implemented.
 
-## Fase 9 — Funciones de IA opcionales y locales
+## Phase 9 — Optional local AI features
 
-### Tareas
+### Tasks
 
-- Asistente de guiones:
-  - Crear borrador desde tema.
-  - Ajustar tono.
-  - Resumir.
-  - Cambiar duración.
-  - Crear título, descripción y etiquetas.
-- Diseñar la integración por adaptadores:
-  - Backend local.
-  - Backend HTTP elegido por el usuario.
-  - Ningún proveedor obligatorio.
-- Mostrar siempre si el texto sale del ordenador.
-- Solicitar consentimiento antes de enviar guiones, audio, vídeo o imágenes.
-- No presentar como disponible una función de avatar, clonación de voz, corrección ocular o generación de vídeo hasta que esté implementada, probada y documentada.
-- Si se implementa clonación de voz o avatar, incluir controles de consentimiento, borrado de modelos y advertencias contra suplantación.
+- Script assistant:
+  - Create a draft from a topic.
+  - Adjust tone.
+  - Summarize.
+  - Change duration.
+  - Create title, description, and tags.
+- Design the integration through adapters:
+  - Local backend.
+  - HTTP backend chosen by the user.
+  - No mandatory provider.
+- Always show whether the text leaves the computer.
+- Request consent before sending scripts, audio, video, or images.
+- Do not present an avatar, voice cloning, eye correction, or video generation feature as available until it is implemented, tested, and documented.
+- If voice cloning or avatars are implemented, include consent controls, model deletion, and warnings against impersonation.
 
-## Fase 10 — Exportación y publicación
+## Phase 10 — Export and publishing
 
-### Tareas
+### Tasks
 
-- Crear perfiles de exportación:
+- Create export profiles:
   - YouTube: 16:9.
   - TikTok/Reels/Shorts: 9:16.
-  - LinkedIn: 16:9 o 1:1.
-  - Archivo maestro de alta calidad.
-- Usar FFmpeg con parámetros documentados.
-- Permitir elegir contenedor, códec, resolución, FPS, bitrate y carpeta.
-- Mostrar estimación de tamaño cuando sea posible.
-- Validar que el archivo final exista, tenga tamaño razonable y pueda abrirse.
-- Generar miniatura opcional.
-- Copiar título, descripción y hashtags al portapapeles o guardarlos en un `.txt`/`.json`.
-- No integrar publicación directa en redes hasta estudiar sus APIs, autenticación, límites y cambios de políticas.
-- Como primera versión, ofrecer exportación local y apertura de la carpeta de salida.
+  - LinkedIn: 16:9 or 1:1.
+  - High-quality master file.
+- Use FFmpeg with documented parameters.
+- Allow choosing container, codec, resolution, FPS, bitrate, and folder.
+- Show a size estimate when possible.
+- Validate that the final file exists, has a reasonable size, and can be opened.
+- Generate an optional thumbnail.
+- Copy title, description, and hashtags to the clipboard or save them to a `.txt`/`.json`.
+- Do not integrate direct social publishing until their APIs, authentication, limits, and policy changes have been studied.
+- As a first version, offer local export and opening the output folder.
 
-## Fase 11 — Calidad, pruebas y accesibilidad
+## Phase 11 — Quality, testing, and accessibility
 
-### Pruebas unitarias
+### Unit tests
 
-- Configuración y migraciones.
-- Cálculo WPM y duración.
-- Conversión de rutas.
-- Proyecto y recuperación.
-- Segmentos de edición.
-- Generación de subtítulos.
-- Construcción de comandos FFmpeg.
-- Validación de cámaras y micrófonos.
+- Configuration and migrations.
+- WPM and duration calculation.
+- Path conversion.
+- Project and recovery.
+- Edit segments.
+- Subtitle generation.
+- FFmpeg command construction.
+- Camera and microphone validation.
 
-### Pruebas de integración
+### Integration tests
 
-- Cámara integrada.
-- Cámara USB.
-- Micrófono USB.
-- Cambio de cámara durante la sesión.
-- Grabación de 1, 5 y 30 minutos.
-- Desconexión de cámara.
-- Desconexión de micrófono.
-- Wayland y X11.
-- Escalas de pantalla HiDPI.
-- Guiones UTF-8 largos.
-- Red local y teléfono remoto.
+- Built-in camera.
+- USB camera.
+- USB microphone.
+- Camera change during the session.
+- Recording of 1, 5, and 30 minutes.
+- Camera disconnection.
+- Microphone disconnection.
+- Wayland and X11.
+- HiDPI screen scaling.
+- Long UTF-8 scripts.
+- Local network and remote phone.
 
-### Accesibilidad
+### Accessibility
 
-- Atajos configurables.
-- Navegación por teclado.
-- Etiquetas accesibles para controles.
-- Contraste comprobable.
-- Tamaño de controles suficiente para uso durante grabación.
-- Mensajes de error comprensibles.
-- Interfaz inicial en español, preparada para traducciones con Qt Linguist.
+- Configurable shortcuts.
+- Keyboard navigation.
+- Accessible labels for controls.
+- Verifiable contrast.
+- Control sizes sufficient for use while recording.
+- Understandable error messages.
+- Initial interface in Spanish, prepared for translations with Qt Linguist.
 
-### Herramientas
+### Tools
 
-- `pytest` y `pytest-qt`.
+- `pytest` and `pytest-qt`.
 - `ruff`.
-- `mypy` gradual.
-- `pre-commit` opcional.
-- Cobertura en módulos críticos.
-- Pruebas en una máquina real Debian 13, no solo en mocks.
+- Gradual `mypy`.
+- Optional `pre-commit`.
+- Coverage on critical modules.
+- Testing on a real Debian 13 machine, not only on mocks.
 
-## Fase 12 — Distribución Linux
+## Phase 12 — Linux distribution
 
-### Tareas
+### Tasks
 
-- Crear instalación reproducible con `pyproject.toml`.
-- Mantener `requirements.txt` y `requirements-dev.txt` separados.
-- Documentar instalación con paquetes Debian y con entorno virtual.
-- Crear archivo `.desktop` e icono.
-- Evaluar paquete `.deb` con `dpkg-buildpackage` o equivalente.
-- Mantener AppImage como distribución opcional, sin ocultar dependencias de cámara y FFmpeg.
-- Incluir modelos de voz por descarga separada y documentada.
-- No incluir modelos grandes innecesariamente en el ejecutable.
-- Añadir comprobación de versión y migración de proyectos.
+- Create reproducible installation with `pyproject.toml`.
+- Keep `requirements.txt` and `requirements-dev.txt` separate.
+- Document installation with Debian packages and with a virtual environment.
+- Create a `.desktop` file and icon.
+- Evaluate a `.deb` package with `dpkg-buildpackage` or equivalent.
+- Keep AppImage as an optional distribution, without hiding camera and FFmpeg dependencies.
+- Include voice models as a separate, documented download.
+- Do not include large unnecessary models in the executable.
+- Add version checking and project migration.
 
-## 7. Reglas de implementación para el Agente de IA
+## 7. Implementation rules for the AI agent
 
-1. Trabajar por fases pequeñas y compilables.
-2. Antes de cambiar un módulo, leer su código y sus pruebas.
-3. No eliminar una función existente sin reemplazo compatible o migración documentada.
-4. No crear pseudocódigo presentado como código terminado.
-5. Cada tarea debe terminar con pruebas ejecutadas y resultado registrado.
-6. No usar llamadas de red para funciones locales básicas.
-7. No añadir dependencias solo por comodidad si una biblioteca Debian adecuada ya existe.
-8. Toda operación pesada debe ejecutarse fuera del hilo principal.
-9. Nunca actualizar widgets Qt directamente desde un hilo de trabajo; usar señales.
-10. Liberar cámara, micrófono, archivos y procesos externos en rutas normales y excepcionales.
-11. Validar entradas de usuario y rutas de proyecto.
-12. Usar rutas relativas en proyectos y recursos instalados localmente.
-13. Separar archivos originales, temporales y exportados.
-14. Pedir confirmación antes de borrar originales o sobrescribir exportaciones.
-15. Documentar limitaciones reales de hardware y sistema.
-16. Usar nombres propios del proyecto, por ejemplo `Teleprompter`, `BigPrompt` o el nombre que confirme el mantenedor.
-17. Mantener licencia MIT si el propietario del repositorio la confirma.
-18. **Regla de instalación de paquetes (obligatoria)**: cuando el desarrollo requiera instalar un paquete nuevo (`apt`, `pip` o cualquier otro gestor), el agente debe **detener el proceso inmediatamente y avisar al mantenedor** indicando el nombre exacto del paquete y el comando de instalación. El mantenedor es la única persona que puede instalar paquetes porque debe introducir su contraseña de administrador. El agente nunca debe intentar instalar paquetes por sí mismo, ni pedirlos de forma indirecta. Mientras el paquete no esté instalado y confirmado por el mantenedor, el agente debe limitarse a tareas que no dependan de él.
+1. Work in small, compilable phases.
+2. Before changing a module, read its code and its tests.
+3. Do not remove an existing feature without a compatible replacement or a documented migration.
+4. Do not create pseudocode presented as finished code.
+5. Every task must end with tests run and the result recorded.
+6. Do not use network calls for basic local features.
+7. Do not add dependencies just for convenience if a suitable Debian library exists.
+8. Every heavy operation must run outside the main thread.
+9. Never update Qt widgets directly from a worker thread; use signals.
+10. Release camera, microphone, files, and external processes on both normal and exceptional paths.
+11. Validate user input and project paths.
+12. Use relative paths in projects and locally installed resources.
+13. Separate original, temporary, and exported files.
+14. Ask for confirmation before deleting originals or overwriting exports.
+15. Document real hardware and system limitations.
+16. Use the project's own names, for example `Teleprompter`, `BigPrompt`, or the name the maintainer confirms.
+17. Keep the MIT license if the repository owner confirms it.
+18. **Package installation rule (mandatory)**: whenever development requires installing a new package (`apt`, `pip`, or any other manager), the agent must **stop the process immediately and notify the maintainer**, stating the exact package name and the installation command. The maintainer is the only person who can install packages, because the administrator password must be entered. The agent must never try to install packages on its own, or request them indirectly. Until the package is installed and confirmed by the maintainer, the agent must limit itself to tasks that do not depend on it.
 
-## 8. Formato de cada entrega del Agente
+## 8. Format of each agent delivery
 
-Para cada fase, el agente debe informar:
+For each phase, the agent must report:
 
 ```text
-Fase:
-Objetivo:
-Archivos modificados:
-Archivos nuevos:
-Dependencias añadidas:
-Decisiones técnicas:
-Limitaciones conocidas:
-Pruebas ejecutadas:
-Resultado de las pruebas:
-Cómo ejecutar:
-Siguiente tarea recomendada:
+Phase:
+Objective:
+Files modified:
+New files:
+Dependencies added:
+Technical decisions:
+Known limitations:
+Tests run:
+Test results:
+How to run:
+Next recommended task:
 ```
 
-## 9. Orden recomendado del MVP
+## 9. Recommended MVP order
 
-El MVP debe detenerse después de completar estas funciones:
+The MVP must stop after completing these features:
 
-- PyQt6 modular.
-- Proyecto y guion UTF-8.
-- Selección de cámara integrada/USB.
-- Vista previa en directo.
-- Texto superpuesto y desplazamiento.
-- Cuenta regresiva.
-- Grabación de cámara y micrófono.
-- Revisión y recorte básico.
-- Exportación local con FFmpeg.
-- Control remoto móvil seguro en la red local.
-- Documentación en español.
-- Pruebas de hardware y software.
+- Modular PyQt6.
+- Project and UTF-8 script.
+- Built-in/USB camera selection.
+- Live preview.
+- Superimposed, scrolling text.
+- Countdown.
+- Camera and microphone recording.
+- Review and basic trimming.
+- Local export with FFmpeg.
+- Secure mobile remote control on the local network.
+- Documentation in Spanish.
+- Hardware and software testing.
 
-No comenzar con avatares, publicación automática o IA generativa antes de que el MVP grabe y exporte correctamente.
+Do not start avatars, automatic publishing, or generative AI before the MVP records and exports correctly.
 
-## 10. Definición de terminado
+## 10. Definition of done
 
-Una función se considera terminada solamente cuando:
+A feature is considered finished only when:
 
-- Está implementada con código real.
-- Está integrada en la interfaz.
-- Tiene manejo de errores.
-- Tiene al menos una prueba apropiada.
-- Está documentada en español.
-- Funciona en Debian 13 en una prueba reproducible.
-- No bloquea la interfaz.
-- Libera correctamente sus recursos.
-- No rompe funciones existentes.
-- La limitación, si existe, aparece explícitamente en la interfaz o documentación.
+- It is implemented with real code.
+- It is integrated into the interface.
+- It has error handling.
+- It has at least one appropriate test.
+- It is documented in Spanish.
+- It works on Debian 13 in a reproducible test.
+- It does not block the interface.
+- It releases its resources correctly.
+- It does not break existing features.
+- The limitation, if any, appears explicitly in the interface or the documentation.
 
-## 11. Primera orden para el Agente de IA
+## 11. First order to the AI agent
 
-Comienza así:
+Start like this:
 
-1. Audita el repositorio y enumera sus archivos y responsabilidades.
-2. Ejecuta las pruebas existentes.
-3. Comprueba qué paquetes están disponibles en Debian 13.
-4. Propón una migración mínima de la estructura actual hacia la arquitectura indicada.
-5. Implementa únicamente la Fase 0.
-6. Ejecuta las pruebas y muestra los cambios.
-7. Espera la aprobación del mantenedor antes de continuar con la Fase 1.
+1. Audit the repository and list its files and responsibilities.
+2. Run the existing tests.
+3. Check which packages are available on Debian 13.
+4. Propose a minimal migration from the current structure to the indicated architecture.
+5. Implement only Phase 0.
+6. Run the tests and show the changes.
+7. Wait for the maintainer's approval before continuing with Phase 1.
 
-El objetivo no es producir una herramienta Linux nativa, local, verificable y mantenible que resuelva primero el flujo esencial: **guion → cámara → lectura superpuesta → grabación → revisión → exportación**.
+The goal is to produce a native, local, verifiable, and maintainable Linux tool that first solves the essential flow: **script → camera → superimposed reading → recording → review → export**.
