@@ -15,6 +15,82 @@ A desktop teleprompter for presentations and recordings. Designed for a real-wor
 
 ---
 
+## 🛠️ Developer dependencies
+
+Everything needed to develop and test this program on **Debian 13 (trixie)**
+and derivatives. Two installation methods are supported; Debian packages are
+preferred (see `ROADMAP.md`, section 4.1).
+
+### Option A — Debian 13 packages (recommended)
+
+```bash
+sudo apt install \
+    python3 python3-venv python3-pip \
+    python3-pyqt6 \
+    python3-flask python3-flask-socketio python3-qrcode \
+    python3-numpy python3-pil \
+    python3-pytest \
+    ffmpeg \
+    v4l-utils \
+    pulseaudio-utils \
+    libportaudio2 portaudio19-dev
+```
+
+### Option B — pip (virtual environment)
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+```
+
+### Package reference table
+
+| Package (apt name) | PyPI name | Purpose | Phase |
+|---|---|---|---|
+| `python3` | — | Interpreter (≥ 3.10) | All |
+| `python3-pyqt6` | `PyQt6` | Native user interface | All |
+| `python3-flask` | `flask` | Local remote-control server | Remote |
+| `python3-flask-socketio` | `flask-socketio` | Real-time WebSocket events | Remote |
+| `python3-qrcode` | `qrcode[pil]` | QR code generation | Remote |
+| `python3-numpy` | `numpy` | Numeric operations (audio/video) | Voice / Camera |
+| `python3-pil` | `Pillow` | Image handling | Branding |
+| `python3-opencv` | `opencv-python` | Camera capture (V4L2) — *for the camera phase* | Camera |
+| `ffmpeg` | — | Recording muxing and export | Recording / Export |
+| `v4l-utils` | — | Camera detection and diagnostics (`v4l2-ctl`) | Camera |
+| `pulseaudio-utils` | — | Audio device diagnostics (`pactl`) | Audio |
+| `libportaudio2` + `portaudio19-dev` | — | PortAudio backend for `sounddevice` | Voice |
+| — | `vosk` | Local speech recognition (no apt package; install via pip) | Voice |
+| — | `sounddevice` | Microphone capture via PortAudio (no apt package; install via pip) | Voice |
+| `python3-pytest` | `pytest` | Test framework | Development |
+| — | `pytest-qt` | Qt widget testing (Debian name: `python3-pytestqt`) | Development |
+| — | `ruff` | Linter and formatter (install via pip) | Development |
+| `mypy` | `mypy` | Gradual type checking | Development |
+| — | `pyinstaller` | Binary packaging, optional | Distribution |
+
+Notes:
+
+- `vosk` and `sounddevice` have **no Debian package**; they are installed
+  with `pip install --user vosk sounddevice` (they are already present on
+  the reference machine).
+- `pytest-qt` exists in Debian under the name `python3-pytestqt`.
+- The Vosk Spanish voice model is a separate download (see
+  [README](#install-voice-model-optional)); place it in `models/model-es`.
+
+### Quick verification
+
+After installing, verify the environment:
+
+```bash
+python3 -c "import PyQt6, flask, flask_socketio, qrcode, numpy, vosk, sounddevice; print('OK')"
+ffmpeg -version | head -1
+v4l2-ctl --list-devices
+python3 -m pytest tests/ -q
+```
+
+---
+
 ## 🚀 Installation
 
 ```bash
@@ -36,12 +112,14 @@ python3 main.py
 
 ### Install voice model (optional)
 
-To use voice synchronization, download the Spanish model:
+To use voice synchronization, download the Spanish model and place it in
+`models/model-es`:
 
 ```bash
+mkdir -p models
 wget https://alphacephei.com/vosk/models/vosk-model-es-0.42.zip
 unzip vosk-model-es-0.42.zip
-mv vosk-model-es-0.42 model-es
+mv vosk-model-es-0.42 models/model-es
 ```
 
 ---

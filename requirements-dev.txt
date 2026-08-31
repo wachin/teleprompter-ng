@@ -1,0 +1,16 @@
+# requirements-dev.txt — Herramientas de desarrollo del Teleprompter Pro
+#
+# Instalar con:  pip install -r requirements-dev.txt
+# (o en Debian:  sudo apt install python3-pytest python3-pytestqt)
+
+# Pruebas
+pytest>=7.0
+pytest-qt>=4.2.0        # en Debian: python3-pytestqt
+pytest-cov>=4.0
+
+# Calidad de código
+ruff>=0.4
+mypy>=1.8
+
+# Empaquetado opcional (distribución, no obligatorio para desarrollar)
+pyinstaller>=6.0
