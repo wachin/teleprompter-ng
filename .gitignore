@@ -1,0 +1,72 @@
+# ── Python ─────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+wheels/
+
+# ── Virtual environments ───────────────────────────────
+venv/
+.venv/
+env/
+
+# ── Test / QA caches ───────────────────────────────────
+.pytest_cache/
+.hypothesis/
+.coverage
+coverage.xml
+htmlcov/
+.tox/
+.mypy_cache/
+.ruff_cache/
+
+# ── Qt Linguist ────────────────────────────────────────
+# .ts files are the translation SOURCE and stay in the repo.
+# Note: .qm build artifacts are currently COMMITTED on purpose
+# (docs/I18N.md) until a packaging step exists; flip this on when
+# lrelease becomes part of the build (Phase 12).
+# translations/*.qm
+
+# ── Vosk voice models (large downloads, not source) ────
+models/
+model-es/
+model/
+
+# ── PyInstaller output ─────────────────────────────────
+# build.sh regenerates dist/ and *.spec from source
+dist/
+*.spec.bak
+
+# ── Debian packaging output ────────────────────────────
+debian/*.log
+debian/files
+debian/teleprompter-pro/
+debian/.debhelper/
+debian/debhelper-build-stamp
+debian/substvars
+*.deb
+*.changes
+*.buildinfo
+*.dsc
+
+# ── User projects and media (bigprompt folders) ────────
+# Projects live in ~/TeleprompterProjects; if any ever land
+# in the repo folder by accident, do not commit them.
+*.bigprompt/
+
+# ── IDEs / editors ─────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.kdev4/
+*.kate-swp
+
+# ── OS junk ────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.desktop
