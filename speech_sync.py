@@ -1,14 +1,13 @@
 """
-speech_sync.py — Sincronización inteligente del teleprompter con la voz.
+speech_sync.py — Intelligent teleprompter voice synchronization.
 
-Usa Vosk para reconocimiento de voz local y compara lo que se dice
-contra el guion para ajustar automáticamente la velocidad de scroll.
+Uses Vosk for local speech recognition and compares what is said
+against the script to adjust the scroll speed automatically.
 
-Fase 0: el stream de audio ahora permanece abierto mientras la
-sincronización está activa (antes se cerraba al instante por un
-`with` que salía de alcance). Las actualizaciones hacia la interfaz
-se canalizan mediante callbacks que la UI conecta a señales Qt, nunca
-tocando widgets directamente desde el hilo de audio.
+Phase 0: the audio stream now stays open while synchronization is
+active (previously it closed instantly due to a `with` going out of
+scope). UI updates are channeled through callbacks the UI connects
+to Qt signals, never touching widgets directly from the audio thread.
 """
 
 import json
@@ -48,7 +47,7 @@ def _find_model(candidate_names):
 
 
 def normalize_words(text):
-    """Normaliza texto a palabras minúsculas sin puntuación."""
+    """Normalizes text to lowercase words without punctuation."""
     clean = re.sub(r"[^\w\sáéíóúñüÁÉÍÓÚÑÜ]", "", text.lower(), flags=re.UNICODE)
     return clean.split()
 
@@ -118,7 +117,7 @@ class SpeechSync:
         self.current_position = 0
 
     def start(self):
-        """Inicia la sincronización de voz."""
+        """Starts voice synchronization."""
         if not VOSK_AVAILABLE or not self.model:
             log.warning("No disponible: Vosk no instalado o modelo no cargado")
             return False
@@ -163,7 +162,7 @@ class SpeechSync:
             return False
 
     def stop(self):
-        """Detiene la sincronización de voz y libera el micrófono."""
+        """Stops voice synchronization and releases the microphone."""
         self.is_active = False
         self._release_stream()
         if self._process_thread is not None:
@@ -185,7 +184,7 @@ class SpeechSync:
                 self._stream = None
 
     def _audio_callback(self, indata, frames, time_info, status):
-        """Callback para capturar audio del micrófono."""
+        """Callback that captures microphone audio."""
         if status:
             log.warning("Audio status: %s", status)
         self.audio_queue.put(bytes(indata))
@@ -236,10 +235,10 @@ class SpeechSync:
 
     def _adjust_speed(self, current_wpm):
         """
-        Calcula la nueva velocidad y delega la aplicación en la UI.
+        Computes the new speed and delegates applying it to the UI.
 
-        La UI debe aplicar el cambio (y actualizar sus etiquetas) desde
-        el hilo principal de Qt; este método solo calcula.
+        The UI must apply the change (and update its labels) from the
+        main Qt thread; this method only computes.
         """
         if current_wpm <= 0 or self.target_wpm <= 0:
             return None
@@ -263,7 +262,7 @@ class SpeechSync:
         return new_speed
 
     def get_sync_status(self):
-        """Retorna el estado actual de sincronización."""
+        """Returns the current synchronization status."""
         if not self.wpm_history:
             return {
                 "active": self.is_active,

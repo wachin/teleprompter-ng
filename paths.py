@@ -1,9 +1,9 @@
 """
-paths.py — Resolución de rutas independiente del directorio de trabajo.
+paths.py — Working-directory-independent path resolution.
 
-Fase 0: garantiza que la aplicación encuentre sus recursos (guiones,
-plantillas, modelos) tanto al ejecutarse desde el repositorio como desde
-una instalación en otra carpeta o desde un binario de PyInstaller.
+Phase 0: ensures the application finds its resources (scripts,
+templates, models) whether run from the repository, from an
+installation folder, or from a PyInstaller binary.
 """
 
 import os
@@ -12,10 +12,10 @@ import sys
 
 def get_app_dir():
     """
-    Retorna el directorio base de la aplicación.
+    Returns the application base directory.
 
-    - En un binario de PyInstaller: directorio del ejecutable.
-    - En modo normal: directorio que contiene main.py.
+    - PyInstaller binary: the executable directory.
+    - Normal mode: the directory containing main.py.
     """
     if getattr(sys, "frozen", False):
         # PyInstaller: los recursos van junto al ejecutable
@@ -24,7 +24,7 @@ def get_app_dir():
 
 
 def resource_path(*parts):
-    """Une partes a la raíz de recursos de la aplicación."""
+    """Joins parts to the application resource root."""
     return os.path.join(get_app_dir(), *parts)
 
 
@@ -51,10 +51,10 @@ def resolve_script_path(name="guion_actual.txt"):
 
 def relative_to(path, base):
     """
-    Convierte path en relativo a base si es posible.
+    Converts path to a path relative to base when possible.
 
-    Devuelve la ruta original sin cambios si está en otra unidad o
-    fuera de base.
+    Returns the original path unchanged if it is on another drive
+    or outside base.
     """
     try:
         return os.path.relpath(path, base)

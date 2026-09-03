@@ -1,5 +1,5 @@
 """
-tests/test_edge_cases.py — Tests para casos límite de texto
+tests/test_edge_cases.py — Tests for text edge cases
 """
 
 import os
@@ -10,7 +10,7 @@ class TestTextHandling:
     """Tests para manejo de texto."""
 
     def test_utf8_support(self):
-        """Soporte completo de UTF-8: tildes, ñ, emojis."""
+        """Full UTF-8 support: accents, ñ, emojis."""
         text = "¡Hola! ¿Cómo estás? Nación México 🎉"
         # Verificar que se puede procesar
         assert len(text) > 0
@@ -25,20 +25,20 @@ class TestTextHandling:
         assert all(len(w) > 10 for w in words)
 
     def test_empty_text(self):
-        """Texto vacío se maneja correctamente."""
+        """Empty text is handled correctly."""
         text = ""
         words = text.split()
         assert len(words) == 0
         assert len(text) == 0
 
     def test_multiple_newlines(self):
-        """Saltos de línea múltiples se manejan."""
+        """Multiple newlines are handled."""
         text = "Línea 1\n\n\n\nLínea 2"
         lines = text.split("\n")
         assert len(lines) >= 2
 
     def test_mixed_line_endings(self):
-        """Saltos de línea Windows y Unix mezclados."""
+        """Mixed Windows and Unix line endings."""
         text = "Línea 1\r\nLínea 2\nLínea 3"
         # Normalizar
         text_normalized = text.replace("\r\n", "\n")
@@ -62,7 +62,7 @@ class TestFileOperations:
     """Tests para operaciones de archivo."""
 
     def test_load_utf8_file(self):
-        """Cargar archivo con codificación UTF-8."""
+        """Load a UTF-8 encoded file."""
         with tempfile.NamedTemporaryFile(
             mode='w', encoding='utf-8', suffix='.txt', delete=False
         ) as f:

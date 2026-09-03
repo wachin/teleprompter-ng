@@ -1,10 +1,10 @@
 """
-config.py — Configuración del Teleprompter Pro.
+config.py — Configuration for Teleprompter Pro.
 
-Carga y guarda preferencias en config.json.
-Si el archivo no existe o está corrupto, usa valores por defecto.
+Loads and saves preferences in config.json.
+If the file does not exist or is corrupt, falls back to defaults.
 
-Soporta Windows (%AppData%), Linux (~/.config) y macOS (~/Library/Application Support).
+Supports Windows (%AppData%), Linux (~/.config), and macOS (~/Library/Application Support).
 """
 
 import json
@@ -13,7 +13,7 @@ import sys
 
 
 def get_config_dir():
-    """Retorna el directorio de configuración según la plataforma."""
+    """Returns the configuration directory for the current platform."""
     app_name = "TeleprompterPro"
 
     if sys.platform == "win32":
@@ -30,7 +30,7 @@ def get_config_dir():
 
 
 def get_config_path():
-    """Retorna la ruta completa del archivo de configuración."""
+    """Returns the full path of the configuration file."""
     return os.path.join(get_config_dir(), "config.json")
 
 
@@ -86,7 +86,7 @@ def load_config(path=None):
             with open(path, encoding="utf-8") as f:
                 saved = json.load(f)
             # Solo tomamos claves que existen en DEFAULTS y con el
-            # tipo correcto (Fase 0: evita config corrupta que rompe la UI)
+            # correct type (Phase 0: prevents corrupt config from breaking the UI)
             for key in DEFAULTS:
                 if key in saved and isinstance(saved[key], _TYPES[key]):
                     config[key] = saved[key]
@@ -98,11 +98,11 @@ def load_config(path=None):
 
 def save_config(config, path=None):
     """
-    Guarda la configuración actual en config.json.
+    Saves the current configuration to config.json.
 
     Args:
-        config: Diccionario con la configuración.
-        path: Ruta al archivo de config. Si es None, usa la ruta por plataforma.
+        config: Dictionary with the configuration.
+        path: Path to the config file. If None, uses the platform path.
     """
     if path is None:
         path = get_config_path()

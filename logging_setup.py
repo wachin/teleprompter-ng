@@ -1,8 +1,8 @@
 """
-logging_setup.py — Registro estructurado con niveles DEBUG, INFO, WARNING, ERROR.
+logging_setup.py — Structured logging with DEBUG, INFO, WARNING, ERROR levels.
 
-Fase 0: centraliza la configuración de logging para toda la aplicación.
-Escribe a la consola y, en Linux, también al journal de systemd si existe.
+Phase 0: centralizes logging configuration for the whole application.
+Writes to the console and, on Linux, to the systemd journal if available.
 """
 
 import logging
@@ -15,10 +15,10 @@ DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 def setup_logging(level=logging.INFO):
     """
-    Configura el logger raíz de la aplicación.
+    Configures the application root logger.
 
     Args:
-        level: nivel mínimo de registro (DEBUG, INFO, WARNING, ERROR).
+        level: minimum logging level (DEBUG, INFO, WARNING, ERROR).
     """
     root = logging.getLogger()
     if root.handlers:
@@ -54,5 +54,5 @@ def setup_logging(level=logging.INFO):
 
 
 def get_logger(name):
-    """Devuelve un logger hijo de la aplicación."""
+    """Returns a child logger of the application."""
     return logging.getLogger(name)

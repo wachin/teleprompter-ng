@@ -1,8 +1,8 @@
 """
-tests/test_paths.py — Tests para la resolución de rutas (Fase 0).
+tests/test_paths.py — Tests for path resolution (Phase 0).
 
-Verifica que la aplicación encuentre sus recursos independiente del
-directorio de trabajo.
+Verifies that the application finds its resources regardless of the
+working directory.
 """
 
 import os
@@ -45,7 +45,7 @@ class TestResourceDirs:
         assert os.path.isfile(path)
 
     def test_resolution_independent_of_cwd(self):
-        """resolve_script_path funciona desde otro directorio."""
+        """resolve_script_path works from another directory."""
         import subprocess
         result = subprocess.run(
             [sys.executable, "-c",
@@ -57,7 +57,7 @@ class TestResourceDirs:
 
 
 class TestRelativeTo:
-    """Tests de conversión de rutas relativas."""
+    """Tests of relative-path conversion."""
 
     def test_relative_inside_base(self):
         assert paths.relative_to("/a/b/c.txt", "/a/b") == "c.txt"

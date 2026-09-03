@@ -1,13 +1,12 @@
 """
-remote_server.py — Servidor Flask para control remoto del teleprompter.
+remote_server.py — Flask server for teleprompter remote control.
 
-Levanta un servidor local con una página web que permite controlar
-el teleprompter desde el teléfono (Play/Pausa, Velocidad, Reiniciar).
+Starts a local server with a web page that controls the teleprompter
+from a phone (Play/Pause, Speed, Restart).
 
-Fase 0: la SECRET_KEY se genera aleatoriamente en cada ejecución,
-el servidor queda desactivado por defecto (el usuario lo activa con Q
-o desde la interfaz) y expone shutdown() para liberar el puerto al
-cerrar la aplicación.
+Phase 0: the SECRET_KEY is randomly generated on each run, the
+server is disabled by default (the user activates it with Q or from
+the UI) and stop() is exposed to free the port when the app closes.
 """
 
 import os
@@ -28,7 +27,7 @@ log = get_logger("Remote")
 
 
 def get_local_ip():
-    """Obtiene la IP local de la máquina sin enviar tráfico real."""
+    """Returns the local IP without sending actual traffic."""
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         # UDP connect no envía paquetes; solo consulta la tabla de rutas
@@ -76,7 +75,7 @@ class RemoteServer:
 
         @self.app.route("/qr")
         def qr_code():
-            """Genera código QR como SVG."""
+            """Generates the QR code as SVG."""
             factory = qrcode.image.svg.SvgPathImage
             img = qrcode.make(self.url, image_factory=factory)
             buffer = BytesIO()
@@ -196,5 +195,5 @@ class RemoteServer:
         self._running = False
 
     def is_running(self):
-        """Indica si el servidor está activo."""
+        """Reports whether the server is running."""
         return self._running

@@ -1,12 +1,12 @@
 """
-ui.py — Clase principal del Teleprompter con PyQt6.
-Fase 1: Cuenta regresiva, progreso, selector de guion, línea guía.
+ui.py — Main Teleprompter class with PyQt6.
+Phase 1: countdown, progress, script selector, guide line.
 
-Fase 0 (auditoría):
-- Modo espejo con transformación visual real (QTransform), no RTL.
-- Sincronización de voz: los callbacks del hilo de audio llegan aquí
-  y se aplican en el hilo principal de Qt mediante señales.
-- El servidor remoto se detiene correctamente al cerrar la ventana.
+Phase 0 (audit):
+- Mirror mode with a real visual transformation (QTransform), not RTL.
+- Voice sync: audio-thread callbacks arrive here and are applied on
+  the main Qt thread through signals.
+- The remote server stops correctly when the window closes.
 """
 
 import contextlib
@@ -44,7 +44,7 @@ log = get_logger("UI")
 
 
 class _SpeechSignals(QObject):
-    """Señales para cruzar desde el hilo de audio al hilo de Qt."""
+    """Signals to cross from the audio thread to the Qt thread."""
     status_changed = pyqtSignal(str)
     wpm_updated = pyqtSignal(float, float)
     speed_suggestion = pyqtSignal(int)
@@ -52,13 +52,13 @@ class _SpeechSignals(QObject):
 
 class MirrorView(QWidget):
     """
-    Widget que pinta una copia reflejada horizontalmente de otro widget.
+    Widget that paints a horizontally mirrored copy of another widget.
 
-    Fase 0: QWidget no admite transformaciones visuales directas y
-    QGraphicsProxyWidget no puede incrustar un widget que ya pertenece
-    a un layout. La solución es renderizar el widget origen con grab()
-    y dibujarlo espejado con QPainter. Se repinta cuando el scroll del
-    origen cambia (el desplazamiento automático pasa por la barra).
+    Phase 0: QWidget does not support direct visual transformations and
+    QGraphicsProxyWidget cannot embed a widget that already belongs to
+    a layout. The solution is to render the source widget with grab()
+    and draw it mirrored with QPainter. It repaints whenever the
+    source scroll changes (automatic scrolling goes through the bar).
     """
 
     def __init__(self, source, parent=None):
@@ -292,7 +292,7 @@ class Teleprompter(QMainWindow):
         if self.is_mirror:
             self._apply_mirror()
 
-        # Servidor remoto: desactivado por defecto (Fase 0).
+        # Remote server: disabled by default (Phase 0).
         # Se activa con Q o desde show_qr_code().
         self.remote_server = None
 
@@ -391,12 +391,12 @@ class Teleprompter(QMainWindow):
             )
 
     def font_bigger(self):
-        """Aumentar tamaño de fuente."""
+        """Increase the font size."""
         self.font_size += 2
         self._update_font()
 
     def font_smaller(self):
-        """Disminuir tamaño de fuente."""
+        """Decrease the font size."""
         if self.font_size > 10:
             self.font_size -= 2
             self._update_font()
@@ -409,7 +409,7 @@ class Teleprompter(QMainWindow):
             self.showFullScreen()
 
     def open_script(self):
-        """Abrir diálogo para seleccionar un guion."""
+        """Open the script-selection dialog."""
         from paths import script_dir as default_scripts_dir
         start_dir = (
             os.path.dirname(os.path.abspath(self.script_path))
@@ -441,14 +441,14 @@ class Teleprompter(QMainWindow):
             self.status_label.setText(self.tr("❌ Error: {0}").format(e))
 
     def toggle_guide_line(self):
-        """Mostrar/ocultar línea guía."""
+        """Show/hide the guide line."""
         if self.guide_line.isVisible():
             self.guide_line.hide()
         else:
             self.guide_line.show()
 
     def toggle_speech_sync(self):
-        """Activar/desactivar sincronización de voz."""
+        """Toggle voice synchronization."""
         if self.speech_sync_active:
             # Desactivar
             if self.speech_sync:
@@ -488,7 +488,7 @@ class Teleprompter(QMainWindow):
         self.wpm_label.setText(f"WPM: {current_wpm:.0f}/{target_wpm}")
 
     def _on_sync_status_change(self, status):
-        """Callback cuando cambia el estado de sincronización (hilo Qt)."""
+        """Callback when the sync status changes (Qt thread)."""
         if status == "active":
             self.voice_sync_label.setText(self.tr("🎤 V: Listening"))
             self.voice_sync_label.setStyleSheet(
@@ -499,14 +499,14 @@ class Teleprompter(QMainWindow):
             self.voice_sync_label.setStyleSheet("color: #888; font-size: 14px; background: transparent;")
 
     def _apply_speed_suggestion(self, new_speed):
-        """Aplica una velocidad sugerida por la sincronización (hilo Qt)."""
+        """Applies a speed suggested by voice sync (Qt thread)."""
         if new_speed and new_speed != self.scroll_speed:
             self.scroll_speed = new_speed
             self._update_timer_interval()
             self.speed_label.setText(f"⚡ {new_speed}")
 
     def closeEvent(self, event):
-        """Cerrar la aplicación y guardar configuración."""
+        """Close the application, saving configuration."""
         if self.speech_sync and self.speech_sync_active:
             self.speech_sync.stop()
         if self.remote_server is not None:
@@ -520,14 +520,14 @@ class Teleprompter(QMainWindow):
     # ── Lógica de scroll ───────────────────────────────────────
 
     def _scroll_step(self):
-        """Un paso de scroll automático."""
+        """One automatic scroll step."""
         if self.is_running:
             scrollbar = self.text_widget.verticalScrollBar()
             step = max(1, self.scroll_speed // 2)
             scrollbar.setValue(scrollbar.value() + step)
 
     def _update_timer_interval(self):
-        """Actualiza el intervalo del timer según la velocidad."""
+        """Updates the timer interval for the current speed."""
         interval = max(5, int(50 / self.scroll_speed))
         self.scroll_timer.setInterval(interval)
 
@@ -568,11 +568,11 @@ class Teleprompter(QMainWindow):
 
     def _setup_remote_server(self):
         """
-        Crea e inicia el servidor remoto bajo demanda.
+        Creates and starts the remote server on demand.
 
-        Fase 0: el servidor no se inicia automáticamente con la app;
-        se activa cuando el usuario pulsa Q o pide el código QR, y
-        queda vinculado a la red local únicamente mientras se usa.
+        Phase 0: the server does not start automatically with the app;
+        it activates when the user presses Q or asks for the QR code,
+        and stays bound to the local network only while in use.
         """
         if self.remote_server is not None and self.remote_server.is_running():
             return self.remote_server
@@ -589,7 +589,7 @@ class Teleprompter(QMainWindow):
             return None
 
     def show_qr_code(self):
-        """Muestra el código QR para conectarse al control remoto."""
+        """Shows the QR code to connect the remote control."""
         # Arranca el servidor bajo demanda
         if (
             not self.remote_server or not self.remote_server.is_running()
@@ -672,19 +672,19 @@ class Teleprompter(QMainWindow):
     # ── Métodos internos ───────────────────────────────────────
 
     def _update_font(self):
-        """Aplica el tamaño de fuente actual al widget."""
+        """Applies the current font size to the widget."""
         font = QFont(self.font_family, self.font_size)
         font.setBold(True)
         self.text_widget.setFont(font)
 
     def _apply_mirror(self):
         """
-        Invierte el texto horizontalmente (modo espejo).
+        Flips the text horizontally (mirror mode).
 
-        Fase 0: transformación visual real. MirrorView pinta una copia
-        reflejada del QTextEdit; el original se oculta para no pintar
-        dos veces. Antes solo se cambiaba la dirección del layout, lo
-        cual reordena elementos pero no refleja nada.
+        Phase 0: real visual transformation. MirrorView paints a mirrored
+        copy of the QTextEdit; the original is hidden so nothing is
+        painted twice. Previously only the layout direction changed,
+        which reorders elements but mirrors nothing.
         """
         if self.is_mirror:
             if self._mirror_host is None:
@@ -698,12 +698,12 @@ class Teleprompter(QMainWindow):
                 self._mirror_host.hide()
 
     def toggle_mirror(self):
-        """Alterna el modo espejo (transformación visual real)."""
+        """Toggles mirror mode (real visual transformation)."""
         self.is_mirror = not self.is_mirror
         self._apply_mirror()
 
     def _save_current_config(self):
-        """Guarda la configuración actual para la próxima vez."""
+        """Saves the current configuration for next time."""
         self.config["scroll_speed"] = self.scroll_speed
         self.config["font_size"] = self.font_size
         self.config["mirror_mode"] = self.is_mirror

@@ -1,9 +1,9 @@
 """
 tests/test_speech_sync.py — Tests unitarios para speech_sync.py
 
-Fase 0: _adjust_speed ya no modifica el teleprompter directamente
-(aquello actualizaba widgets Qt desde el hilo de audio). Ahora
-devuelve la velocidad sugerida y la UI la aplica en su hilo.
+Phase 0: _adjust_speed no longer modifies the teleprompter directly
+(it used to update Qt widgets from the audio thread). It now returns
+the suggested speed and the UI applies it on its own thread.
 """
 
 from unittest.mock import MagicMock, patch
@@ -49,7 +49,7 @@ class TestSpeechSync:
             assert status["current_wpm"] == 0
 
     def test_adjust_speed_returns_suggestion_when_fast(self):
-        """Devuelve velocidad mayor cuando el orador habla rápido."""
+        """Returns a higher speed when the speaker talks fast."""
         from speech_sync import SpeechSync
 
         tp = _make_mock_teleprompter()
@@ -59,7 +59,7 @@ class TestSpeechSync:
             sync.target_wpm = 150
             suggestion = sync._adjust_speed(200)  # 200 > 150 * 1.1
             assert suggestion == 6
-            # Fase 0: no debe tocar el teleprompter desde este hilo
+            # Phase 0: must not touch the teleprompter from this thread
             assert tp.scroll_speed == 5
 
     def test_adjust_speed_returns_suggestion_when_slow(self):
@@ -112,7 +112,7 @@ class TestSpeechSync:
             assert suggestion <= 50
 
     def test_adjust_speed_ignores_invalid_input(self):
-        """WPM inválido o target inválido devuelven None sin error."""
+        """Invalid WPM or target returns None without raising."""
         from speech_sync import SpeechSync
 
         tp = _make_mock_teleprompter()
@@ -126,7 +126,7 @@ class TestSpeechSync:
 
 
 class TestSpeechSyncStreamLifecycle:
-    """Tests del ciclo de vida del stream de audio (bug Fase 0)."""
+    """Tests of the audio stream lifecycle (Phase 0 bug)."""
 
     def test_start_keeps_stream_open(self):
         """start() debe dejar el stream vivo en self._stream."""
@@ -170,7 +170,7 @@ class TestSpeechSyncStreamLifecycle:
             sync.stop()  # No debe lanzar excepción
 
     def test_normalize_words_keeps_accents(self):
-        """La normalización conserva acentos y ñ."""
+        """Normalization keeps accents and ñ."""
         from speech_sync import normalize_words
 
         words = normalize_words("¡Ñandú comía allí!")

@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-setup.py — Configuración de instalación para Teleprompter Pro.
+setup.py — Installation configuration for Teleprompter Pro.
 """
 
 from setuptools import setup
 
 setup(
     name="teleprompter-pro",
-    version="1.0.0",
+    version="2.0.0.dev1",
     author="Juan Salazar Flores",
     author_email="wachin@debian.org",
     description="Desktop teleprompter with remote control and voice sync",
