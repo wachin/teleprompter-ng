@@ -1,3 +1,19 @@
+teleprompter-pro (2.0.0~dev1-1) unstable; urgency=medium
+
+  * Development snapshot of the 2.0 series (Phases 0-1 complete).
+  * Phase 0: audit and code safety — audio stream lifecycle fixed,
+    thread-safe UI updates via Qt signals, real mirror mode,
+    random SECRET_KEY, working-directory-independent paths,
+    structured logging, config type validation.
+  * Phase 1: project-based workflow — .bigprompt project format,
+    MainWindow with navigation, script editor with WPM duration,
+    .txt/.md/.html/.docx import, six script templates.
+  * Legacy full-screen reading mode kept via --read.
+  * English-first UI strings wrapped for Qt Linguist (66 messages).
+  * 130 unit tests (pytest + pytest-qt).
+
+ -- Juan Salazar Flores <wachin@debian.org>  Thu, 03 Sep 2026 12:00:00 +0000
+
 teleprompter-pro (1.0.0-1) unstable; urgency=medium
 
   * Initial release.

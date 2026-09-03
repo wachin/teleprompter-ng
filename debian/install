@@ -13,3 +13,5 @@ scripts/ usr/share/teleprompter-pro
 templates/ usr/share/teleprompter-pro
 resources/ usr/share/teleprompter-pro
 translations/ usr/share/teleprompter-pro
+debian/teleprompter-pro.desktop usr/share/applications
+resources/icons/teleprompter-pro.svg usr/share/icons/hicolor/scalable/apps

@@ -11,8 +11,7 @@ Build-Depends: debhelper-compat (= 13),
                python3-flask-socketio,
                python3-qrcode,
                python3-vosk,
-               python3-sounddevice,
-               python3-pyinstaller | dh-virtualenv
+               python3-sounddevice
 Standards-Version: 4.6.2
 Homepage: https://github.com/wachin/teleprompter
 Vcs-Git: https://github.com/wachin/teleprompter.git
@@ -31,23 +30,23 @@ Depends: ${python3:Depends},
          python3-vosk,
          python3-sounddevice
 Recommends: teleprompter-pro-model-es
-Suggests: python3-pyinstaller
-Description: Desktop teleprompter with remote control and voice sync
+Description: Desktop teleprompter with projects, camera pipeline and remote control
  Teleprompter Pro is a desktop teleprompter designed for real-world
  presentation and recording workflows. The computer reads the script
- while the phone records the video.
+ while the user records video.
  .
  Features include:
+  * Project-based workflow (.bigprompt folders) with script editor
+  * Six starter script templates (tutorial, presentation, class…)
+  * Import of .txt, .md, .html and .docx scripts
   * Countdown 3-2-1 before scroll starts
   * Progress bar with estimated time remaining
   * Remote control from phone via QR code and WebSocket
   * Voice synchronization using Vosk (adjusts speed to speaker)
   * Multiple speed controls (keyboard, mouse wheel, touch)
-  * Script selector with file dialog
-  * Guide line for eye focus
-  * Mirror mode for physical teleprompter setups
-  * Persistent configuration per platform
-  * PyQt6 modern interface
+  * Guide line for eye focus and real mirror mode
+  * Persistent configuration per platform (XDG on Linux)
+  * PyQt6 modern interface, translatable with Qt Linguist
 
 Package: teleprompter-pro-model-es
 Architecture: all

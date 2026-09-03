@@ -1,0 +1,15 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Teleprompter Pro
+GenericName=Teleprompter
+Comment=Read scripts while recording: projects, camera, and remote control
+Comment[es]=Lee guiones mientras grabas: proyectos, cámara y control remoto
+Exec=teleprompter-pro
+TryExec=teleprompter-pro
+Icon=teleprompter-pro
+Terminal=false
+Categories=AudioVideo;Video;
+Keywords=teleprompter;video;recording;script;camera;
+StartupNotify=true
+StartupWMClass=Teleprompter Pro
