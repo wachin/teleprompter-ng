@@ -31,14 +31,13 @@
             color: #FFD700;
         }
 
-        .status-card {
+        .card {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 15px;
             padding: 20px;
             width: 100%;
             max-width: 350px;
             margin-bottom: 20px;
-            backdrop-filter: blur(10px);
         }
 
         .status-row {
@@ -68,18 +67,20 @@
 
         .progress-bar {
             width: 100%;
-            height: 10px;
+            height: 16px;
             background: #333;
-            border-radius: 5px;
+            border-radius: 8px;
             overflow: hidden;
             margin-top: 10px;
+            touch-action: none;
+            cursor: pointer;
         }
 
         .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, #FFD700, #FFA500);
-            border-radius: 5px;
-            transition: width 0.3s ease;
+            border-radius: 8px;
+            transition: width 0.2s ease;
         }
 
         .controls {
@@ -93,7 +94,7 @@
         .btn {
             border: none;
             border-radius: 15px;
-            padding: 25px 20px;
+            padding: 24px 20px;
             font-size: 1.1rem;
             font-weight: bold;
             cursor: pointer;
@@ -106,6 +107,11 @@
 
         .btn:active {
             transform: scale(0.95);
+        }
+
+        .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
         }
 
         .btn-icon {
@@ -122,39 +128,80 @@
             background: linear-gradient(135deg, #FFD700, #FFA500);
         }
 
-        .btn-speed-up {
+        .btn-wpm-up {
             background: linear-gradient(135deg, #00BFFF, #0088CC);
             color: white;
         }
 
-        .btn-speed-down {
+        .btn-wpm-down {
             background: linear-gradient(135deg, #FF6B6B, #CC4444);
             color: white;
         }
 
-        .btn-reset {
+        .btn-restart {
             background: linear-gradient(135deg, #9B59B6, #8E44AD);
             color: white;
             grid-column: span 2;
         }
 
-        .speed-display {
+        .wpm-display {
             text-align: center;
             margin: 20px 0;
             padding: 15px;
             background: rgba(255, 215, 0, 0.2);
             border-radius: 10px;
+            width: 100%;
+            max-width: 350px;
         }
 
-        .speed-value {
+        .wpm-value {
             font-size: 2.5rem;
             font-weight: bold;
             color: #FFD700;
         }
 
-        .speed-label {
+        .wpm-label {
             font-size: 0.9rem;
             color: #aaa;
+        }
+
+        .pairing-box {
+            display: none;
+            width: 100%;
+            max-width: 350px;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .pairing-box label {
+            display: block;
+            color: #aaa;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .pairing-input {
+            width: 100%;
+            font-size: 2rem;
+            text-align: center;
+            letter-spacing: 0.5em;
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px solid #FFD700;
+            background: #111;
+            color: #FFD700;
+            margin-bottom: 12px;
+        }
+
+        .pairing-error {
+            color: #FF6666;
+            font-size: 0.9rem;
+            min-height: 1.3em;
+            margin-top: 8px;
+            text-align: center;
         }
 
         .connection-status {
@@ -183,6 +230,11 @@
             font-size: 0.8rem;
             text-align: center;
         }
+
+        .locked {
+            filter: blur(4px);
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -190,144 +242,193 @@
 
     <h1>🎬 Teleprompter Remote</h1>
 
-    <div class="status-card">
-        <div class="status-row">
-            <span class="status-label">State:</span>
-            <span class="status-value paused" id="statusText">Paused</span>
+    <div class="pairing-box" id="pairingBox">
+        <label>Enter the 6-digit code shown in the app</label>
+        <input class="pairing-input" id="pairInput" inputmode="numeric"
+               maxlength="6" autocomplete="off" placeholder="· · · · · ·">
+        <button class="btn btn-restart" onclick="sendPair()">Pair</button>
+        <div class="pairing-error" id="pairError"></div>
+    </div>
+
+    <div id="mainUI" class="locked">
+        <div class="card">
+            <div class="status-row">
+                <span class="status-label">State:</span>
+                <span class="status-value paused" id="statusText">Idle</span>
+            </div>
+            <div class="status-row">
+                <span class="status-label">Progress:</span>
+                <span class="status-value" id="progressText">0%</span>
+            </div>
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
         </div>
-        <div class="status-row">
-            <span class="status-label">Progress:</span>
-            <span class="status-value" id="progressText">0%</span>
+
+        <div class="wpm-display">
+            <div class="wpm-label">Words per minute</div>
+            <div class="wpm-value" id="wpmValue">150</div>
         </div>
-        <div class="progress-bar">
-            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+
+        <div class="controls">
+            <button class="btn btn-play" id="btnPlay" onclick="togglePlay()" disabled>
+                <span class="btn-icon">▶</span>
+                <span>Start</span>
+            </button>
+
+            <button class="btn btn-wpm-up" id="btnWpmUp" onclick="wpmUp()" disabled>
+                <span class="btn-icon">🔼</span>
+                <span>+10 WPM</span>
+            </button>
+
+            <button class="btn btn-wpm-down" id="btnWpmDown" onclick="wpmDown()" disabled>
+                <span class="btn-icon">🔽</span>
+                <span>-10 WPM</span>
+            </button>
+
+            <button class="btn btn-restart" id="btnRestart" onclick="restartScroll()" disabled>
+                <span class="btn-icon">🔄</span>
+                <span>Restart</span>
+            </button>
         </div>
     </div>
 
-    <div class="speed-display">
-        <div class="speed-label">Speed</div>
-        <div class="speed-value" id="speedValue">3</div>
-    </div>
-
-    <div class="controls">
-        <button class="btn btn-play" id="btnPlay" onclick="togglePlay()">
-            <span class="btn-icon">▶</span>
-            <span>Start</span>
-        </button>
-
-        <button class="btn btn-speed-up" onclick="speedUp()">
-            <span class="btn-icon">🔼</span>
-            <span>+Speed</span>
-        </button>
-
-        <button class="btn btn-speed-down" onclick="speedDown()">
-            <span class="btn-icon">🔽</span>
-            <span>-Speed</span>
-        </button>
-
-        <button class="btn btn-reset" onclick="resetScroll()">
-            <span class="btn-icon">🔄</span>
-            <span>Restart</span>
-        </button>
-    </div>
-
-    <div class="hint">
-        Swipe up and down to change speed
-    </div>
+    <div class="hint" id="hint">Controls unlock after pairing</div>
 
     <script>
         const socket = io();
-        let isRunning = false;
+        let paired = false;
+        let lastState = {};
 
-        // Connection
+        // ── Connection indicator ────────────────────────────
         socket.on('connect', () => {
-            document.getElementById('connectionStatus').className = 'connection-status connected';
-            document.getElementById('connectionStatus').textContent = '● Connected';
+            setConnection(true);
             socket.emit('get_status');
         });
 
         socket.on('disconnect', () => {
-            document.getElementById('connectionStatus').className = 'connection-status disconnected';
-            document.getElementById('connectionStatus').textContent = '● Disconnected';
+            setConnection(false);
         });
 
-        // Update status
+        function setConnection(connected) {
+            const el = document.getElementById('connectionStatus');
+            el.className = 'connection-status ' + (connected ? 'connected' : 'disconnected');
+            el.textContent = connected ? '● Connected' : '● Disconnected';
+        }
+
+        // ── Status updates from the app ────────────────────
         socket.on('status', (data) => {
-            isRunning = data.is_running;
+            lastState = data;
             updateUI(data);
         });
+
+        socket.on('paired', (data) => {
+            paired = data.ok;
+            if (!paired) {
+                showPairError('Wrong code — check the app and try again');
+            }
+            applyPairing();
+        });
+
+        socket.on('error', (msg) => {
+            showPairError(msg);
+        });
+
+        function showPairError(msg) {
+            const el = document.getElementById('pairError');
+            el.textContent = msg;
+            setTimeout(() => { el.textContent = ''; }, 4000);
+        }
+
+        function applyPairing() {
+            const needPair = lastState.pairing_required && !paired;
+            document.getElementById('pairingBox').style.display = needPair ? 'block' : 'none';
+            document.getElementById('mainUI').classList.toggle('locked', needPair);
+            document.getElementById('hint').textContent = paired
+                ? 'Drag the progress bar to jump'
+                : 'Controls unlock after pairing';
+            for (const id of ['btnPlay', 'btnWpmUp', 'btnWpmDown', 'btnRestart']) {
+                document.getElementById(id).disabled = needPair;
+            }
+        }
 
         function updateUI(data) {
             const statusText = document.getElementById('statusText');
             const btnPlay = document.getElementById('btnPlay');
-            const speedValue = document.getElementById('speedValue');
-            const progressText = document.getElementById('progressText');
-            const progressFill = document.getElementById('progressFill');
+            document.getElementById('wpmValue').textContent = data.wpm;
 
             if (data.countdown_active) {
-                statusText.textContent = '🔴 Getting ready...';
+                statusText.textContent = '🔴 Getting ready…';
                 statusText.className = 'status-value paused';
                 btnPlay.innerHTML = '<span class="btn-icon">⏹</span><span>Cancel</span>';
-                btnPlay.className = 'btn btn-play running';
+                btnPlay.classList.remove('running');
             } else if (data.is_running) {
                 statusText.textContent = '▶ Playing';
                 statusText.className = 'status-value running';
                 btnPlay.innerHTML = '<span class="btn-icon">⏸</span><span>Pause</span>';
-                btnPlay.className = 'btn btn-play running';
-            } else {
+                btnPlay.classList.add('running');
+            } else if (data.state === 'paused') {
                 statusText.textContent = '⏸ Paused';
                 statusText.className = 'status-value paused';
+                btnPlay.innerHTML = '<span class="btn-icon">▶</span><span>Resume</span>';
+                btnPlay.classList.remove('running');
+            } else {
+                statusText.textContent = '⏸ Idle';
+                statusText.className = 'status-value paused';
                 btnPlay.innerHTML = '<span class="btn-icon">▶</span><span>Start</span>';
-                btnPlay.className = 'btn btn-play';
+                btnPlay.classList.remove('running');
             }
 
-            speedValue.textContent = data.speed;
-            progressText.textContent = data.progress + '%';
-            progressFill.style.width = data.progress + '%';
+            const pct = Math.round(data.position * 100);
+            document.getElementById('progressText').textContent = pct + '%';
+            document.getElementById('progressFill').style.width = pct + '%';
+
+            applyPairing();
         }
 
-        // Controls
-        function togglePlay() {
-            socket.emit('toggle');
+        // ── Commands ────────────────────────────────────────
+        function sendPair() {
+            const code = document.getElementById('pairInput').value.trim();
+            if (code) socket.emit('pair', code);
         }
 
-        function speedUp() {
-            socket.emit('speed_up');
+        function togglePlay() { socket.emit('toggle'); }
+        function wpmUp() { socket.emit('wpm_up'); }
+        function wpmDown() { socket.emit('wpm_down'); }
+        function restartScroll() { socket.emit('restart'); }
+
+        // ── Progress bar scrubbing (jump) ───────────────────
+        const bar = document.getElementById('progressBar');
+        let scrubbing = false;
+
+        function scrubTo(clientX) {
+            const rect = bar.getBoundingClientRect();
+            const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+            document.getElementById('progressFill').style.width = (ratio * 100) + '%';
+            return ratio;
         }
 
-        function speedDown() {
-            socket.emit('speed_down');
-        }
-
-        function resetScroll() {
-            socket.emit('reset');
-        }
-
-        // Touch gesture control
-        let touchStartY = 0;
-        document.addEventListener('touchstart', (e) => {
-            touchStartY = e.touches[0].clientY;
+        bar.addEventListener('pointerdown', (e) => {
+            if (!paired) return;
+            scrubbing = true;
+            scrubTo(e.clientX);
         });
 
-        document.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-            const touchY = e.touches[0].clientY;
-            const diff = touchStartY - touchY;
+        bar.addEventListener('pointermove', (e) => {
+            if (scrubbing) scrubTo(e.clientX);
+        });
 
-            if (Math.abs(diff) > 50) {
-                if (diff > 0) {
-                    speedUp();
-                } else {
-                    speedDown();
-                }
-                touchStartY = touchY;
+        window.addEventListener('pointerup', (e) => {
+            if (scrubbing) {
+                scrubbing = false;
+                socket.emit('jump', scrubTo(e.clientX));
             }
-        }, { passive: false });
+        });
 
-        // Periodic update
-        setInterval(() => {
-            socket.emit('get_status');
-        }, 1000);
+        // Pair on Enter in the input
+        document.getElementById('pairInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') sendPair();
+        });
     </script>
 </body>
 </html>

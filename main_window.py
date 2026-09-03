@@ -432,6 +432,22 @@ class CameraView(QWidget):
         self.reading_mode_btn.setCheckable(True)
         self.reading_mode_btn.toggled.connect(self._toggle_reading_mode)
         reading.addWidget(self.reading_mode_btn)
+
+        reading.addWidget(QLabel(self.tr("Countdown:")))
+        self.countdown_combo = QComboBox()
+        for seconds in (0, 3, 5, 10):
+            self.countdown_combo.addItem(
+                self.tr("{0} s").format(seconds) if seconds else self.tr("None"),
+                seconds,
+            )
+        self.countdown_combo.setCurrentIndex(1)  # 3 s default
+        self.countdown_combo.currentIndexChanged.connect(self._set_countdown)
+        reading.addWidget(self.countdown_combo)
+
+        self.remote_btn = QPushButton(self.tr("📱 Remote"))
+        self.remote_btn.setCheckable(True)
+        self.remote_btn.toggled.connect(self._toggle_remote)
+        reading.addWidget(self.remote_btn)
         layout.addLayout(reading)
 
         # ── Status bar ────────────────────────────────────────
@@ -439,8 +455,9 @@ class CameraView(QWidget):
         self.status_label.setStyleSheet("color: #888;")
         layout.addWidget(self.status_label)
 
-        # Camera service lives in MainWindow scope: created lazily
+        # Camera service and remote server live lazily (Phase 2/4)
         self.service = None
+        self.remote_server = None
         self.refresh_devices()
         self._sync_script_from_project()
 
@@ -495,6 +512,150 @@ class CameraView(QWidget):
         self._set_status(
             self.tr("Reading mode") if checked else self.tr("Camera mode")
         )
+
+    # ── Countdown / remote / keyboard (Phase 4) ────────────────
+
+    def _set_countdown(self, index):
+        seconds = self.countdown_combo.itemData(index)
+        self.engine.set_countdown(int(seconds) if seconds is not None else 0)
+
+    def _toggle_remote(self, enabled):
+        """Starts/stops the LAN remote-control server on demand."""
+        if enabled:
+            if self.remote_server is None:
+                from remote_server import RemoteServer
+                self.remote_server = RemoteServer(self, port=5000)
+                self.remote_server.start()
+            self._show_pairing_info()
+        else:
+            if self.remote_server is not None:
+                self.remote_server.stop()
+            self._set_status(self.tr("Remote control off"))
+
+    def _show_pairing_info(self):
+        """Shows URL + pairing code and offers a QR dialog."""
+        if self.remote_server is None:
+            return
+        url = self.remote_server.url
+        token = self.remote_server.pairing_token
+        text = self.tr(
+            "Remote control active at:\n{0}\n\n"
+            "Pairing code: {1}\n\n"
+            "Phones must enter this code once to send commands."
+        ).format(url, token)
+        box = QMessageBox(self)
+        box.setWindowTitle(self.tr("Remote control"))
+        box.setIcon(QMessageBox.Icon.Information)
+        box.setText(text)
+        qr_btn = box.addButton(self.tr("Show QR"), QMessageBox.ButtonRole.ActionRole)
+        box.addButton(QMessageBox.StandardButton.Close)
+        box.exec()
+        if box.clickedButton() is qr_btn:
+            self._show_remote_qr()
+
+    def _show_remote_qr(self):
+        """QR dialog with the pairing URL (Phase 4)."""
+        if self.remote_server is None:
+            return
+        from io import BytesIO
+
+        import qrcode
+        from PyQt6.QtCore import Qt as _Qt
+        from PyQt6.QtGui import QPixmap
+        from PyQt6.QtWidgets import QDialog
+        from PyQt6.QtWidgets import QVBoxLayout as DialogLayout
+
+        dialog = QDialog(self)
+        dialog.setWindowTitle(self.tr("Pair your phone"))
+        dialog.setMinimumSize(350, 470)
+        dialog.setStyleSheet("background-color: #1a1a2e;")
+        layout = DialogLayout(dialog)
+
+        title = QLabel(self.tr("📱 Scan and enter the code"))
+        title.setStyleSheet("color: #FFD700; font-size: 17px; font-weight: bold;")
+        title.setAlignment(_Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(title)
+
+        code = QLabel(self.remote_server.pairing_token or "")
+        code.setStyleSheet(
+            "color: #44FF44; font-size: 34px; font-weight: bold;"
+        )
+        code.setAlignment(_Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(code)
+
+        qr_label = QLabel()
+        qr_label.setAlignment(_Qt.AlignmentFlag.AlignCenter)
+        qr = qrcode.QRCode(version=1, box_size=10, border=4)
+        qr.add_data(self.remote_server.qr_data())
+        qr.make(fit=True)
+        img = qr.make_image(fill_color="black", back_color="white")
+        buffer = BytesIO()
+        img.save(buffer, format="PNG")
+        buffer.seek(0)
+        pixmap = QPixmap()
+        pixmap.loadFromData(buffer.read())
+        qr_label.setPixmap(pixmap.scaled(240, 240, _Qt.AspectRatioMode.KeepAspectRatio))
+        layout.addWidget(qr_label)
+
+        url_label = QLabel(self.remote_server.qr_data())
+        url_label.setStyleSheet("color: #888; font-size: 11px;")
+        url_label.setWordWrap(True)
+        url_label.setAlignment(_Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(url_label)
+
+        instructions = QLabel(self.tr(
+            "1. Connect to the same Wi-Fi\n"
+            "2. Scan with the phone camera\n"
+            "3. Enter the code above"
+        ))
+        instructions.setStyleSheet("color: #aaa; font-size: 13px;")
+        instructions.setAlignment(_Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(instructions)
+
+        close_btn = QPushButton(self.tr("Close"))
+        close_btn.clicked.connect(dialog.close)
+        layout.addWidget(close_btn)
+        dialog.exec()
+
+    # ── Keyboard shortcuts (Phase 4: documented in the UI) ────
+
+    def keyPressEvent(self, event):
+        """
+        Camera-mode shortcuts, matching the legacy reading mode:
+
+        Space play/pause - Up/Down WPM ±10 - Home/R restart -
+        +/- font size - G guide line - M mirror preview - Q remote QR
+        """
+        key = event.key()
+        modifiers = event.modifiers()
+        if key == Qt.Key.Key_Space:
+            self.engine.toggle()
+        elif key == Qt.Key.Key_Up:
+            step = 50 if modifiers & Qt.KeyboardModifier.ShiftModifier else 10
+            self.wpm_spin.setValue(self.wpm_spin.value() + step)
+        elif key == Qt.Key.Key_Down:
+            step = 50 if modifiers & Qt.KeyboardModifier.ShiftModifier else 10
+            self.wpm_spin.setValue(max(30, self.wpm_spin.value() - step))
+        elif key in (Qt.Key.Key_Home, Qt.Key.Key_R):
+            self.engine.restart()
+        elif key == Qt.Key.Key_G:
+            settings = self.overlay.settings()
+            settings.guide_line = not settings.guide_line
+            self.overlay.set_settings(settings)
+        elif key == Qt.Key.Key_M:
+            self.mirror_btn.setChecked(not self.mirror_btn.isChecked())
+        elif key == Qt.Key.Key_Q:
+            self.remote_btn.setChecked(True)
+            self._show_remote_qr()
+        else:
+            super().keyPressEvent(event)
+
+    def shutdown(self):
+        """Releases camera and remote server when closing."""
+        if self.service is not None:
+            self.service.stop()
+        if self.remote_server is not None:
+            self.remote_server.stop()
 
     # ── Devices ──────────────────────────────────────────────
 
@@ -599,11 +760,6 @@ class CameraView(QWidget):
 
     def _set_status(self, text):
         self.status_label.setText(text)
-
-    def shutdown(self):
-        """Releases the camera when the view or window is closed."""
-        if self.service is not None:
-            self.service.stop()
 
 
 class MainWindow(QMainWindow):

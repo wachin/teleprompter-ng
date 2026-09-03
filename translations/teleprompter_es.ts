@@ -22,8 +22,8 @@
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="596" />
-      <location filename="../main_window.py" line="588" />
+      <location filename="../main_window.py" line="757" />
+      <location filename="../main_window.py" line="749" />
       <location filename="../main_window.py" line="353" />
       <source>Start</source>
       <translation type="unfinished" />
@@ -64,64 +64,131 @@
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="496" />
+      <location filename="../main_window.py" line="513" />
       <location filename="../main_window.py" line="431" />
       <source>Reading mode</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="481" />
+      <location filename="../main_window.py" line="436" />
+      <source>Countdown:</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../main_window.py" line="440" />
+      <source>{0} s</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../main_window.py" line="440" />
+      <source>None</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../main_window.py" line="447" />
+      <source>📱 Remote</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../main_window.py" line="498" />
       <source>Starting in {0}…</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="496" />
+      <location filename="../main_window.py" line="513" />
       <source>Camera mode</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="507" />
-      <source>Could not list cameras: {0}</source>
+      <location filename="../main_window.py" line="533" />
+      <source>Remote control off</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="510" />
-      <source>No cameras found. Connect one and press Refresh.</source>
+      <location filename="../main_window.py" line="541" />
+      <source>Remote control active at:
+{0}
+
+Pairing code: {1}
+
+Phones must enter this code once to send commands.</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="536" />
-      <location filename="../main_window.py" line="531" />
-      <source>Default</source>
+      <location filename="../main_window.py" line="547" />
+      <source>Remote control</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../main_window.py" line="550" />
+      <source>Show QR</source>
       <translation type="unfinished" />
     </message>
     <message>
       <location filename="../main_window.py" line="569" />
+      <source>Pair your phone</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../main_window.py" line="574" />
+      <source>📱 Scan and enter the code</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../main_window.py" line="606" />
+      <source>1. Connect to the same Wi-Fi
+2. Scan with the phone camera
+3. Enter the code above</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../main_window.py" line="615" />
+      <source>Close</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../main_window.py" line="668" />
+      <source>Could not list cameras: {0}</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../main_window.py" line="671" />
+      <source>No cameras found. Connect one and press Refresh.</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../main_window.py" line="697" />
+      <location filename="../main_window.py" line="692" />
+      <source>Default</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../main_window.py" line="730" />
       <source>Camera active</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="576" />
+      <location filename="../main_window.py" line="737" />
       <source>Select a camera first.</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="580" />
+      <location filename="../main_window.py" line="741" />
       <source>Starting camera…</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="582" />
+      <location filename="../main_window.py" line="743" />
       <source>Stop</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="590" />
+      <location filename="../main_window.py" line="751" />
       <source>Camera stopped</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="598" />
+      <location filename="../main_window.py" line="759" />
       <source>❌ {0}</source>
       <translation type="unfinished" />
     </message>
@@ -225,8 +292,8 @@ All scripts, recordings, and exports inside it will be lost.</source>
   <context>
     <name>MainWindow</name>
     <message>
-      <location filename="../main_window.py" line="773" />
-      <location filename="../main_window.py" line="624" />
+      <location filename="../main_window.py" line="929" />
+      <location filename="../main_window.py" line="780" />
       <location filename="../main.py" line="89" />
       <source>Teleprompter Pro</source>
       <translation type="unfinished" />
@@ -245,55 +312,55 @@ Usage: python main.py [path/to/script.txt]</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="636" />
+      <location filename="../main_window.py" line="792" />
       <source>Home</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="637" />
+      <location filename="../main_window.py" line="793" />
       <source>Script</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="638" />
+      <location filename="../main_window.py" line="794" />
       <source>Camera</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="658" />
-      <location filename="../main_window.py" line="639" />
+      <location filename="../main_window.py" line="814" />
+      <location filename="../main_window.py" line="795" />
       <source>Review</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="661" />
-      <location filename="../main_window.py" line="640" />
+      <location filename="../main_window.py" line="817" />
+      <location filename="../main_window.py" line="796" />
       <source>Editor</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="661" />
-      <location filename="../main_window.py" line="658" />
+      <location filename="../main_window.py" line="817" />
+      <location filename="../main_window.py" line="814" />
       <source>Phase 6</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="741" />
+      <location filename="../main_window.py" line="897" />
       <source>Choose a template</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="743" />
+      <location filename="../main_window.py" line="899" />
       <source>How do you want to start your script?</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="746" />
+      <location filename="../main_window.py" line="902" />
       <source>Blank script</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="770" />
+      <location filename="../main_window.py" line="926" />
       <source>Error</source>
       <translation type="unfinished" />
     </message>
