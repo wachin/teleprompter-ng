@@ -12,75 +12,116 @@
   <context>
     <name>CameraView</name>
     <message>
-      <location filename="../main_window.py" line="340" />
+      <location filename="../main_window.py" line="343" />
       <source>Camera:</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="345" />
+      <location filename="../main_window.py" line="348" />
       <source>Mode:</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="475" />
-      <location filename="../main_window.py" line="467" />
-      <location filename="../main_window.py" line="350" />
+      <location filename="../main_window.py" line="596" />
+      <location filename="../main_window.py" line="588" />
+      <location filename="../main_window.py" line="353" />
       <source>Start</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="354" />
+      <location filename="../main_window.py" line="357" />
       <source>Mirror</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="359" />
+      <location filename="../main_window.py" line="362" />
       <source>Refresh</source>
       <translation type="unfinished" />
     </message>
     <message>
       <location filename="../main_window.py" line="386" />
+      <source>▶ Play</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../main_window.py" line="390" />
+      <source>⟲ Restart</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../main_window.py" line="394" />
+      <source>WPM:</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../main_window.py" line="401" />
+      <source>⏮ Paragraph</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../main_window.py" line="409" />
+      <source>Paragraph ⏭</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../main_window.py" line="496" />
+      <location filename="../main_window.py" line="431" />
+      <source>Reading mode</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../main_window.py" line="481" />
+      <source>Starting in {0}…</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../main_window.py" line="496" />
+      <source>Camera mode</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../main_window.py" line="507" />
       <source>Could not list cameras: {0}</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="389" />
+      <location filename="../main_window.py" line="510" />
       <source>No cameras found. Connect one and press Refresh.</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="415" />
-      <location filename="../main_window.py" line="410" />
+      <location filename="../main_window.py" line="536" />
+      <location filename="../main_window.py" line="531" />
       <source>Default</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="448" />
+      <location filename="../main_window.py" line="569" />
       <source>Camera active</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="455" />
+      <location filename="../main_window.py" line="576" />
       <source>Select a camera first.</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="459" />
+      <location filename="../main_window.py" line="580" />
       <source>Starting camera…</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="461" />
+      <location filename="../main_window.py" line="582" />
       <source>Stop</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="469" />
+      <location filename="../main_window.py" line="590" />
       <source>Camera stopped</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="477" />
+      <location filename="../main_window.py" line="598" />
       <source>❌ {0}</source>
       <translation type="unfinished" />
     </message>
@@ -88,94 +129,94 @@
   <context>
     <name>HomeView</name>
     <message>
-      <location filename="../main_window.py" line="63" />
+      <location filename="../main_window.py" line="66" />
       <source>New project:</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="65" />
+      <location filename="../main_window.py" line="68" />
       <source>Project name</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="67" />
+      <location filename="../main_window.py" line="70" />
       <source>Create</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="73" />
+      <location filename="../main_window.py" line="76" />
       <source>Start from template:</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="77" />
+      <location filename="../main_window.py" line="80" />
       <source>Recent projects:</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="86" />
+      <location filename="../main_window.py" line="89" />
       <source>Open</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="87" />
+      <location filename="../main_window.py" line="90" />
       <source>Duplicate</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="88" />
+      <location filename="../main_window.py" line="91" />
       <source>Rename</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="89" />
+      <location filename="../main_window.py" line="92" />
       <source>Delete</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="96" />
+      <location filename="../main_window.py" line="99" />
       <source>Open other project…</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="119" />
+      <location filename="../main_window.py" line="122" />
       <source>My Project</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="135" />
+      <location filename="../main_window.py" line="138" />
       <source>Open project folder</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="174" />
-      <location filename="../main_window.py" line="158" />
-      <location filename="../main_window.py" line="143" />
+      <location filename="../main_window.py" line="177" />
+      <location filename="../main_window.py" line="161" />
+      <location filename="../main_window.py" line="146" />
       <source>Select a project first.</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="148" />
+      <location filename="../main_window.py" line="151" />
       <source>(copy)</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="160" />
+      <location filename="../main_window.py" line="163" />
       <source>Rename project</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="160" />
+      <location filename="../main_window.py" line="163" />
       <source>New name:</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="178" />
+      <location filename="../main_window.py" line="181" />
       <source>Delete project</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="179" />
+      <location filename="../main_window.py" line="182" />
       <source>Delete '{0}' permanently?
 All scripts, recordings, and exports inside it will be lost.</source>
       <translation type="unfinished" />
@@ -184,8 +225,8 @@ All scripts, recordings, and exports inside it will be lost.</source>
   <context>
     <name>MainWindow</name>
     <message>
-      <location filename="../main_window.py" line="651" />
-      <location filename="../main_window.py" line="503" />
+      <location filename="../main_window.py" line="773" />
+      <location filename="../main_window.py" line="624" />
       <location filename="../main.py" line="89" />
       <source>Teleprompter Pro</source>
       <translation type="unfinished" />
@@ -204,55 +245,55 @@ Usage: python main.py [path/to/script.txt]</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="515" />
+      <location filename="../main_window.py" line="636" />
       <source>Home</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="516" />
+      <location filename="../main_window.py" line="637" />
       <source>Script</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="517" />
+      <location filename="../main_window.py" line="638" />
       <source>Camera</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="537" />
-      <location filename="../main_window.py" line="518" />
+      <location filename="../main_window.py" line="658" />
+      <location filename="../main_window.py" line="639" />
       <source>Review</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="540" />
-      <location filename="../main_window.py" line="519" />
+      <location filename="../main_window.py" line="661" />
+      <location filename="../main_window.py" line="640" />
       <source>Editor</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="540" />
-      <location filename="../main_window.py" line="537" />
+      <location filename="../main_window.py" line="661" />
+      <location filename="../main_window.py" line="658" />
       <source>Phase 6</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="619" />
+      <location filename="../main_window.py" line="741" />
       <source>Choose a template</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="621" />
+      <location filename="../main_window.py" line="743" />
       <source>How do you want to start your script?</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="624" />
+      <location filename="../main_window.py" line="746" />
       <source>Blank script</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="648" />
+      <location filename="../main_window.py" line="770" />
       <source>Error</source>
       <translation type="unfinished" />
     </message>
@@ -260,78 +301,78 @@ Usage: python main.py [path/to/script.txt]</source>
   <context>
     <name>ScriptView</name>
     <message>
-      <location filename="../main_window.py" line="204" />
+      <location filename="../main_window.py" line="207" />
       <source>Write or paste your script here…</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="210" />
+      <location filename="../main_window.py" line="213" />
       <source>Words: 0</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="212" />
+      <location filename="../main_window.py" line="215" />
       <source>Est. duration: --:--</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="214" />
+      <location filename="../main_window.py" line="217" />
       <source>WPM:</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="222" />
+      <location filename="../main_window.py" line="225" />
       <source>Import file…</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="226" />
+      <location filename="../main_window.py" line="229" />
       <source>Insert template…</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="230" />
+      <location filename="../main_window.py" line="233" />
       <source>Save script</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="253" />
+      <location filename="../main_window.py" line="256" />
       <source>Words: {0}</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="255" />
+      <location filename="../main_window.py" line="258" />
       <source>Est. duration: {0}</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="271" />
-      <location filename="../main_window.py" line="261" />
+      <location filename="../main_window.py" line="274" />
+      <location filename="../main_window.py" line="264" />
       <source>Open or create a project first.</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="265" />
+      <location filename="../main_window.py" line="268" />
       <source>Script saved.</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="276" />
+      <location filename="../main_window.py" line="279" />
       <source>Import script</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="279" />
+      <location filename="../main_window.py" line="282" />
       <source>Supported files</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="279" />
+      <location filename="../main_window.py" line="282" />
       <source>All files</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../main_window.py" line="288" />
+      <location filename="../main_window.py" line="291" />
       <source>Could not import:
 {0}</source>
       <translation type="unfinished" />
@@ -439,7 +480,7 @@ Usage: python main.py [path/to/script.txt]</source>
   <context>
     <name>_PlaceholderView</name>
     <message>
-      <location filename="../main_window.py" line="322" />
+      <location filename="../main_window.py" line="325" />
       <source>Coming in {0}.</source>
       <translation type="unfinished" />
     </message>

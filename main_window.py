@@ -24,6 +24,7 @@ from PyQt6.QtWidgets import (
     QMessageBox,
     QPlainTextEdit,
     QPushButton,
+    QSlider,
     QSpinBox,
     QStackedWidget,
     QVBoxLayout,
@@ -34,6 +35,8 @@ from camera_preview import CameraPreview
 from camera_service import CameraError, CameraService, device_formats, grouped_modes, list_devices
 from logging_setup import get_logger
 from project_service import ProjectError
+from scroll_engine import ScrollEngine
+from teleprompter_overlay import TeleprompterOverlay
 from templates_service import available_templates, fill_template
 from text_import import SUPPORTED, estimated_duration_seconds, import_file, word_count
 
@@ -362,9 +365,74 @@ class CameraView(QWidget):
         controls.addStretch()
         layout.addLayout(controls)
 
-        # ── Preview ──────────────────────────────────────────
+        # ── Preview + teleprompter overlay (Phase 3) ───────────
         self.preview = CameraPreview()
         layout.addWidget(self.preview, 1)
+
+        # The overlay lives inside the preview so it shares its bounds;
+        # raise_() keeps it above the painted frames.
+        self.overlay = TeleprompterOverlay(self.preview)
+        self.overlay.raise_()
+        self.overlay.setGeometry(self.preview.rect())
+        self.preview.installEventFilter(self)
+
+        self.engine = ScrollEngine(self)
+        self.engine.position_changed.connect(self.overlay.set_position)
+        self.engine.state_changed.connect(self._on_engine_state)
+        self.engine.countdown.connect(self._on_countdown)
+
+        # ── Reading controls (Phase 3) ─────────────────────────
+        reading = QHBoxLayout()
+        self.play_btn = QPushButton(self.tr("▶ Play"))
+        self.play_btn.clicked.connect(self._toggle_reading)
+        reading.addWidget(self.play_btn)
+
+        self.restart_btn = QPushButton(self.tr("⟲ Restart"))
+        self.restart_btn.clicked.connect(self.engine.restart)
+        reading.addWidget(self.restart_btn)
+
+        reading.addWidget(QLabel(self.tr("WPM:")))
+        self.wpm_spin = QSpinBox()
+        self.wpm_spin.setRange(30, 500)
+        self.wpm_spin.setValue(150)
+        self.wpm_spin.valueChanged.connect(self.engine.set_wpm)
+        reading.addWidget(self.wpm_spin)
+
+        self.prev_par_btn = QPushButton(self.tr("⏮ Paragraph"))
+        self.prev_par_btn.clicked.connect(
+            lambda: self.overlay.jump_to_paragraph(
+                max(0, self.overlay.current_paragraph() - 1)
+            )
+        )
+        reading.addWidget(self.prev_par_btn)
+
+        self.next_par_btn = QPushButton(self.tr("Paragraph ⏭"))
+        self.next_par_btn.clicked.connect(
+            lambda: self.overlay.jump_to_paragraph(
+                min(self.overlay.paragraph_count() - 1,
+                    self.overlay.current_paragraph() + 1)
+            )
+        )
+        reading.addWidget(self.next_par_btn)
+
+        # Position slider: manual nudge and visual feedback
+        self.position_slider = QSlider(Qt.Orientation.Horizontal)
+        self.position_slider.setRange(0, 1000)
+        self.position_slider.setValue(0)
+        self.position_slider.sliderMoved.connect(
+            lambda v: self.engine.jump_to(v / 1000.0)
+        )
+        self.engine.position_changed.connect(
+            lambda p: self.position_slider.setValue(int(p * 1000))
+            if not self.position_slider.isSliderDown() else None
+        )
+        reading.addWidget(self.position_slider, 1)
+
+        self.reading_mode_btn = QPushButton(self.tr("Reading mode"))
+        self.reading_mode_btn.setCheckable(True)
+        self.reading_mode_btn.toggled.connect(self._toggle_reading_mode)
+        reading.addWidget(self.reading_mode_btn)
+        layout.addLayout(reading)
 
         # ── Status bar ────────────────────────────────────────
         self.status_label = QLabel("")
@@ -374,6 +442,59 @@ class CameraView(QWidget):
         # Camera service lives in MainWindow scope: created lazily
         self.service = None
         self.refresh_devices()
+        self._sync_script_from_project()
+
+    # ── Overlay plumbing ──────────────────────────────────────
+
+    def eventFilter(self, obj, event):
+        """Keeps the overlay covering the preview as it resizes."""
+        if obj is self.preview and event.type() == event.Type.Resize:
+            self.overlay.setGeometry(self.preview.rect())
+        return super().eventFilter(obj, event)
+
+    def _sync_script_from_project(self):
+        """Loads the open project's script into the overlay."""
+        project = getattr(self.main, "project", None)
+        text = project.script_text if project is not None else ""
+        self.overlay.set_script(text)
+        self.engine.set_script(text)
+        wpm = 150
+        if project is not None:
+            wpm = project.get("teleprompter", {}).get("wpm", 150)
+        self.wpm_spin.setValue(int(wpm))
+        self.engine.set_wpm(int(wpm))
+
+    def _toggle_reading(self):
+        self.engine.toggle()
+
+    def _on_engine_state(self, state):
+        labels = {
+            "idle": "▶ Play",
+            "counting": "⏸ Pause",
+            "running": "⏸ Pause",
+            "paused": "▶ Resume",
+            "finished": "▶ Play",
+        }
+        self.play_btn.setText(self.tr(labels.get(state, "▶ Play")))
+
+    def _on_countdown(self, seconds_left):
+        self._set_status(self.tr("Starting in {0}…").format(seconds_left))
+
+    def _toggle_reading_mode(self, checked):
+        """Reading mode: big text, minimal controls (Roadmap Phase 3)."""
+        settings = self.overlay.settings()
+        if checked:
+            settings.font_size = max(44, settings.font_size)
+            settings.column_width = min(0.7, settings.column_width + 0.2)
+            settings.bg_mode = "semi"
+        self.overlay.set_settings(settings)
+        # Hide the camera pickers; keep reading controls visible
+        for btn in (self.device_combo, self.mode_combo, self.start_btn,
+                    self.refresh_btn, self.mirror_btn):
+            btn.setVisible(not checked)
+        self._set_status(
+            self.tr("Reading mode") if checked else self.tr("Camera mode")
+        )
 
     # ── Devices ──────────────────────────────────────────────
 
@@ -596,6 +717,7 @@ class MainWindow(QMainWindow):
         """Adopts an open project and refreshes every view."""
         self.project = project
         self.script_view.load_project(project)
+        self.camera_view._sync_script_from_project()
         self._project_opened()
         log.info("Active project: %s", project.root)
 
