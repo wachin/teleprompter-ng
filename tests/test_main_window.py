@@ -8,7 +8,7 @@ navigation, project lifecycle, and the Script editor wiring.
 import pytest
 from PyQt6.QtWidgets import QApplication
 
-from main_window import MainWindow, _PlaceholderView
+from main_window import CameraView, MainWindow, _PlaceholderView
 from project_service import ProjectService
 
 
@@ -59,7 +59,8 @@ class TestNavigation:
         assert not window.nav_buttons["home"].isChecked()
 
     def test_placeholders(self, window):
-        assert isinstance(window.camera_view, _PlaceholderView)
+        # Camera is real since Phase 2; Review and Editor wait for 6/8
+        assert isinstance(window.camera_view, CameraView)
         assert isinstance(window.review_view, _PlaceholderView)
         assert isinstance(window.editor_view, _PlaceholderView)
 

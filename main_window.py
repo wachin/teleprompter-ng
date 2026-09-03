@@ -13,6 +13,7 @@ import os
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
+    QComboBox,
     QFileDialog,
     QHBoxLayout,
     QLabel,
@@ -29,6 +30,8 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from camera_preview import CameraPreview
+from camera_service import CameraError, CameraService, device_formats, grouped_modes, list_devices
 from logging_setup import get_logger
 from project_service import ProjectError
 from templates_service import available_templates, fill_template
@@ -324,6 +327,164 @@ class _PlaceholderView(QWidget):
         layout.addStretch()
 
 
+class CameraView(QWidget):
+    """Live camera view (Phase 2): device/mode pickers + preview."""
+
+    def __init__(self, main):
+        super().__init__()
+        self.main = main
+        layout = QVBoxLayout(self)
+
+        # ── Controls row ─────────────────────────────────────
+        controls = QHBoxLayout()
+        controls.addWidget(QLabel(self.tr("Camera:")))
+        self.device_combo = QComboBox()
+        self.device_combo.setMinimumWidth(180)
+        controls.addWidget(self.device_combo)
+
+        controls.addWidget(QLabel(self.tr("Mode:")))
+        self.mode_combo = QComboBox()
+        self.mode_combo.setMinimumWidth(160)
+        controls.addWidget(self.mode_combo)
+
+        self.start_btn = QPushButton(self.tr("Start"))
+        self.start_btn.clicked.connect(self._toggle)
+        controls.addWidget(self.start_btn)
+
+        self.mirror_btn = QPushButton(self.tr("Mirror"))
+        self.mirror_btn.setCheckable(True)
+        self.mirror_btn.clicked.connect(self._toggle_mirror)
+        controls.addWidget(self.mirror_btn)
+
+        self.refresh_btn = QPushButton(self.tr("Refresh"))
+        self.refresh_btn.clicked.connect(self.refresh_devices)
+        controls.addWidget(self.refresh_btn)
+        controls.addStretch()
+        layout.addLayout(controls)
+
+        # ── Preview ──────────────────────────────────────────
+        self.preview = CameraPreview()
+        layout.addWidget(self.preview, 1)
+
+        # ── Status bar ────────────────────────────────────────
+        self.status_label = QLabel("")
+        self.status_label.setStyleSheet("color: #888;")
+        layout.addWidget(self.status_label)
+
+        # Camera service lives in MainWindow scope: created lazily
+        self.service = None
+        self.refresh_devices()
+
+    # ── Devices ──────────────────────────────────────────────
+
+    def refresh_devices(self):
+        """Reloads the device list from the system (v4l2)."""
+        self.device_combo.clear()
+        try:
+            devices = list_devices()
+        except Exception as e:
+            self._set_status(self.tr("Could not list cameras: {0}").format(e))
+            return
+        if not devices:
+            self._set_status(self.tr("No cameras found. Connect one and press Refresh."))
+            self.start_btn.setEnabled(False)
+            self.mode_combo.clear()
+            return
+        for d in devices:
+            self.device_combo.addItem(
+                "{0} — {1}".format(d["name"], d["device"]), d["device"]
+            )
+        self.start_btn.setEnabled(True)
+        self._load_modes()
+        self._set_status("")
+
+    def _load_modes(self):
+        """Fills the mode combo with the REAL modes of the chosen camera."""
+        device = self.device_combo.currentData()
+        self.mode_combo.clear()
+        if not device:
+            return
+        try:
+            formats = device_formats(device)
+        except CameraError as e:
+            self.mode_combo.addItem(self.tr("Default"), None)
+            self._set_status(str(e))
+            return
+        modes = grouped_modes(formats)
+        if not modes:
+            self.mode_combo.addItem(self.tr("Default"), None)
+            return
+        # Prefer a sane default: highest area at 30 fps, MJPG when possible
+        for i, mode in enumerate(modes):
+            label = "{0}x{1} @ {2} fps ({3})".format(
+                mode["width"], mode["height"],
+                "/".join(str(int(f)) for f in mode["fps"][:3]),
+                mode["format"],
+            )
+            self.mode_combo.addItem(label, (mode["width"], mode["height"],
+                                            mode["fps"][0]))
+            if mode["width"] == 1280 and mode["height"] == 720 and i == 0:
+                self.mode_combo.setCurrentIndex(self.mode_combo.count() - 1)
+        # Default: first entry is the largest mode
+        self.mode_combo.setCurrentIndex(0)
+
+    # ── Start / stop ─────────────────────────────────────────
+
+    def _toggle(self):
+        if self._service_active():
+            self._stop()
+        else:
+            self._start()
+
+    def _service_active(self):
+        return self.service is not None and self.service.is_active()
+
+    def _ensure_service(self):
+        if self.service is None:
+            self.service = CameraService(self)
+            self.service.frame_ready.connect(self.preview.set_frame)
+            self.service.error.connect(self._on_camera_error)
+            self.service.started_ok.connect(
+                lambda: self._set_status(self.tr("Camera active"))
+            )
+        return self.service
+
+    def _start(self):
+        device = self.device_combo.currentData()
+        if not device:
+            self._set_status(self.tr("Select a camera first."))
+            return
+        mode = self.mode_combo.currentData()  # (w, h, fps) or None
+        width, height, fps = mode if mode else (None, None, None)
+        self._set_status(self.tr("Starting camera…"))
+        self._ensure_service().start(device, width, height, fps)
+        self.start_btn.setText(self.tr("Stop"))
+        self.start_btn.setChecked(True)
+
+    def _stop(self):
+        if self.service is not None:
+            self.service.stop()
+        self.start_btn.setText(self.tr("Start"))
+        self.start_btn.setChecked(False)
+        self._set_status(self.tr("Camera stopped"))
+
+    def _toggle_mirror(self, checked):
+        self.preview.set_mirror(checked)
+
+    def _on_camera_error(self, message):
+        self.start_btn.setText(self.tr("Start"))
+        self.start_btn.setChecked(False)
+        self._set_status(self.tr("❌ {0}").format(message))
+
+    def _set_status(self, text):
+        self.status_label.setText(text)
+
+    def shutdown(self):
+        """Releases the camera when the view or window is closed."""
+        if self.service is not None:
+            self.service.stop()
+
+
 class MainWindow(QMainWindow):
     """
     Application shell: sidebar navigation + stacked views.
@@ -371,9 +532,7 @@ class MainWindow(QMainWindow):
         self.views = QStackedWidget()
         self.home_view = HomeView(self)
         self.script_view = ScriptView(self)
-        self.camera_view = _PlaceholderView(
-            self.tr("Camera"), self.tr("Phase 2")
-        )
+        self.camera_view = CameraView(self)
         self.review_view = _PlaceholderView(
             self.tr("Review"), self.tr("Phase 6")
         )
@@ -439,6 +598,11 @@ class MainWindow(QMainWindow):
         self.script_view.load_project(project)
         self._project_opened()
         log.info("Active project: %s", project.root)
+
+    def closeEvent(self, event):
+        """Releases the camera before the window disappears."""
+        self.camera_view.shutdown()
+        event.accept()
 
     # ── Dialogs ───────────────────────────────────────────────
 
