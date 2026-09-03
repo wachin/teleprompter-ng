@@ -15,7 +15,11 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/wachin/teleprompter",
     license="MIT",
-    py_modules=["main", "ui", "config", "remote_server", "speech_sync"],
+    py_modules=[
+        "main", "ui", "config", "remote_server", "speech_sync",
+        "logging_setup", "paths", "project_service", "text_import",
+        "templates_service", "main_window",
+    ],
     python_requires=">=3.10",
     install_requires=[
         "PyQt6>=6.6.0",
@@ -54,10 +58,28 @@ setup(
         ],
     },
     package_data={
-        "": ["scripts/*.txt", "templates/*.html"],
+        "": [
+            "scripts/*.txt",
+            "templates/*.html",
+            "resources/script_templates/*.txt",
+            "resources/script_templates/*.json",
+        ],
     },
     data_files=[
         ("share/teleprompter-pro/scripts", ["scripts/guion_actual.txt"]),
         ("share/teleprompter-pro/templates", ["templates/remote.html"]),
+        ("share/teleprompter-pro/resources/script_templates",
+         ["resources/script_templates/tutorial.txt",
+          "resources/script_templates/tutorial.json",
+          "resources/script_templates/presentation.txt",
+          "resources/script_templates/presentation.json",
+          "resources/script_templates/class.txt",
+          "resources/script_templates/class.json",
+          "resources/script_templates/news.txt",
+          "resources/script_templates/news.json",
+          "resources/script_templates/review.txt",
+          "resources/script_templates/review.json",
+          "resources/script_templates/ad.txt",
+          "resources/script_templates/ad.json"]),
     ],
 )

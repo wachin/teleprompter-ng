@@ -1,0 +1,47 @@
+{title} — Product review
+
+INTRO
+
+What's up everyone, {author} here. Today we're taking a close look at {product}.
+
+In this video I'll tell you what it does well, where it falls short, and whether I think you should buy it.
+
+Let's get into it.
+
+FIRST IMPRESSIONS
+
+Out of the box, the first thing you notice is describe the look, the build, the weight. It feels what? Premium, cheap, sturdy?
+
+Setup took me how long — say the real time, not the marketing time.
+
+WHAT I LIKED
+
+Now, the good parts. Three things stood out for me.
+
+First, feature or strength one. Explain it with a real use case — something you actually did, not a spec-sheet claim.
+
+Second, strength two. Show it on camera if you can.
+
+Third, strength three. Keep it short — two sentences maximum.
+
+WHAT I DIDN'T LIKE
+
+But it's not all perfect. There are things you should know before buying.
+
+The main issue for me was main drawback. How much does it matter? It depends on what you'll use it for.
+
+Also worth mentioning: smaller drawback, in one sentence.
+
+THE PRICE QUESTION
+
+At price, you're paying for what? Compare it briefly to its closest rival: is that alternative a better deal for some people?
+
+VERDICT
+
+So, who is {product} for?
+
+If you need main use case, this is a solid choice. If you mainly do other use case, look elsewhere.
+
+I'm giving it a score out of ten — and remember, that's my honest opinion after using it for how long.
+
+If you want to see more reviews like this, subscribe. See you in the next one!

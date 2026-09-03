@@ -1,0 +1,53 @@
+{title} — Lesson script
+
+WELCOME (30 seconds)
+
+Hello everyone, and welcome to today's class. I'm {author}.
+
+Today we're going to learn about {topic}. By the end of this lesson, you'll be able to answer three questions:
+
+One — the first key question.
+Two — the second key question.
+Three — the third key question.
+
+Let's get started.
+
+REVIEW (2 minutes)
+
+Before the new material, let's remember what we covered last time. Who can remind us the main idea of the previous lesson?
+
+Give a short recap in your own words. Two or three sentences are enough.
+
+NEW CONTENT — PART 1 (5 minutes)
+
+Here's the first big idea of today.
+
+Explain the concept slowly, with one example. Pause here in the recording — let the idea breathe.
+
+Ask a check question: can you think of another example of this?
+
+NEW CONTENT — PART 2 (5 minutes)
+
+Now that we have the first idea, let's build on it.
+
+This second part is the hardest of the lesson. Go step by step, and use the board or slides here.
+
+PRACTICE (5 minutes)
+
+It's your turn now. Here's a short exercise:
+
+State the exercise clearly. Read it twice if it's long.
+
+I'll give you two minutes. Pause the video and try it before watching the solution.
+
+CLOSING (1 minute)
+
+Let's summarize what we learned today:
+
+First, first key idea.
+Second, second key idea.
+And third, third key idea.
+
+For next class, please review this lesson and bring one question.
+
+See you next time!

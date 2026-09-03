@@ -1,0 +1,31 @@
+{title}
+
+Good morning everyone.
+
+Thank you for being here today. I'm {author}, and in the next few minutes I'd like to share with you {topic}.
+
+THE PROBLEM
+
+Every day we face a challenge: the situation isn't what it used to be. The old way of doing things no longer works, and doing nothing is not an option.
+
+THE SOLUTION
+
+That's why I want to talk to you about our proposal. It has three pillars.
+
+First, pillar number one. Explain it in one or two sentences — concrete, no jargon.
+
+Second, pillar number two. Give a quick example your audience will remember.
+
+Third, pillar number three. Close the pillar with the benefit it brings.
+
+RESULTS
+
+What can we expect from this? In simple terms: a clear benefit for everyone in this room.
+
+Use one number, one comparison, or one image — just one, and make it count.
+
+THE ASK
+
+Today I'm asking you for one thing: specific request. If we do this together, in six months we'll see the difference.
+
+Thank you very much.

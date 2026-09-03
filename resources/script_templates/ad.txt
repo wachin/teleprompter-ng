@@ -1,0 +1,27 @@
+{title} — 30-second ad
+
+HOOK (0-3 seconds)
+
+Stop — that problem you have with {pain_point}? It's over today.
+
+THE PROBLEM (3-8 seconds)
+
+If you've ever tried to {struggle}, you know how frustrating it gets. Wasted time, wasted money.
+
+THE SOLUTION (8-18 seconds)
+
+That's exactly why we made {product}.
+
+It's simple: explain what it does in one sentence. No technical words.
+
+Thousands of people are already using it to {main_benefit}.
+
+THE OFFER (18-25 seconds)
+
+And right now, you can get {product} at {special_offer} — but only until {deadline}.
+
+CALL TO ACTION (25-30 seconds)
+
+Click the link below and try {product} today.
+
+Your future self will thank you.

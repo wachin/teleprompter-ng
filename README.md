@@ -106,8 +106,12 @@ source venv/bin/activate  # Linux/macOS
 # 3. Install dependencies
 pip install -r requirements.txt
 
-# 4. Run
+# 4. Run (project mode — default)
 python3 main.py
+
+# 4b. Run in legacy reading mode
+python3 main.py --read
+python3 main.py scripts/mission_speech.txt   # a positional file also works
 ```
 
 ### Install voice model (optional)
@@ -120,6 +124,40 @@ mkdir -p models
 wget https://alphacephei.com/vosk/models/vosk-model-es-0.42.zip
 unzip vosk-model-es-0.42.zip
 mv vosk-model-es-0.42 models/model-es
+```
+
+---
+
+## 🗂️ Project mode (Phase 1)
+
+By default the app now opens in **project mode**: a sidebar navigates
+between Home, Script, Camera, Review, and Editor (the last three are
+placeholders for upcoming phases).
+
+Projects live in `~/TeleprompterProjects` as self-contained
+`.bigprompt` folders:
+
+```text
+MyProject.bigprompt/
+├── project.json        # settings: only relative paths
+├── scripts/script.txt  # the script (UTF-8)
+├── media/raw/          # original recordings (never overwritten)
+├── media/exports/      # exported files
+├── media/assets/       # logos, intro/outro, b-roll
+├── subtitles/
+└── thumbnails/
+```
+
+From Home you can **create, open, duplicate, rename, and delete**
+projects. The Script view offers a text editor with live word count,
+estimated duration (adjustable WPM), file import (`.txt`, `.md`,
+`.html`, `.docx`), and six starter templates: tutorial, presentation,
+class/lesson, news segment, product review, and 30-second ad.
+
+The classic full-screen teleprompter is still available:
+
+```bash
+python3 main.py --read
 ```
 
 ---
@@ -299,24 +337,33 @@ If you mount a reflective glass in front of the phone camera:
 
 ```
 teleprompter/
-├── main.py              # Entry point
-├── ui.py                # Teleprompter class (PyQt6 UI)
+├── main.py              # Entry point (projects mode / --read mode)
+├── main_window.py       # MainWindow + Home and Script views
+├── project_service.py   # .bigprompt project format and lifecycle
+├── text_import.py       # .txt/.md/.html/.docx import + WPM duration
+├── templates_service.py # Script templates loader
+├── ui.py                # Legacy full-screen Teleprompter (PyQt6)
 ├── config.py            # Cross-platform configuration
 ├── remote_server.py     # Flask server for remote control
 ├── speech_sync.py       # Voice sync with Vosk
+├── paths.py             # Resource resolution (repo/PyInstaller)
+├── logging_setup.py     # Structured logging
 ├── build.sh             # Build script
 ├── TeleprompterPro.spec # PyInstaller config
 ├── templates/
 │   └── remote.html      # Remote control page
-├── tests/
-│   ├── test_config.py
-│   ├── test_speech_sync.py
-│   └── test_edge_cases.py
+├── resources/
+│   └── script_templates/  # 6 starter scripts (.txt + .json)
+├── translations/
+│   └── teleprompter_es.ts # Qt Linguist source (66 messages)
+├── tests/               # 130 tests (pytest + pytest-qt)
 ├── scripts/
 │   ├── current_script.txt
 │   └── long_script_example.txt
+├── docs/                # Phase reports + I18N guide
 ├── model-es/            # Vosk model (downloaded)
 ├── requirements.txt
+├── requirements-dev.txt
 ├── .gitignore
 ├── ROADMAP.md
 └── README.md
@@ -348,15 +395,20 @@ It uses Vosk (local speech recognition) to listen to your voice and compare it a
 
 ## 🗺️ Roadmap
 
-See [ROADMAP.md](ROADMAP.md) for planned improvements.
+See [ROADMAP.md](ROADMAP.md) for the full plan and
+[docs/](docs/) for per-phase reports.
 
-**All phases completed:**
-- ✅ Phase 0: Base refactor and modularization
-- ✅ Phase 1: Countdown, progress, script selector, guide line
-- ✅ Phase 2: Phone remote control with Flask and QR
-- ✅ Phase 3: Intelligent voice synchronization (Vosk)
-- ✅ Phase 4: Packaging with PyInstaller
-- ✅ Phase 5: Polish and 27 unit tests
+**Status of the new application plan:**
+- ✅ Phase 0: Audit and code safety (41 tests) — see [docs/FASE-0.md](docs/FASE-0.md)
+- ✅ Phase 1: PyQt6 base and project management (130 tests) — see [docs/PHASE-1.md](docs/PHASE-1.md)
+- ⏭️ Phase 2: Live webcam (next)
+- Phases 3-12: teleprompter overlay, controls/recording, audio+video
+  capture, review/editor, subtitles, branding, optional local AI,
+  export, quality, distribution
+
+**Legacy features (pre-existing, kept working via `--read` mode):**
+countdown, progress bar, script selector, guide line, mirror mode,
+phone remote control (Flask + QR), voice sync (Vosk).
 
 ---
 

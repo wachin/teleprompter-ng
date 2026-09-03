@@ -1,0 +1,39 @@
+{title} — News segment
+
+COLD OPEN
+
+Good evening. I'm {author}, and this is the news that matters today.
+
+THE HEADLINE
+
+We start with the main story: {topic}.
+
+Here's what we know so far. State the verified facts in order of importance. Who, what, when, where.
+
+THE CONTEXT
+
+To understand this story, we need to look back.
+
+Give the background in three sentences. No opinion here — just what happened before.
+
+THE REACTIONS
+
+Voices are already reacting to the news.
+
+On one side, supporters of the measure say quote from a named source.
+
+On the other, critics argue quote from a named source.
+
+Only attribute statements to people or documents you can verify.
+
+WHAT'S NEXT
+
+Here's what to watch in the coming days:
+
+First, upcoming event or deadline.
+Second, the decision or report we're waiting for.
+And third, where this story could head next.
+
+CLOSING
+
+That's the news for today. I'm {author} — thanks for watching. We'll be back with more tomorrow.

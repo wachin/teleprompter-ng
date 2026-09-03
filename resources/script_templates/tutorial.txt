@@ -1,0 +1,41 @@
+{title} — Step-by-step tutorial
+
+INTRO
+
+Hi everyone, I'm {author}. Today I'll show you how to {topic}, step by step.
+
+In this short video you'll learn:
+- What you need before starting
+- The exact steps to follow
+- And a couple of tricks I wish someone had told me when I started
+
+WHAT YOU NEED
+
+Before we begin, make sure you have:
+- First requirement
+- Second requirement
+- Five minutes of your time
+
+STEP 1 — Set everything up
+
+First, let's get everything ready. Do this slowly the first time — it gets much faster later.
+
+Explain what to click or type, and what the viewer should see on screen.
+
+STEP 2 — The main action
+
+Now for the important part. Here's where we {action}.
+
+If it doesn't work the first time, don't worry. I'll show you the most common mistake and how to fix it.
+
+STEP 3 — Verify the result
+
+Let's check that everything worked as expected. You should see the result on screen.
+
+WRAP-UP
+
+That's it! You just learned how to {topic}.
+
+If this helped you, subscribe for more tutorials like this one — I publish a new one every week.
+
+See you in the next video!
