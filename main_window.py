@@ -9,9 +9,10 @@ All user-visible strings are English wrapped in self.tr() so they can
 be extracted by Qt Linguist later (see docs/I18N.md).
 """
 
+import contextlib
 import os
 
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QTimer, pyqtSlot
 from PyQt6.QtWidgets import (
     QComboBox,
     QFileDialog,
@@ -23,6 +24,7 @@ from PyQt6.QtWidgets import (
     QMainWindow,
     QMessageBox,
     QPlainTextEdit,
+    QProgressBar,
     QPushButton,
     QSlider,
     QSpinBox,
@@ -31,6 +33,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from audio_service import list_microphones
 from camera_preview import CameraPreview
 from camera_service import CameraError, CameraService, device_formats, grouped_modes, list_devices
 from logging_setup import get_logger
@@ -450,6 +453,51 @@ class CameraView(QWidget):
         reading.addWidget(self.remote_btn)
         layout.addLayout(reading)
 
+        # ── Recording row (Phase 5) ──────────────────────────────
+        recording_row = QHBoxLayout()
+        recording_row.addWidget(QLabel(self.tr("Micro:")))
+        self.mic_combo = QComboBox()
+        self.mic_combo.setMinimumWidth(160)
+        recording_row.addWidget(self.mic_combo)
+
+        self.meter_bar = QProgressBar()
+        self.meter_bar.setFixedWidth(120)
+        self.meter_bar.setRange(0, 100)
+        self.meter_bar.setFormat("...")
+        self.meter_bar.setStyleSheet("""
+            QProgressBar { background: #222; border: none; border-radius: 4px; }
+            QProgressBar::chunk { background: qlineargradient(
+                x1:0 y1:0 x2:1 y2:0, stop:0 #44FF44, stop:0.7 #FFD700, stop:1 #FF4444
+            ); }
+        """)
+        recording_row.addWidget(self.meter_bar)
+
+        self.rec_btn = QPushButton(self.tr("⏺ REC"))
+        self.rec_btn.setCheckable(True)
+        self.rec_btn.setStyleSheet("""
+            QPushButton:checked { background-color: #FF4444; color: white; }
+        """)
+        self.rec_btn.toggled.connect(self._toggle_recording)
+        recording_row.addWidget(self.rec_btn)
+
+        self.rec_clock = QLabel("00:00")
+        self.rec_clock.setStyleSheet("color: #FF4444; font-weight: bold;")
+        recording_row.addWidget(self.rec_clock)
+
+        self.disk_label = QLabel("")
+        self.disk_label.setStyleSheet("color: #888;")
+        recording_row.addWidget(self.disk_label)
+        recording_row.addStretch()
+        layout.addLayout(recording_row)
+
+        # Recording state
+        self.recording = None          # RecordingService when active
+        self.rec_timer = QTimer(self)
+        self.rec_timer.setInterval(250)
+        self.rec_timer.timeout.connect(self._update_rec_clock)
+        self.meter = None             # LevelMeter, created lazily
+        self._refresh_microphones()
+
         # ── Status bar ────────────────────────────────────────
         self.status_label = QLabel("")
         self.status_label.setStyleSheet("color: #888;")
@@ -480,6 +528,8 @@ class CameraView(QWidget):
             wpm = project.get("teleprompter", {}).get("wpm", 150)
         self.wpm_spin.setValue(int(wpm))
         self.engine.set_wpm(int(wpm))
+        self._update_disk_label()
+        self._refresh_microphones()
 
     def _toggle_reading(self):
         self.engine.toggle()
@@ -512,6 +562,193 @@ class CameraView(QWidget):
         self._set_status(
             self.tr("Reading mode") if checked else self.tr("Camera mode")
         )
+
+    # ── Recording (Phase 5) ────────────────────────────────────
+
+    def _refresh_microphones(self):
+        """Fills the microphone combo and the free-space label."""
+        self.mic_combo.clear()
+        mics = list_microphones()
+        if not mics:
+            self.mic_combo.addItem(self.tr("None found"), None)
+        for mic in mics:
+            self.mic_combo.addItem(mic["name"], mic["id"])
+        self._update_disk_label()
+
+    def _update_disk_label(self):
+        project = getattr(self.main, "project", None)
+        if project is None:
+            self.disk_label.setText("")
+            return
+        import shutil as _shutil
+        raw_dir = self.main.service.media_path(project, "raw")
+        free = _shutil.disk_usage(raw_dir).free
+        self.disk_label.setText(
+            self.tr("Free: {0:.1f} GB").format(free / 1e9)
+        )
+
+    def _toggle_recording(self, checked):
+        """REC button: starts a take (pre-flight) or stops it."""
+        if checked:
+            self._start_recording()
+        else:
+            self._stop_recording()
+
+    def _start_recording(self):
+        from recording_service import (
+            RecordingError,
+            RecordingService,
+            check_prerequisites,
+            suggest_filename,
+        )
+
+        # Requirements: open project, running camera, chosen mic
+        project = getattr(self.main, "project", None)
+        if project is None:
+            self._rec_abort(self.tr("Open or create a project first."))
+            return
+        if not self._service_active():
+            self._rec_abort(self.tr("Start the camera before recording."))
+            return
+        mic = self.mic_combo.currentData()
+        if not mic:
+            self._rec_abort(
+                self.tr("No microphone selected. Check the Micro list "
+                        "or install pulseaudio-utils (pactl).")
+            )
+            return
+
+        mode = self.mode_combo.currentData() or (640, 480, 30)
+        width, height, fps = mode
+        raw_dir = self.main.service.media_path(project, "raw")
+        output = suggest_filename(raw_dir)
+
+        problems = check_prerequisites(raw_dir)
+        if problems:
+            self.main.show_error("\n".join(problems))
+            self._rec_abort("")
+            return
+
+        self.recording = RecordingService(
+            on_state=self._on_rec_state,
+            on_error=self._on_rec_error,
+        )
+        # Route camera frames into the recorder
+        self.service.frame_ready.connect(self.recording.feed_frame)
+        try:
+            self.recording.start(output, width, height, fps, mic)
+        except RecordingError as e:
+            self.service.frame_ready.disconnect(self.recording.feed_frame)
+            self.recording = None
+            self._rec_abort(str(e))
+            return
+
+        project.add_clip(os.path.relpath(output, project.root))
+        self.rec_timer.start()
+        self._start_meter()
+        self._set_status(
+            self.tr("Recording to {0}").format(os.path.basename(output))
+        )
+
+    def _stop_recording(self):
+        if self.recording is None:
+            return
+        self.service.frame_ready.disconnect(self.recording.feed_frame)
+        path = self.recording.stop()
+        self.recording = None
+        self.rec_timer.stop()
+        self._update_rec_clock()
+        self._stop_meter()
+        if path:
+            self._set_status(
+                self.tr("Saved: {0}").format(os.path.basename(path))
+            )
+        # else: error already reported via _on_rec_error
+        self._update_disk_label()
+
+    def _rec_abort(self, message):
+        """Un-press REC and show why the take could not start."""
+        self.rec_btn.blockSignals(True)
+        self.rec_btn.setChecked(False)
+        self.rec_btn.blockSignals(False)
+        if message:
+            self._set_status(self.tr("❌ {0}").format(message))
+
+    def _on_rec_state(self, state):
+        if state == "stopped":
+            self.rec_btn.blockSignals(True)
+            self.rec_btn.setChecked(False)
+            self.rec_btn.blockSignals(False)
+
+    def _on_rec_error(self, message):
+        self._set_status(self.tr("❌ {0}").format(message))
+        self.rec_btn.blockSignals(True)
+        self.rec_btn.setChecked(False)
+        self.rec_btn.blockSignals(False)
+        self.rec_timer.stop()
+        if self.recording is not None and self.service is not None:
+            with contextlib.suppress(TypeError):
+                self.service.frame_ready.disconnect(self.recording.feed_frame)
+        self.recording = None
+
+    def _update_rec_clock(self):
+        if self.recording is None:
+            self.rec_clock.setText("00:00")
+            return
+        seconds = int(self.recording.elapsed_seconds())
+        h, rem = divmod(seconds, 3600)
+        m, s = divmod(rem, 60)
+        self.rec_clock.setText(
+            f"{m:02d}:{s:02d}" if h == 0
+            else f"{h}:{m:02d}:{s:02d}"
+        )
+
+    def _start_meter(self):
+        """Runs the level meter while recording (mic of the combo)."""
+        from audio_service import LevelMeter
+        if self.meter is None:
+            self.meter = LevelMeter(self)
+            self.meter.level.connect(self._on_meter_level)
+            self.meter.clipping.connect(
+                lambda: self._set_status(self.tr("⚠️ Clipping — lower the input volume"))
+            )
+        # Map pactl id → sounddevice device index when possible
+        device = None
+        mic_id = self.mic_combo.currentData()
+        if mic_id:
+            try:
+                import sounddevice as sd
+                names = [d["name"] for d in sd.query_devices()]
+                # pactl ids are not ALSA names; use the default input
+                device = sd.default.device[0] if names else None
+            except Exception:
+                device = None
+        self.meter.start(device)
+
+    def _stop_meter(self):
+        if self.meter is not None:
+            self.meter.stop()
+        self.meter_bar.setValue(0)
+
+    def _on_meter_level(self, level):
+        self.meter_bar.setValue(int(level * 100))
+
+    # Remote-control entry points (Phase 5): the phone can REC too.
+    def request_recording_start(self):
+        """Called by the remote server; safe to invoke from any thread."""
+        from PyQt6.QtCore import QMetaObject
+        from PyQt6.QtCore import Qt as _Qt
+        QMetaObject.invokeMethod(
+            self, "_remote_rec_toggle", _Qt.ConnectionType.QueuedConnection,
+        )
+
+    def request_recording_stop(self):
+        self.request_recording_start()  # REC toggles; state decides
+
+    @pyqtSlot()
+    def _remote_rec_toggle(self):
+        """Runs on the Qt thread: flips the REC button."""
+        self.rec_btn.setChecked(not self.rec_btn.isChecked())
 
     # ── Countdown / remote / keyboard (Phase 4) ────────────────
 
@@ -651,7 +888,10 @@ class CameraView(QWidget):
             super().keyPressEvent(event)
 
     def shutdown(self):
-        """Releases camera and remote server when closing."""
+        """Releases recording, meter, camera, and remote server."""
+        if self.recording is not None:
+            self._stop_recording()
+        self._stop_meter()
         if self.service is not None:
             self.service.stop()
         if self.remote_server is not None:
@@ -878,8 +1118,11 @@ class MainWindow(QMainWindow):
         log.info("Active project: %s", project.root)
 
     def closeEvent(self, event):
-        """Releases the camera before the window disappears."""
+        """Releases devices and saves the project before closing."""
         self.camera_view.shutdown()
+        if self.project is not None:
+            with contextlib.suppress(ProjectError, OSError):
+                self.service.save(self.project)
         event.accept()
 
     # ── Dialogs ───────────────────────────────────────────────

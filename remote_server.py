@@ -143,12 +143,14 @@ class RemoteServer:
         tp = self.teleprompter
         engine = getattr(tp, "engine", None)
         if engine is not None:
+            recording = getattr(tp, "recording", None)
             return {
                 "is_running": engine.state() == "running",
                 "state": engine.state(),
                 "position": round(engine.position(), 4),
                 "wpm": engine.wpm(),
                 "countdown_active": engine.state() == "counting",
+                "recording": bool(recording is not None and recording.is_recording()),
                 "pairing_required": self.pairing_enabled,
             }
         # Legacy full-screen Teleprompter (read mode)
@@ -159,6 +161,7 @@ class RemoteServer:
             "position": 0,
             "wpm": getattr(tp, "wpm", 150),
             "countdown_active": getattr(tp, "countdown_active", False),
+            "recording": False,
             "pairing_required": self.pairing_enabled,
         }
 
@@ -280,6 +283,20 @@ class RemoteServer:
             except (TypeError, ValueError):
                 return
             server.teleprompter.engine.jump_to(max(0.0, min(1.0, pos)))
+
+        @guarded
+        def rec_start():
+            """Starts a recording take (Phase 5)."""
+            tp = server.teleprompter
+            if hasattr(tp, "request_recording_start"):
+                tp.request_recording_start()
+
+        @guarded
+        def rec_stop():
+            """Stops the recording take (Phase 5)."""
+            tp = server.teleprompter
+            if hasattr(tp, "request_recording_stop"):
+                tp.request_recording_stop()
 
     def _emit_status(self):
         self.socketio.emit("status", self.status())
