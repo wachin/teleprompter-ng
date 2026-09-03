@@ -231,7 +231,7 @@ Establish a reliable base before adding features.
 - Existing tests pass.
 - The application starts from the repository and from another folder.
 - The application does not freeze when toggling voice or closing a recording.
-- Device failures are explained in Spanish and offer a corrective action.
+- Device failures are explained clearly and offer a corrective action.
 
 ## Phase 1 — PyQt6 base and project management
 
@@ -510,7 +510,7 @@ Record camera and microphone, synchronized, into a playable file.
 - Verifiable contrast.
 - Control sizes sufficient for use while recording.
 - Understandable error messages.
-- Initial interface in Spanish, prepared for translations with Qt Linguist.
+- Interface in English as the source language, wrapped in `tr()`/`translate()` and prepared for translations with Qt Linguist; Spanish and other translations are added at the end of the project (see `docs/I18N.md`).
 
 ### Tools
 
@@ -588,7 +588,7 @@ The MVP must stop after completing these features:
 - Review and basic trimming.
 - Local export with FFmpeg.
 - Secure mobile remote control on the local network.
-- Documentation in Spanish.
+- Documentation in English.
 - Hardware and software testing.
 
 Do not start avatars, automatic publishing, or generative AI before the MVP records and exports correctly.
@@ -601,7 +601,7 @@ A feature is considered finished only when:
 - It is integrated into the interface.
 - It has error handling.
 - It has at least one appropriate test.
-- It is documented in Spanish.
+- It is documented in English.
 - It works on Debian 13 in a reproducible test.
 - It does not block the interface.
 - It releases its resources correctly.
