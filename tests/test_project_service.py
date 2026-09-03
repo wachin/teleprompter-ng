@@ -7,11 +7,16 @@ relative-path enforcement, schema validation, and UTF-8 round-trips.
 
 import json
 import os
+
 import pytest
 
 from project_service import (
-    ProjectService, Project, ProjectError, SCHEMA_VERSION,
-    PROJECT_EXTENSION, _sanitize, _validate_relative,
+    PROJECT_EXTENSION,
+    SCHEMA_VERSION,
+    ProjectError,
+    ProjectService,
+    _sanitize,
+    _validate_relative,
 )
 
 
@@ -132,7 +137,7 @@ class TestOpenSave:
     def test_open_not_a_project(self, service, tmp_path):
         d = tmp_path / "empty"
         d.mkdir()
-        with pytest.raises(ProjectError, match="project.json"):
+        with pytest.raises(ProjectError, match=r"project\.json"):
             service.open(str(d))
 
     def test_open_corrupt_json(self, service, tmp_path):

@@ -4,7 +4,6 @@ tests/test_edge_cases.py — Tests para casos límite de texto
 
 import os
 import tempfile
-import pytest
 
 
 class TestTextHandling:
@@ -71,7 +70,7 @@ class TestFileOperations:
             tmp_path = f.name
 
         try:
-            with open(tmp_path, 'r', encoding='utf-8') as f:
+            with open(tmp_path, encoding='utf-8') as f:
                 content = f.read()
             assert "ñáéíóú" in content
             assert "🎉" in content

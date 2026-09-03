@@ -27,8 +27,10 @@ if [ ! -f "main.py" ]; then
 fi
 
 # Limpiar builds anteriores
+# Nota: TeleprompterPro.spec está versionado; PyInstaller lo regenera
+# con --noconfirm si falta, pero nunca lo borramos nosotros.
 echo "🧹 Limpiando builds anteriores..."
-rm -rf build/ dist/ *.spec
+rm -rf build/ dist/
 
 # Determinar modo de empaquetado
 if [ "$1" = "--onefile" ]; then

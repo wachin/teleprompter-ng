@@ -10,8 +10,8 @@ present them without parsing the text.
 import json
 import os
 
-from paths import resource_path
 from logging_setup import get_logger
+from paths import resource_path
 
 log = get_logger("Templates")
 
@@ -52,12 +52,12 @@ def available_templates():
                 "description": "", "wpm": 150}
         if os.path.isfile(meta_path):
             try:
-                with open(meta_path, "r", encoding="utf-8") as f:
+                with open(meta_path, encoding="utf-8") as f:
                     loaded = json.load(f)
                 if isinstance(loaded, dict):
                     meta.update({k: loaded[k] for k in
                                  ("title", "description", "wpm") if k in loaded})
-            except (json.JSONDecodeError, IOError) as e:
+            except (OSError, json.JSONDecodeError) as e:
                 log.warning("Bad template metadata %s: %s", meta_path, e)
         out.append(meta)
     out.sort(key=lambda m: m["title"])
@@ -72,15 +72,15 @@ def load_template(name):
     are accepted; arbitrary names never touch the filesystem.
     """
     if name not in BUILTIN:
-        raise TemplateError("Unknown template: {0}".format(name))
+        raise TemplateError(f"Unknown template: {name}")
     path = _template_path(name)
     if not os.path.isfile(path):
-        raise TemplateError("Template file not found: {0}".format(path))
+        raise TemplateError(f"Template file not found: {path}")
     try:
-        with open(path, "r", encoding="utf-8") as f:
+        with open(path, encoding="utf-8") as f:
             return f.read()
-    except IOError as e:
-        raise TemplateError("Could not read template: {0}".format(e)) from e
+    except OSError as e:
+        raise TemplateError(f"Could not read template: {e}") from e
 
 
 def fill_template(name, values):

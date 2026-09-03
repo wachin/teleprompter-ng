@@ -20,8 +20,8 @@ import time
 from collections import deque
 
 try:
-    import vosk
     import sounddevice as sd
+    import vosk
     VOSK_AVAILABLE = True
 except ImportError:
     VOSK_AVAILABLE = False

@@ -170,7 +170,7 @@ Write or paste your speech in a plain text file (`.txt`) inside the `scripts/` f
 
 ```
 teleprompter/scripts/
-├── current_script.txt    ← default script
+├── guion_actual.txt      ← default script (loaded by --read mode)
 ├── mission_speech.txt    ← your own scripts
 └── presentation.txt
 ```
@@ -358,7 +358,7 @@ teleprompter/
 │   └── teleprompter_es.ts # Qt Linguist source (66 messages)
 ├── tests/               # 130 tests (pytest + pytest-qt)
 ├── scripts/
-│   ├── current_script.txt
+│   ├── guion_actual.txt
 │   └── long_script_example.txt
 ├── docs/                # Phase reports + I18N guide
 ├── model-es/            # Vosk model (downloaded)

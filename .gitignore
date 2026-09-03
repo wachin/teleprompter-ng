@@ -57,6 +57,12 @@ debian/substvars
 # in the repo folder by accident, do not commit them.
 *.bigprompt/
 
+# ── Stray user configuration ────────────────────────────
+# The app reads ~/.config/TeleprompterPro/config.json (XDG).
+# A config.json in the repo root would be a developer's local
+# leftovers — never part of the source.
+/config.json
+
 # ── IDEs / editors ─────────────────────────────────────
 .idea/
 .vscode/

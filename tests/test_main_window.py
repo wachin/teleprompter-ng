@@ -6,11 +6,9 @@ navigation, project lifecycle, and the Script editor wiring.
 """
 
 import pytest
-
-from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
 
-from main_window import MainWindow, HomeView, ScriptView, _PlaceholderView
+from main_window import MainWindow, _PlaceholderView
 from project_service import ProjectService
 
 
@@ -49,8 +47,8 @@ class TestNavigation:
         assert window.views.currentWidget() is window.home_view
 
     def test_project_views_disabled_initially(self, window):
-        for key, enabled in (("script", False), ("camera", False),
-                             ("review", False), ("editor", False)):
+        for key, _enabled in (("script", False), ("camera", False),
+                              ("review", False), ("editor", False)):
             assert not window.nav_buttons[key].isEnabled(), key
 
     def test_show_view_switches(self, window):

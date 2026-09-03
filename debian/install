@@ -3,5 +3,13 @@ ui.py usr/share/teleprompter-pro
 config.py usr/share/teleprompter-pro
 remote_server.py usr/share/teleprompter-pro
 speech_sync.py usr/share/teleprompter-pro
+logging_setup.py usr/share/teleprompter-pro
+paths.py usr/share/teleprompter-pro
+project_service.py usr/share/teleprompter-pro
+text_import.py usr/share/teleprompter-pro
+templates_service.py usr/share/teleprompter-pro
+main_window.py usr/share/teleprompter-pro
 scripts/ usr/share/teleprompter-pro
 templates/ usr/share/teleprompter-pro
+resources/ usr/share/teleprompter-pro
+translations/ usr/share/teleprompter-pro

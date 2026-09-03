@@ -6,7 +6,6 @@ Fase 0: _adjust_speed ya no modifica el teleprompter directamente
 devuelve la velocidad sugerida y la UI la aplica en su hilo.
 """
 
-import pytest
 from unittest.mock import MagicMock, patch
 
 

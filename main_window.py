@@ -11,17 +11,28 @@ be extracted by Qt Linguist later (see docs/I18N.md).
 
 import os
 
-from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
-    QFileDialog, QHBoxLayout, QLabel, QLineEdit, QListWidget,
-    QListWidgetItem, QMainWindow, QMessageBox, QPushButton, QSpinBox,
-    QStackedWidget, QVBoxLayout, QWidget, QPlainTextEdit,
+    QFileDialog,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QListWidget,
+    QListWidgetItem,
+    QMainWindow,
+    QMessageBox,
+    QPlainTextEdit,
+    QPushButton,
+    QSpinBox,
+    QStackedWidget,
+    QVBoxLayout,
+    QWidget,
 )
 
 from logging_setup import get_logger
 from project_service import ProjectError
-from text_import import import_file, word_count, estimated_duration_seconds, SUPPORTED
 from templates_service import available_templates, fill_template
+from text_import import SUPPORTED, estimated_duration_seconds, import_file, word_count
 
 log = get_logger("MainWindow")
 
@@ -32,8 +43,8 @@ def _format_duration(seconds):
     h, rem = divmod(seconds, 3600)
     m, s = divmod(rem, 60)
     if h:
-        return "{0}:{1:02d}:{2:02d}".format(h, m, s)
-    return "{0:02d}:{1:02d}".format(m, s)
+        return f"{h}:{m:02d}:{s:02d}"
+    return f"{m:02d}:{s:02d}"
 
 
 class HomeView(QWidget):
@@ -256,7 +267,7 @@ class ScriptView(QWidget):
         if self.main.project is None:
             self.main.show_info(self.tr("Open or create a project first."))
             return
-        extensions = " ".join("*{0}".format(e) for e in SUPPORTED)
+        extensions = " ".join(f"*{e}" for e in SUPPORTED)
         path, _ = QFileDialog.getOpenFileName(
             self,
             self.tr("Import script"),
@@ -299,7 +310,7 @@ class _PlaceholderView(QWidget):
         super().__init__()
         layout = QVBoxLayout(self)
         layout.addStretch()
-        label = QLabel("<h2>{0}</h2>".format(title))
+        label = QLabel(f"<h2>{title}</h2>")
         label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(label)
         info = QLabel(
@@ -386,7 +397,7 @@ class MainWindow(QMainWindow):
             btn.setChecked(k == key)
 
     def _project_opened(self):
-        for key, _label, always in self._nav_defs:
+        for key, _label, _always in self._nav_defs:
             self.nav_buttons[key].setEnabled(True)
         self.show_view("script")
 

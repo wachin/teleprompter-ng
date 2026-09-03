@@ -26,8 +26,7 @@ import json
 import os
 import re
 import shutil
-import time
-from datetime import datetime
+from datetime import datetime, timezone
 
 from logging_setup import get_logger
 
@@ -59,8 +58,8 @@ _UNSAFE_CHARS = re.compile(r'[\\/:*?"<>|\x00-\x1f]')
 
 
 def _utc_now():
-    """ISO-8601 timestamp, second precision."""
-    return datetime.now().replace(microsecond=0).isoformat()
+    """ISO-8601 UTC timestamp, second precision."""
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
 
 
 def _sanitize(name):
@@ -132,9 +131,7 @@ class Project:
         expected = _META_TYPES.get(key)
         if expected is not None and value is not None and not isinstance(value, expected):
             raise ProjectError(
-                "Invalid type for '{0}': expected {1}, got {2}".format(
-                    key, expected.__name__, type(value).__name__
-                )
+                f"Invalid type for '{key}': expected {expected.__name__}, got {type(value).__name__}"
             )
         self.meta[key] = value
         self.meta_dirty = True
@@ -153,7 +150,7 @@ class Project:
         clips = self.meta.setdefault("clips", [])
         rel = _validate_relative(filename)
         if rel is None:
-            raise ProjectError("Clip path must be relative: {0}".format(filename))
+            raise ProjectError(f"Clip path must be relative: {filename}")
         if rel not in clips:
             clips.append(rel)
             self.meta_dirty = True
@@ -169,7 +166,6 @@ class ProjectService:
     """
 
     def __init__(self, projects_dir=None):
-        from paths import get_app_dir
         if projects_dir is None:
             projects_dir = os.path.join(os.path.expanduser("~"), "TeleprompterProjects")
         self.projects_dir = projects_dir
@@ -209,7 +205,7 @@ class ProjectService:
         while os.path.exists(root):
             root = os.path.join(
                 self.projects_dir,
-                "{0}-{1}{2}".format(base, suffix, PROJECT_EXTENSION),
+                f"{base}-{suffix}{PROJECT_EXTENSION}",
             )
             suffix += 1
 
@@ -217,8 +213,8 @@ class ProjectService:
             self._make_layout(root)
         except OSError as e:
             raise ProjectError(
-                "Could not create the project folder: {0}. "
-                "Check permissions on {1}".format(e, self.projects_dir)
+                f"Could not create the project folder: {e}. "
+                f"Check permissions on {self.projects_dir}"
             ) from e
 
         meta = {
@@ -245,24 +241,24 @@ class ProjectService:
     def open(self, path):
         """Opens an existing project; raises ProjectError if invalid."""
         if not os.path.isdir(path):
-            raise ProjectError("Project not found: {0}".format(path))
+            raise ProjectError(f"Project not found: {path}")
         meta_path = os.path.join(path, "project.json")
         if not os.path.isfile(meta_path):
             raise ProjectError(
-                "'{0}' is not a project folder (missing project.json)".format(path)
+                f"'{path}' is not a project folder (missing project.json)"
             )
         try:
-            with open(meta_path, "r", encoding="utf-8") as f:
+            with open(meta_path, encoding="utf-8") as f:
                 meta = json.load(f)
-        except (json.JSONDecodeError, IOError) as e:
+        except (OSError, json.JSONDecodeError) as e:
             raise ProjectError(
-                "The project file is corrupt or unreadable: {0}. "
-                "Restore it from a backup or recreate the project".format(e)
+                f"The project file is corrupt or unreadable: {e}. "
+                "Restore it from a backup or recreate the project"
             ) from e
 
         if not isinstance(meta, dict) or "schema_version" not in meta:
             raise ProjectError(
-                "The project file is not valid: {0}".format(meta_path)
+                f"The project file is not valid: {meta_path}"
             )
         if meta["schema_version"] > SCHEMA_VERSION:
             raise ProjectError(
@@ -275,11 +271,11 @@ class ProjectService:
         script_path = os.path.join(path, project.script_rel_path)
         if os.path.isfile(script_path):
             try:
-                with open(script_path, "r", encoding="utf-8") as f:
+                with open(script_path, encoding="utf-8") as f:
                     project.script_text = f.read()
-            except IOError as e:
+            except OSError as e:
                 raise ProjectError(
-                    "Could not read the script: {0}".format(e)
+                    f"Could not read the script: {e}"
                 ) from e
         else:
             project.script_text = ""
@@ -319,7 +315,7 @@ class ProjectService:
                 json.dump(project.meta, f, indent=2, ensure_ascii=False)
             project.meta_dirty = False
         except OSError as e:
-            raise ProjectError("Could not save the project: {0}".format(e)) from e
+            raise ProjectError(f"Could not save the project: {e}") from e
 
         log.info("Project saved: %s", project.root)
         return True
@@ -334,7 +330,7 @@ class ProjectService:
         try:
             shutil.copytree(source, new_project.root)
         except OSError as e:
-            raise ProjectError("Could not duplicate the project: {0}".format(e)) from e
+            raise ProjectError(f"Could not duplicate the project: {e}") from e
         reopened = self.open(new_project.root)
         reopened.meta["name"] = _sanitize(new_name)
         self.save(reopened)
@@ -348,12 +344,12 @@ class ProjectService:
         new_root = os.path.join(os.path.dirname(old_root), new_dirname)
         if os.path.exists(new_root):
             raise ProjectError(
-                "A project named '{0}' already exists".format(new_name)
+                f"A project named '{new_name}' already exists"
             )
         try:
             os.rename(old_root, new_root)
         except OSError as e:
-            raise ProjectError("Could not rename the project: {0}".format(e)) from e
+            raise ProjectError(f"Could not rename the project: {e}") from e
         project.root = new_root
         project.meta["name"] = _sanitize(new_name)
         self.save(project)
@@ -378,11 +374,11 @@ class ProjectService:
                 "(pass confirm=True after asking the user)"
             )
         if not os.path.isdir(path):
-            raise ProjectError("Project not found: {0}".format(path))
+            raise ProjectError(f"Project not found: {path}")
         try:
             shutil.rmtree(path)
         except OSError as e:
-            raise ProjectError("Could not delete the project: {0}".format(e)) from e
+            raise ProjectError(f"Could not delete the project: {e}") from e
         log.info("Project deleted: %s", path)
         return True
 
@@ -408,7 +404,7 @@ class ProjectService:
         must be a bare filename (no directories).
         """
         if kind not in ("raw", "exports", "assets"):
-            raise ProjectError("Unknown media kind: {0}".format(kind))
+            raise ProjectError(f"Unknown media kind: {kind}")
         base = os.path.join(project.root, "media", kind)
         if filename is None:
             return base

@@ -7,8 +7,11 @@ Verifies the six built-in templates ship, load, and fill correctly.
 import pytest
 
 from templates_service import (
-    available_templates, load_template, fill_template,
-    TemplateError, BUILTIN,
+    BUILTIN,
+    TemplateError,
+    available_templates,
+    fill_template,
+    load_template,
 )
 
 

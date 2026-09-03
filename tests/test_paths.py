@@ -7,7 +7,6 @@ directorio de trabajo.
 
 import os
 import sys
-import pytest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -52,9 +51,8 @@ class TestResourceDirs:
             [sys.executable, "-c",
              "import sys; sys.path.insert(0, %r); "
              "import paths; print(paths.resolve_script_path())" % paths.get_app_dir()],
-            capture_output=True, text=True, cwd="/tmp",
+            capture_output=True, text=True, cwd="/tmp", check=True,
         )
-        assert result.returncode == 0
         assert "guion_actual.txt" in result.stdout
 
 

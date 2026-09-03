@@ -7,14 +7,14 @@ Usage:
     python main.py path/to/script.txt  # Read a specific script directly
 """
 
-import sys
 import os
+import sys
 
 from PyQt6.QtCore import QLocale, QTranslator
 from PyQt6.QtWidgets import QApplication, QMessageBox
 
-from config import load_config, get_config_path
-from logging_setup import setup_logging, get_logger
+from config import get_config_path, load_config
+from logging_setup import get_logger, setup_logging
 from paths import get_app_dir, resolve_script_path
 from project_service import ProjectService
 
@@ -23,7 +23,7 @@ log = get_logger("Main")
 
 def load_script(path):
     """Reads the text file and returns its content."""
-    with open(path, "r", encoding="utf-8") as f:
+    with open(path, encoding="utf-8") as f:
         return f.read()
 
 
@@ -130,9 +130,9 @@ def main():
     log.info("Mode: %s", mode)
 
     if mode == "read":
-        window = run_read_mode(app, script_path, config)
+        run_read_mode(app, script_path, config)
     else:
-        window = run_projects_mode(app, config)
+        run_projects_mode(app, config)
 
     sys.exit(app.exec())
 

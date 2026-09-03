@@ -8,8 +8,11 @@ encoding fallbacks, and WPM/duration helpers.
 import pytest
 
 from text_import import (
-    import_file, word_count, estimated_duration_seconds,
-    UnsupportedFormat, SUPPORTED,
+    SUPPORTED,
+    UnsupportedFormat,
+    estimated_duration_seconds,
+    import_file,
+    word_count,
 )
 
 
@@ -78,12 +81,12 @@ class TestDocx:
         import zipfile
         ns = ('xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"')
         body = "".join(
-            "<w:p><w:r><w:t xml:space=\"preserve\">{}</w:t></w:r></w:p>".format(t)
+            f"<w:p><w:r><w:t xml:space=\"preserve\">{t}</w:t></w:r></w:p>"
             for t in paragraphs
         )
         doc = (
             '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-            '<w:document {}><w:body>{}<w:p/></w:body></w:document>'.format(ns, body)
+            f'<w:document {ns}><w:body>{body}<w:p/></w:body></w:document>'
         )
         with zipfile.ZipFile(path, "w") as z:
             z.writestr("[Content_Types].xml", "<?xml version=\"1.0\"?><Types/>")
@@ -107,7 +110,7 @@ class TestDocx:
     def test_invalid_docx(self, tmp_path):
         f = tmp_path / "s.docx"
         f.write_bytes(b"not a zip file at all")
-        with pytest.raises(UnsupportedFormat, match="valid .docx"):
+        with pytest.raises(UnsupportedFormat, match=r"valid \.docx"):
             import_file(str(f))
 
 

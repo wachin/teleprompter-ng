@@ -16,6 +16,7 @@ import os
 import re
 import zipfile
 from html.parser import HTMLParser
+from typing import ClassVar
 
 from logging_setup import get_logger
 
@@ -31,7 +32,7 @@ class UnsupportedFormat(Exception):
 class _HTMLTextExtractor(HTMLParser):
     """Collects visible text, adding newlines on block elements."""
 
-    _BLOCKS = {
+    _BLOCKS: ClassVar[set[str]] = {
         "p", "div", "br", "li", "tr", "section", "article",
         "h1", "h2", "h3", "h4", "h5", "h6",
     }
@@ -81,7 +82,7 @@ def _html_to_text(raw):
         parser.feed(raw)
         parser.close()
     except Exception as e:
-        raise UnsupportedFormat("Malformed HTML: {0}".format(e)) from e
+        raise UnsupportedFormat(f"Malformed HTML: {e}") from e
     return parser.text()
 
 
@@ -92,7 +93,7 @@ def _docx_to_text(raw_bytes):
             xml = z.read("word/document.xml").decode("utf-8", errors="replace")
     except (zipfile.BadZipFile, KeyError) as e:
         raise UnsupportedFormat(
-            "This does not look like a valid .docx file: {0}".format(e)
+            f"This does not look like a valid .docx file: {e}"
         ) from e
 
     # w:p → paragraph break; w:t → text run; w:tab → tab
@@ -138,7 +139,7 @@ def import_file(path):
     last_err = None
     for encoding in ("utf-8", "utf-8-sig", "latin-1"):
         try:
-            with open(path, "r", encoding=encoding) as f:
+            with open(path, encoding=encoding) as f:
                 raw = f.read()
             break
         except UnicodeDecodeError as e:

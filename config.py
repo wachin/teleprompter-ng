@@ -10,7 +10,6 @@ Soporta Windows (%AppData%), Linux (~/.config) y macOS (~/Library/Application Su
 import json
 import os
 import sys
-import platform
 
 
 def get_config_dir():
@@ -84,14 +83,14 @@ def load_config(path=None):
 
     if os.path.exists(path):
         try:
-            with open(path, "r", encoding="utf-8") as f:
+            with open(path, encoding="utf-8") as f:
                 saved = json.load(f)
             # Solo tomamos claves que existen en DEFAULTS y con el
             # tipo correcto (Fase 0: evita config corrupta que rompe la UI)
             for key in DEFAULTS:
                 if key in saved and isinstance(saved[key], _TYPES[key]):
                     config[key] = saved[key]
-        except (json.JSONDecodeError, IOError):
+        except (OSError, json.JSONDecodeError):
             pass  # Archivo corrupto → usar defaults
 
     return config

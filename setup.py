@@ -3,7 +3,7 @@
 setup.py — Configuración de instalación para Teleprompter Pro.
 """
 
-from setuptools import setup, find_packages
+from setuptools import setup
 
 setup(
     name="teleprompter-pro",
@@ -11,7 +11,7 @@ setup(
     author="Juan Salazar Flores",
     author_email="wachin@debian.org",
     description="Desktop teleprompter with remote control and voice sync",
-    long_description=open("README.md", encoding="utf-8").read(),
+    long_description=open("README.md", encoding="utf-8").read(),  # noqa: SIM115
     long_description_content_type="text/markdown",
     url="https://github.com/wachin/teleprompter",
     license="MIT",

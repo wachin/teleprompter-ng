@@ -1,0 +1,88 @@
+[project]
+name = "teleprompter-pro"
+version = "2.0.0.dev1"
+description = "Desktop teleprompter with camera, recording, projects, and remote control"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+authors = [{ name = "Juan Salazar Flores", email = "wachin@debian.org" }]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: X11 Applications",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Topic :: Multimedia :: Video",
+]
+dependencies = [
+    "PyQt6>=6.6.0",
+    "flask>=3.0",
+    "flask-socketio>=5.3.0",
+    "qrcode[pil]>=7.4",
+]
+
+[project.optional-dependencies]
+voice = [
+    "vosk>=0.3.45",
+    "sounddevice>=0.4.6",
+]
+dev = [
+    "pytest>=7.0",
+    "pytest-qt>=4.2.0",
+    "pytest-cov>=4.0",
+    "ruff>=0.4",
+    "mypy>=1.8",
+]
+packaging = ["pyinstaller>=6.0"]
+
+[project.scripts]
+teleprompter-pro = "main:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = [
+    "main", "ui", "config", "remote_server", "speech_sync",
+    "logging_setup", "paths", "project_service", "text_import",
+    "templates_service", "main_window",
+]
+
+[tool.ruff]
+# 120 accommodates single-line Qt stylesheet strings, which read
+# worse when wrapped (they are CSS-like blobs, not prose).
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+# Baseline rules for the current codebase. Stricter families (PL, S,
+# C90) are adopted gradually per ROADMAP Phase 11, not all at once
+# mid-rewrite.
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # bugbear
+    "UP",  # pyupgrade
+    "SIM", # simplify
+    "RUF", # ruff-specific
+    "DTZ", # datetime
+    "EXE", # shebang/executable consistency
+]
+ignore = [
+    # UI boundary handlers legitimately catch broad exceptions to show
+    # the user an actionable message instead of crashing the app.
+    "BLE001",
+    # Explicit {0} placeholders are kept in tr() strings on purpose:
+    # translators see whole sentences with numbered slots
+    # (see docs/I18N.md, developer rule 3).
+    "UP030",
+    "UP031",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+qt_api = "pyqt6"

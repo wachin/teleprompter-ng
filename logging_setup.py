@@ -42,7 +42,9 @@ def setup_logging(level=logging.INFO):
                 syslog.setFormatter(logging.Formatter("teleprompter-pro: " + LOG_FORMAT, DATE_FORMAT))
                 root.addHandler(syslog)
         except Exception:
-            pass
+            # /dev/log puede denegar el acceso según el sistema; el
+            # handler de consola ya cubre el caso normal
+            root.debug("SysLog handler not available", exc_info=True)
 
     # Reducir ruido de bibliotecas de terceros
     for noisy in ("engineio", "socketio", "werkzeug", "urllib3"):

@@ -9,21 +9,36 @@ Fase 0 (auditoría):
 - El servidor remoto se detiene correctamente al cerrar la ventana.
 """
 
-from PyQt6.QtWidgets import (
-    QMainWindow, QTextEdit, QVBoxLayout, QWidget, QLabel,
-    QHBoxLayout, QFrame, QProgressBar, QFileDialog, QDialog,
-    QVBoxLayout as DialogLayout, QPushButton, QSizePolicy,
-)
-from PyQt6.QtCore import Qt, QTimer, QUrl, QSize, QObject, pyqtSignal
+import contextlib
+import os
+from io import BytesIO
+
+import qrcode
+from PyQt6.QtCore import QObject, Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import (
-    QFont, QColor, QTextCursor, QKeySequence, QShortcut, QPixmap,
-    QImage,
+    QFont,
+    QPixmap,
 )
+from PyQt6.QtWidgets import (
+    QDialog,
+    QFileDialog,
+    QFrame,
+    QHBoxLayout,
+    QLabel,
+    QMainWindow,
+    QProgressBar,
+    QPushButton,
+    QSizePolicy,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
+)
+from PyQt6.QtWidgets import (
+    QVBoxLayout as DialogLayout,
+)
+
 from config import save_config
 from logging_setup import get_logger
-import os
-import qrcode
-from io import BytesIO
 
 log = get_logger("UI")
 
@@ -57,10 +72,8 @@ class MirrorView(QWidget):
     def set_source(self, source):
         """Cambia el widget que se refleja."""
         if self._source is not None:
-            try:
+            with contextlib.suppress(TypeError):
                 self._source.verticalScrollBar().valueChanged.disconnect(self.update)
-            except TypeError:
-                pass
         self._source = source
         if source is not None:
             source.verticalScrollBar().valueChanged.connect(self.update)
@@ -96,7 +109,7 @@ class Teleprompter(QMainWindow):
         if config["fullscreen"]:
             try:
                 self.showFullScreen()
-            except:
+            except Exception:
                 self.showMaximized()
         else:
             self.showMaximized()
@@ -201,7 +214,9 @@ class Teleprompter(QMainWindow):
 
         # Estado
         self.status_label = QLabel(self.tr("⏸ Paused"))
-        self.status_label.setStyleSheet("color: #FFFFFF; font-size: 16px; font-weight: bold; background: transparent;")
+        self.status_label.setStyleSheet(
+                "color: #FFFFFF; font-size: 16px; font-weight: bold; background: transparent;"
+            )
         bottom_layout.addWidget(self.status_label)
 
         # Separador
@@ -317,7 +332,9 @@ class Teleprompter(QMainWindow):
             self.countdown_timer.stop()
             self.countdown_active = False
             self.status_label.setText(self.tr("▶ Playing"))
-            self.status_label.setStyleSheet("color: #44FF44; font-size: 16px; font-weight: bold; background: transparent;")
+            self.status_label.setStyleSheet(
+                "color: #44FF44; font-size: 16px; font-weight: bold; background: transparent;"
+            )
             self.is_running = True
             self._update_timer_interval()
             self.scroll_timer.start()
@@ -331,7 +348,9 @@ class Teleprompter(QMainWindow):
             self.countdown_timer.stop()
             self.countdown_active = False
             self.status_label.setText(self.tr("⏸ Paused"))
-            self.status_label.setStyleSheet("color: #FFFFFF; font-size: 16px; font-weight: bold; background: transparent;")
+            self.status_label.setStyleSheet(
+                "color: #FFFFFF; font-size: 16px; font-weight: bold; background: transparent;"
+            )
             return
 
         if self.is_running:
@@ -339,7 +358,9 @@ class Teleprompter(QMainWindow):
             self.is_running = False
             self.scroll_timer.stop()
             self.status_label.setText(self.tr("⏸ Paused"))
-            self.status_label.setStyleSheet("color: #FFFFFF; font-size: 16px; font-weight: bold; background: transparent;")
+            self.status_label.setStyleSheet(
+                "color: #FFFFFF; font-size: 16px; font-weight: bold; background: transparent;"
+            )
         else:
             # Iniciar con cuenta regresiva
             self.start_countdown()
@@ -365,7 +386,9 @@ class Teleprompter(QMainWindow):
         self.countdown_timer.stop()
         self.text_widget.verticalScrollBar().setValue(0)
         self.status_label.setText(self.tr("⏸ Paused"))
-        self.status_label.setStyleSheet("color: #FFFFFF; font-size: 16px; font-weight: bold; background: transparent;")
+        self.status_label.setStyleSheet(
+                "color: #FFFFFF; font-size: 16px; font-weight: bold; background: transparent;"
+            )
 
     def font_bigger(self):
         """Aumentar tamaño de fuente."""
@@ -405,7 +428,7 @@ class Teleprompter(QMainWindow):
     def _load_script(self, path):
         """Carga un nuevo guion."""
         try:
-            with open(path, "r", encoding="utf-8") as f:
+            with open(path, encoding="utf-8") as f:
                 text = f.read()
             self.text_content = text
             self.text_widget.setPlainText(text)
@@ -449,12 +472,16 @@ class Teleprompter(QMainWindow):
                 if self.speech_sync.start():
                     self.speech_sync_active = True
                     self.voice_sync_label.setText(self.tr("🎤 V: On"))
-                    self.voice_sync_label.setStyleSheet("color: #44FF44; font-size: 14px; font-weight: bold; background: transparent;")
+                    self.voice_sync_label.setStyleSheet(
+                "color: #44FF44; font-size: 14px; font-weight: bold; background: transparent;"
+            )
             else:
                 log.warning("Voice model not available. Place it in models/model-es")
                 self.voice_sync_label.setText(self.tr("🎤 V: Error"))
                 self.voice_sync_label.setStyleSheet("color: #FF4444; font-size: 14px; background: transparent;")
-                self.status_label.setText(self.tr("⚠️ Voice model not found (models/model-es)"))
+                self.status_label.setText(
+                self.tr("⚠️ Voice model not found (models/model-es)")
+            )
 
     def _on_wpm_update(self, current_wpm, target_wpm):
         """Callback cuando se actualiza el WPM (hilo principal de Qt)."""
@@ -464,7 +491,9 @@ class Teleprompter(QMainWindow):
         """Callback cuando cambia el estado de sincronización (hilo Qt)."""
         if status == "active":
             self.voice_sync_label.setText(self.tr("🎤 V: Listening"))
-            self.voice_sync_label.setStyleSheet("color: #44FF44; font-size: 14px; font-weight: bold; background: transparent;")
+            self.voice_sync_label.setStyleSheet(
+                "color: #44FF44; font-size: 14px; font-weight: bold; background: transparent;"
+            )
         else:
             self.voice_sync_label.setText(self.tr("🎤 V: Off"))
             self.voice_sync_label.setStyleSheet("color: #888; font-size: 14px; background: transparent;")
@@ -562,9 +591,10 @@ class Teleprompter(QMainWindow):
     def show_qr_code(self):
         """Muestra el código QR para conectarse al control remoto."""
         # Arranca el servidor bajo demanda
-        if not self.remote_server or not self.remote_server.is_running():
-            if self._setup_remote_server() is None:
-                return
+        if (
+            not self.remote_server or not self.remote_server.is_running()
+        ) and self._setup_remote_server() is None:
+            return
 
         dialog = QDialog(self)
         dialog.setWindowTitle(self.tr("Remote Control"))
@@ -576,7 +606,9 @@ class Teleprompter(QMainWindow):
 
         # Título
         title = QLabel(self.tr("📱 Connect your phone"))
-        title.setStyleSheet("color: #FFD700; font-size: 18px; font-weight: bold; background: transparent;")
+        title.setStyleSheet(
+            "color: #FFD700; font-size: 18px; font-weight: bold; background: transparent;"
+        )
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(title)
 

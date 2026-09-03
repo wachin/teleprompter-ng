@@ -5,8 +5,8 @@ tests/test_config.py — Tests unitarios para config.py
 import json
 import os
 import tempfile
-import pytest
-from config import load_config, save_config, DEFAULTS
+
+from config import DEFAULTS, load_config, save_config
 
 
 class TestLoadConfig:
