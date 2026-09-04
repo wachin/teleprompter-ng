@@ -142,54 +142,64 @@
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../branding_view.py" line="340" />
-      <location filename="../branding_view.py" line="246" />
+      <location filename="../branding_view.py" line="207" />
+      <source>🚀 Export with profile…</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="359" />
+      <location filename="../branding_view.py" line="250" />
       <source>Open a project first.</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../branding_view.py" line="249" />
+      <location filename="../branding_view.py" line="253" />
       <source>Choose a file</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../branding_view.py" line="261" />
+      <location filename="../branding_view.py" line="265" />
       <source>Could not copy the file into the project: {0}</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../branding_view.py" line="268" />
+      <location filename="../branding_view.py" line="272" />
       <source>Copied into media/assets: {0}</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../branding_view.py" line="344" />
+      <location filename="../branding_view.py" line="341" />
+      <source>Export with profile</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="363" />
       <source>Load a take in the Editor first.</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../branding_view.py" line="433" />
-      <location filename="../branding_view.py" line="351" />
+      <location filename="../branding_view.py" line="452" />
+      <location filename="../branding_view.py" line="370" />
       <source>❌ {0}</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../branding_view.py" line="378" />
+      <location filename="../branding_view.py" line="397" />
       <source>Burn-in needs subtitles: generate or import them in the Editor first.</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../branding_view.py" line="385" />
+      <location filename="../branding_view.py" line="404" />
       <source>Exporting timeline…</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../branding_view.py" line="407" />
+      <location filename="../branding_view.py" line="426" />
       <source>Rendering with branding…</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../branding_view.py" line="429" />
+      <location filename="../branding_view.py" line="448" />
       <source>✅ Exported: {0}</source>
       <translation type="unfinished" />
     </message>
@@ -625,6 +635,110 @@ Phones must enter this code once to send commands.</source>
     <message>
       <location filename="../editor_view.py" line="430" />
       <source>Re-recording {0} — the old take stays untouched</source>
+      <translation type="unfinished" />
+    </message>
+  </context>
+  <context>
+    <name>ExportView</name>
+    <message>
+      <location filename="../export_view.py" line="145" />
+      <source>Profile:</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../export_view.py" line="165" />
+      <source>Publishing metadata (stays local):</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../export_view.py" line="167" />
+      <source>Video title</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../export_view.py" line="170" />
+      <source>Description</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../export_view.py" line="174" />
+      <source>hashtags, comma separated</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../export_view.py" line="178" />
+      <source>📋 Copy metadata</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../export_view.py" line="181" />
+      <source>💾 Save .txt</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../export_view.py" line="189" />
+      <source>🚀 Export</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../export_view.py" line="193" />
+      <source>Cancel</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../export_view.py" line="208" />
+      <source>📂 Open output folder</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../export_view.py" line="239" />
+      <source>Estimated size: ~{0:.0f} MB</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../export_view.py" line="258" />
+      <source>Metadata copied to the clipboard.</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../export_view.py" line="264" />
+      <source>Save metadata</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../export_view.py" line="272" />
+      <source>Saved: {0}</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../export_view.py" line="285" />
+      <source>Load a take in the Editor first.</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../export_view.py" line="399" />
+      <location filename="../export_view.py" line="302" />
+      <source>❌ {0}</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../export_view.py" line="317" />
+      <source>Burn-in needs subtitles first (Editor → Subtitles).</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../export_view.py" line="358" />
+      <source>Exporting as {0}…</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../export_view.py" line="375" />
+      <source>✅ Exported: {0}</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../export_view.py" line="404" />
+      <source>Cancelling…</source>
       <translation type="unfinished" />
     </message>
   </context>

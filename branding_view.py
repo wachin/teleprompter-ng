@@ -203,6 +203,10 @@ class BrandingView(QWidget):
         )
         self.export_btn.clicked.connect(self._export)
         export_row.addWidget(self.export_btn)
+
+        self.profile_export_btn = QPushButton(self.tr("🚀 Export with profile…"))
+        self.profile_export_btn.clicked.connect(self._open_profile_export)
+        export_row.addWidget(self.profile_export_btn)
         export_row.addStretch()
         layout.addLayout(export_row)
 
@@ -326,6 +330,21 @@ class BrandingView(QWidget):
         if data:
             self.kit = BrandKit.from_dict(data)
             self._apply_kit_to_form(self.kit)
+
+    def _open_profile_export(self):
+        """Opens the Phase-10 profile export dialog (worker thread)."""
+        from PyQt6.QtWidgets import QDialog, QVBoxLayout
+
+        from export_view import ExportView
+
+        dialog = QDialog(self)
+        dialog.setWindowTitle(self.tr("Export with profile"))
+        dialog.resize(620, 560)
+        layout = QVBoxLayout(dialog)
+        view = ExportView(self.main, branding_view=self)
+        layout.addWidget(view)
+        dialog.finished.connect(view.shutdown)
+        dialog.exec()
 
     def _save_to_project(self, kit):
         project = self.main.project

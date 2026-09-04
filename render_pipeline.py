@@ -12,6 +12,7 @@ run_render() executes the plan and reports progress via callback.
 """
 
 import os
+import shutil
 import subprocess
 import time
 
@@ -228,7 +229,11 @@ def build_render_command(segments, output, kit, probe,
         )
         aref = "[aout]"
     else:
-        aref = "[0:a]"
+        # With -filter_complex present, ffmpeg 7 refuses -map [0:a]
+        # ("label does not exist in any defined filter graph"): the
+        # audio must cross the graph too. anull = no-op passthrough.
+        filters.append("[0:a]anull[aout]")
+        aref = "[aout]"
 
     cmd += ["-filter_complex", ";".join(filters)]
 
@@ -343,3 +348,138 @@ def join_parts(parts, temp_dir):
     if result.returncode != 0 or not os.path.isfile(joined):
         raise RenderError("Could not join the timeline segments")
     return joined
+
+
+# ─────────────────────────────────────────────────────────────
+# Phase 10: profile-aware export, multi-take assembly, thumbnails
+# ─────────────────────────────────────────────────────────────
+
+def build_profile_command(segments, output, kit, probe, profile,
+                          srt_path=None, concat_list_path=None,
+                          project_root=None):
+    """
+    Like build_render_command but with the PROFILE's codec ladder.
+
+    Geometry still comes from the kit (logo, burn-in, ratio fit);
+    the profile decides codec/bitrate/preset and (authoritatively)
+    the aspect ratio — a mismatch is refused with a clear message so
+    nobody exports a letterboxed 16:9 video to a 9:16 profile.
+    """
+    if profile.aspect_ratio != kit.aspect_ratio:
+        raise RenderError(
+            f"The brand kit is set to {kit.aspect_ratio} but the '{profile.key}' profile exports "
+            f"{profile.aspect_ratio}. Change the profile or the kit's aspect ratio."
+        )
+    cmd = build_render_command(
+        segments, output, kit, probe,
+        srt_path=srt_path, concat_list_path=concat_list_path,
+        project_root=project_root,
+    )
+    # Swap the fixed codec block for the profile ladder:
+    # [.., -c:v, libx264, -preset, medium, -crf, 19, -pix_fmt, ..,
+    #  -c:a, aac, -b:a, 192k, (-shortest,) -movflags, +faststart, out]
+    i_v = cmd.index("-c:v")
+    i_pix = cmd.index("-pix_fmt", i_v)
+    cmd[i_v:i_pix] = profile.video_args()
+    i_a = cmd.index("-c:a")
+    i_next = i_a + 4
+    cmd[i_a:i_next] = profile.audio_args()
+    # Container flags: keep -movflags only for mp4 (already there)
+    return cmd
+
+
+def assemble_timeline(segments, clip_paths, temp_dir,
+                      intro_path=None, outro_path=None):
+    """
+    Full Phase-10 assembly: parts (re-encoded) → join, with optional
+    intro/outro around the body.
+
+    The concat demuxer requires matching codecs, so intro/outro are
+    re-encoded to the same ladder as the body parts before joining.
+
+    Returns the joined timeline path.
+    """
+    parts = export_timeline_parts(segments, clip_paths, temp_dir)
+
+    if intro_path:
+        parts.insert(0, _normalize_bookend(intro_path, temp_dir, "intro"))
+    if outro_path:
+        parts.append(_normalize_bookend(outro_path, temp_dir, "outro"))
+
+    return join_parts(parts, temp_dir)
+
+
+def _normalize_bookend(path, temp_dir, name):
+    """Re-encodes an intro/outro to the body's ladder (CRF18 AAC128
+    yuv420p) so the concat demuxer accepts it."""
+    out = os.path.join(temp_dir, f"{name}_norm.ts")
+    cmd = [
+        "ffmpeg", "-hide_banner", "-nostdin", "-y",
+        "-i", path,
+        "-c:v", "libx264", "-preset", "veryfast", "-crf", "18",
+        "-pix_fmt", "yuv420p",
+        "-c:a", "aac", "-b:a", "128k",
+        "-ar", "48000",
+        "-f", "mpegts", out,
+    ]
+    result = subprocess.run(
+        cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        timeout=300, check=False,
+    )
+    if result.returncode != 0 or not os.path.getsize(out) > 0:
+        raise RenderError(
+            f"Could not prepare the {name} clip: {os.path.basename(path)}"
+        )
+    return out
+
+
+def extract_thumbnail(source, output, at_fraction=0.25):
+    """
+    JPEG thumbnail at ~25% of the video (a representative frame,
+    not a black intro).
+
+    Returns the path; raises RenderError with an actionable message.
+    """
+    from ffmpeg_tools import probe_clip
+
+    info = probe_clip(source)
+    at_s = max(0.0, info["duration_s"] * at_fraction)
+    result = subprocess.run(
+        # Output seeking (-ss AFTER -i): input-seek on mpegts can
+        # land where no frame decodes (Phase-8 lesson).
+        ["ffmpeg", "-hide_banner", "-nostdin", "-y",
+         "-i", source, "-ss", f"{at_s:.2f}",
+         "-frames:v", "1", "-q:v", "2", output],
+        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        timeout=60, check=False,
+    )
+    if result.returncode != 0 or not os.path.isfile(output):
+        raise RenderError("Could not generate the thumbnail")
+    return output
+
+
+def validate_output(path, min_bytes=50_000):
+    """
+    Final-file sanity (Roadmap: exists, reasonable size, opens).
+
+    Returns (ok, problem_message). Uses ffprobe to prove the file
+    parses — a truncated mp4 that ffprobe cannot read is a failure
+    even if its size looks fine.
+    """
+    if not os.path.isfile(path):
+        return False, f"The output file does not exist: {path}"
+    size = os.path.getsize(path)
+    if size < min_bytes:
+        return False, (
+            f"The output is suspiciously small ({size} bytes) — the render "
+            "may have failed"
+        )
+    if shutil.which("ffprobe") is None:
+        return True, ""  # cannot probe deeper; size is our only signal
+    result = subprocess.run(
+        ["ffprobe", "-v", "error", "-show_format", path],
+        capture_output=True, timeout=30, check=False,
+    )
+    if result.returncode != 0:
+        return False, "The output does not parse as a media file"
+    return True, ""
