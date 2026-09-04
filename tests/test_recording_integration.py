@@ -78,7 +78,9 @@ class TestRealRecording:
         assert path is not None, "recording was not finalized"
         assert os.path.isfile(path)
         size = os.path.getsize(path)
-        assert size > 50_000, f"file suspiciously small: {size} bytes"
+        # Enough for both streams at the smallest camera mode (3 s take
+        # at 320x240 can be ~40 KB — small is fine, EMPTY is not)
+        assert size > 15_000, f"file suspiciously small: {size} bytes"
 
         # ffprobe: container + both streams
         info = _ffprobe(path)

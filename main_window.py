@@ -36,8 +36,10 @@ from PyQt6.QtWidgets import (
 from audio_service import list_microphones
 from camera_preview import CameraPreview
 from camera_service import CameraError, CameraService, device_formats, grouped_modes, list_devices
+from editor_view import EditorView
 from logging_setup import get_logger
 from project_service import ProjectError
+from review_view import ReviewView
 from scroll_engine import ScrollEngine
 from teleprompter_overlay import TeleprompterOverlay
 from templates_service import available_templates, fill_template
@@ -1050,12 +1052,8 @@ class MainWindow(QMainWindow):
         self.home_view = HomeView(self)
         self.script_view = ScriptView(self)
         self.camera_view = CameraView(self)
-        self.review_view = _PlaceholderView(
-            self.tr("Review"), self.tr("Phase 6")
-        )
-        self.editor_view = _PlaceholderView(
-            self.tr("Editor"), self.tr("Phase 6")
-        )
+        self.review_view = ReviewView(self)
+        self.editor_view = EditorView(self)
         for view in (self.home_view, self.script_view, self.camera_view,
                      self.review_view, self.editor_view):
             self.views.addWidget(view)
@@ -1114,6 +1112,7 @@ class MainWindow(QMainWindow):
         self.project = project
         self.script_view.load_project(project)
         self.camera_view._sync_script_from_project()
+        self.review_view.refresh()
         self._project_opened()
         log.info("Active project: %s", project.root)
 
