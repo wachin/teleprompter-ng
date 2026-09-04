@@ -43,8 +43,12 @@ sudo apt install \
     libportaudio2 portaudio19-dev
 
 # 2. Vosk and sounddevice have no Debian package: install them
-#    for your user (no sudo needed)
-pip install --user vosk sounddevice
+#    for your user (no sudo needed).
+#    Debian 13 and recent Ubuntu mark the system Python as
+#    externally managed; --break-system-packages only lets pip
+#    write into your user site (~/.local), it does NOT touch the
+#    system packages.
+pip install --user --break-system-packages vosk sounddevice
 
 # 3. Run — no virtual environment required
 python3 main.py
