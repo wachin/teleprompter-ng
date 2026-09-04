@@ -2,6 +2,199 @@
 <!DOCTYPE TS>
 <TS version="2.1">
   <context>
+    <name>BrandingView</name>
+    <message>
+      <location filename="../branding_view.py" line="64" />
+      <source>media/assets/logo.png</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="136" />
+      <location filename="../branding_view.py" line="126" />
+      <location filename="../branding_view.py" line="117" />
+      <location filename="../branding_view.py" line="66" />
+      <source>Choose…</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="69" />
+      <source>Logo (PNG)</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="75" />
+      <source>Logo position</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="81" />
+      <source>Logo size (x width)</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="87" />
+      <source>Logo opacity</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="99" />
+      <source>Primary</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="108" />
+      <source>Secondary</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="110" />
+      <source>Brand colors</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="115" />
+      <source>media/assets/intro.mp4</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="120" />
+      <source>Intro clip (optional)</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="124" />
+      <source>media/assets/outro.mp4</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="129" />
+      <source>Outro clip (optional)</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="134" />
+      <source>media/assets/theme.mp3</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="139" />
+      <source>Background music</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="145" />
+      <source>Music volume</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="152" />
+      <source>s in /</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="157" />
+      <source>s out</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="159" />
+      <source>Music fades</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="174" />
+      <source>Letterbox (bars)</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="175" />
+      <source>Crop (fill)</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="178" />
+      <source>Aspect ratio</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="182" />
+      <source>Burn subtitles into the video</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="184" />
+      <source>Subtitles</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="189" />
+      <source>Subtitle position</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="194" />
+      <source>Subtitle size (1080p base)</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="200" />
+      <source>🎬 Export final video</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="340" />
+      <location filename="../branding_view.py" line="246" />
+      <source>Open a project first.</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="249" />
+      <source>Choose a file</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="261" />
+      <source>Could not copy the file into the project: {0}</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="268" />
+      <source>Copied into media/assets: {0}</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="344" />
+      <source>Load a take in the Editor first.</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="433" />
+      <location filename="../branding_view.py" line="351" />
+      <source>❌ {0}</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="378" />
+      <source>Burn-in needs subtitles: generate or import them in the Editor first.</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="385" />
+      <source>Exporting timeline…</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="407" />
+      <source>Rendering with branding…</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../branding_view.py" line="429" />
+      <source>✅ Exported: {0}</source>
+      <translation type="unfinished" />
+    </message>
+  </context>
+  <context>
     <name>CameraPreview</name>
     <message>
       <location filename="../camera_preview.py" line="108" />
@@ -248,7 +441,7 @@ Phones must enter this code once to send commands.</source>
   <context>
     <name>EditorView</name>
     <message>
-      <location filename="../editor_view.py" line="241" />
+      <location filename="../editor_view.py" line="260" />
       <location filename="../editor_view.py" line="58" />
       <source>No take loaded.</source>
       <translation type="unfinished" />
@@ -299,7 +492,7 @@ Phones must enter this code once to send commands.</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="340" />
+      <location filename="../editor_view.py" line="359" />
       <location filename="../editor_view.py" line="106" />
       <source>🔇 Remove silences…</source>
       <translation type="unfinished" />
@@ -330,97 +523,107 @@ Phones must enter this code once to send commands.</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="153" />
+      <location filename="../editor_view.py" line="138" />
+      <source>🎨 Brand &amp; Export…</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../editor_view.py" line="158" />
       <source>Load a take first.</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="156" />
+      <location filename="../editor_view.py" line="161" />
       <source>Subtitles</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="173" />
+      <location filename="../editor_view.py" line="179" />
+      <source>Brand &amp; Export</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../editor_view.py" line="192" />
       <source>Open a project first.</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="195" />
+      <location filename="../editor_view.py" line="214" />
       <source>Take: {0} ({1:.1f}s, {2}x{3})</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="202" />
+      <location filename="../editor_view.py" line="221" />
       <source>Silences not analyzed yet — click to analyze</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="213" />
+      <location filename="../editor_view.py" line="232" />
       <source>Range</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="224" />
+      <location filename="../editor_view.py" line="243" />
       <source>Total kept: {0:.1f}s</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="276" />
+      <location filename="../editor_view.py" line="295" />
       <source>❌ {0}</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="318" />
+      <location filename="../editor_view.py" line="337" />
       <source>No silences ≥ {0}s found</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="323" />
+      <location filename="../editor_view.py" line="342" />
       <source>{0} silences, {1:.1f}s total — click again to remove</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="326" />
+      <location filename="../editor_view.py" line="345" />
       <source>🔇 Remove them</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="344" />
+      <location filename="../editor_view.py" line="363" />
       <source>Silences removed from the timeline</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="351" />
+      <location filename="../editor_view.py" line="370" />
       <source>Nothing to preview</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="357" />
+      <location filename="../editor_view.py" line="376" />
       <source>ffplay not found — install ffmpeg</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="375" />
+      <location filename="../editor_view.py" line="394" />
       <source>Preview export failed</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="383" />
+      <location filename="../editor_view.py" line="402" />
       <source>Preview join failed</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="389" />
+      <location filename="../editor_view.py" line="408" />
       <source>Previewing the kept ranges…</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="391" />
+      <location filename="../editor_view.py" line="410" />
       <source>Preview error: {0}</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="411" />
+      <location filename="../editor_view.py" line="430" />
       <source>Re-recording {0} — the old take stays untouched</source>
       <translation type="unfinished" />
     </message>

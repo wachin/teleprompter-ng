@@ -13,11 +13,17 @@ import subprocess
 
 import pytest
 
-from branding_model import AspectRatio, BrandKit, SubtitleStyle
-from edit_model import EditList, Segment
+from branding_model import BrandKit, SubtitleStyle
+from edit_model import EditList
+from ffmpeg_tools import probe_clip
 from render_pipeline import (
-    RenderError, build_render_command, build_video_filter,
-    export_timeline_parts, join_parts, logo_geometry, run_render,
+    RenderError,
+    build_render_command,
+    build_video_filter,
+    export_timeline_parts,
+    join_parts,
+    logo_geometry,
+    run_render,
     subtitle_filter_args,
 )
 
@@ -83,7 +89,7 @@ class TestVideoFilter:
         kit = BrandKit(aspect_ratio="9:16")
         chain = build_video_filter(kit, 1920, 1080)
         assert "pad=1080:1920" in chain
-        assert "scale=608:1080" in chain
+        assert "scale=1080:606" in chain
 
     def test_crop_to_1x1(self):
         kit = BrandKit(aspect_ratio="1:1", fit_mode="crop")
@@ -99,7 +105,7 @@ class TestVideoFilter:
             f.write("1\n00:00:00,000 --> 00:00:01,000\nHi\n")
         chain = build_video_filter(kit, 1920, 1080, srt_path=srt)
         assert "subtitles=" in chain
-        assert "force_style=FontSize=" in chain
+        assert "force_style='FontSize=" in chain
 
 
 class TestSubtitleStyleArgs:
@@ -132,7 +138,7 @@ class TestLogoGeometry:
         kit = BrandKit(logo_scale=0.15, logo_position="bottom-right")
         scale_w, _sx, _sy, overlay = logo_geometry(kit, 1920, 1080)
         assert scale_w == 288
-        assert overlay == "overlay=W-w-38:21"  # margins 2%
+        assert overlay == "overlay=W-w-38:H-h-21"  # 2% margins
 
     def test_top_left(self):
         kit = BrandKit(logo_position="top-left")
@@ -249,10 +255,15 @@ class TestRealPipeline:
         joined = join_parts(parts, str(tmp_path))
 
         output = str(root / "export.mp4")
-        probe = {"duration_s": 2.0, "width": 320, "height": 240}
+        # Probe the ORIGINAL clip: stream-copied parts report 0x0
+        # (mpegts quirk), and the branding view uses the source's
+        # geometry exactly like this.
+        probe = probe_clip(str(root / "take.ts"))
+        probe["duration_s"] = 2.0
         cmd = build_render_command(
             edit.segments, output, kit, probe,
             srt_path=str(srt), concat_list_path=joined,
+            project_root=str(root),
         )
         progress_values = []
         run_render(cmd, on_progress=progress_values.append)

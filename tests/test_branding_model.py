@@ -7,7 +7,10 @@ Pure-Python: aspect ratio math, kit validation, persistence.
 import pytest
 
 from branding_model import (
-    AspectRatio, BrandKit, BrandingError, SubtitleStyle,
+    AspectRatio,
+    BrandingError,
+    BrandKit,
+    SubtitleStyle,
 )
 
 
@@ -30,17 +33,18 @@ class TestAspectRatio:
         assert abs(AspectRatio.ratio_value("1:1") - 1.0) < 0.01
 
     def test_letterbox_horizontal_source(self):
-        # 1920x1080 into 9:16 → pillarboxed, even dimensions
+        # 1920x1080 into 9:16 → pillarboxed: fits 1080 wide, 606 tall
         sw, sh, x, y = AspectRatio.fit_letterbox(1920, 1080, "9:16")
-        assert sw == 608 and sh == 1080
-        assert x == (1080 - 608) // 2
-        assert y == 0
+        assert sw == 1080 and sh == 606
+        assert x == 0
+        assert y == (1920 - 606) // 2
 
     def test_letterbox_vertical_source(self):
-        # 1080x1920 into 16:9 → letterboxed
+        # 1080x1920 into 16:9 → letterboxed: fits 606 wide, 1080 tall
         sw, sh, x, y = AspectRatio.fit_letterbox(1080, 1920, "16:9")
-        assert sw == 1080 and sh == 608
-        assert y == (1080 - 608) // 2
+        assert sw == 606 and sh == 1080
+        assert x == (1920 - 606) // 2
+        assert y == 0
 
     def test_letterbox_same_ratio(self):
         sw, sh, x, y = AspectRatio.fit_letterbox(1920, 1080, "16:9")
@@ -55,12 +59,12 @@ class TestAspectRatio:
 
     def test_crop_tall_source(self):
         # 1080x1920 into 9:16 is already matching
-        cw, ch, tw, th = AspectRatio.fit_crop(1080, 1920, "9:16")
+        cw, ch, _tw, _th = AspectRatio.fit_crop(1080, 1920, "9:16")
         assert (cw, ch) == (1080, 1920)
 
     def test_crop_partial(self):
         # 320x240 (4:3) into 9:16 → crop width to 135
-        cw, ch, tw, th = AspectRatio.fit_crop(320, 240, "9:16")
+        cw, ch, _tw, _th = AspectRatio.fit_crop(320, 240, "9:16")
         assert ch == 240
         assert abs(cw - 135) < 2
 

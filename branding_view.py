@@ -410,6 +410,7 @@ class BrandingView(QWidget):
                 output, kit, probe,
                 srt_path=srt_path,
                 concat_list_path=joined,
+                project_root=project.root,
             )
             run_render(
                 cmd,

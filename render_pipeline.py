@@ -72,7 +72,10 @@ def subtitle_filter_args(style, output_height):
             ),
             "BorderStyle=4",
         ]
-    return "force_style=" + ",".join(force_style_parts)
+    # The commas inside force_style would split filter options;
+    # quoting the value makes ffmpeg treat it as ONE option.
+    # Single quotes pass literally through the argv (no shell).
+    return "force_style='" + ",".join(force_style_parts) + "'"
 
 
 def build_video_filter(kit, source_w, source_h, srt_path=None):
@@ -141,52 +144,71 @@ def logo_geometry(kit, output_w, output_h):
 
 
 def build_render_command(segments, output, kit, probe,
-                         srt_path=None, concat_list_path=None):
+                         srt_path=None, concat_list_path=None,
+                         project_root=None):
     """
     The full ffmpeg argv for the final render of the timeline.
 
     segments: [Segment] (Phase 6 EditList) — exported to parts first.
     probe: {"duration_s", "width", "height"} of the source clip(s).
-    kit: BrandKit with everything configured.
+    kit: BrandKit with everything configured. Asset paths in the kit
+         are PROJECT-RELATIVE; pass project_root so ffmpeg gets
+         absolute paths (it does not know the project layout).
     srt_path: burned-in subtitles when style.enabled.
     concat_list_path: pre-joined timeline .ts (Phase 6 _concat).
+    project_root: where the kit's relative paths resolve.
 
     The command reads the joined timeline and writes the branded
     master. Pure data: returned argv, never executed here.
     """
     if not segments:
         raise RenderError("Nothing to render: the timeline is empty")
+    if probe.get("width", 0) <= 0 or probe.get("height", 0) <= 0:
+        raise RenderError(
+            "The source video has no readable dimensions — probe the "
+            "original take, not a stream-copied part"
+        )
     if concat_list_path is None:
         raise RenderError("A joined timeline file is required (see editor)")
     if not os.path.isfile(concat_list_path):
         raise RenderError(f"Joined timeline not found: {concat_list_path}")
 
-    # probe validation happens against the joined file's codec
+    def resolve(path):
+        """Project-relative kit path → absolute for ffmpeg."""
+        if path is None or project_root is None or os.path.isabs(path):
+            return path
+        return os.path.join(project_root, path)
 
-    tw, th = AspectRatio.resolution(kit.aspect_ratio)
-    video_chain = build_video_filter(kit, probe["width"], probe["height"], srt_path)
+    music_abs = resolve(kit.music_path)
+    logo_abs = resolve(kit.logo_path)
+    srt_abs = resolve(srt_path) if srt_path else None
 
     cmd = [
         "ffmpeg", "-hide_banner", "-nostdin", "-y",
         "-i", concat_list_path,
     ]
 
-    # Music input
-    has_music = kit.music_path is not None
+    # Input indexes are fixed BEFORE adding them: music and logo
+    # positions depend on the order, not on later counting.
+    has_music = music_abs is not None
+    music_index = cmd_inputs(cmd) if has_music else None
     if has_music:
-        cmd += ["-stream_loop", "-1", "-i", kit.music_path]
+        cmd += ["-stream_loop", "-1", "-i", music_abs]
 
-    # Logo input
-    has_logo = kit.logo_path is not None
+    has_logo = logo_abs is not None
+    logo_index = cmd_inputs(cmd) if has_logo else None
     if has_logo:
-        cmd += ["-i", kit.logo_path]
+        cmd += ["-i", logo_abs]
+
+    tw, th = AspectRatio.resolution(kit.aspect_ratio)
+    video_chain = build_video_filter(kit, probe["width"], probe["height"], srt_abs)
 
     filters = [f"[0:v]{video_chain}[v0]"]
     vref = "[v0]"
     if has_logo:
         scale_w, _sx, _sy, overlay_pos = logo_geometry(kit, tw, th)
         filters.append(
-            f"[{cmd_inputs(cmd)}:v]scale={scale_w}:-1,format=rgba,colorchannelmixer=aa={kit.logo_opacity}[logo]"
+            f"[{logo_index}:v]scale={scale_w}:-1,format=rgba,colorchannelmixer=aa={kit.logo_opacity}[logo]"
         )
         filters.append(
             f"{vref}[logo]{overlay_pos}[vf]"
@@ -197,7 +219,7 @@ def build_render_command(segments, output, kit, probe,
         # Duck the music, fade in/out, and stop with the video
         fade_out_start = max(0.0, probe["duration_s"] - kit.music_fade_out)
         filters.append(
-            f"[{cmd_inputs(cmd)}:a]volume={kit.music_volume},"
+            f"[{music_index}:a]volume={kit.music_volume},"
             f"afade=t=in:d={kit.music_fade_in},"
             f"afade=t=out:st={fade_out_start}:d={kit.music_fade_out}[music]"
         )
@@ -251,8 +273,13 @@ def run_render(cmd, on_progress=None, timeout=600):
                 )
             if "time=" in line and duration_hint and on_progress:
                 time_part = line.split("time=")[1].split()[0]
-                h, m, s = time_part.split(":")
-                current = int(h) * 3600 + int(m) * 60 + float(s)
+                if "N/A" in time_part or ":" not in time_part:
+                    continue  # stream not producing time yet
+                try:
+                    h, m, s = time_part.split(":")
+                    current = int(h) * 3600 + int(m) * 60 + float(s)
+                except ValueError:
+                    continue
                 on_progress(min(1.0, current / duration_hint))
         process.wait(timeout=timeout)
     finally:
@@ -269,7 +296,13 @@ def run_render(cmd, on_progress=None, timeout=600):
 
 def export_timeline_parts(segments, clip_paths, temp_dir):
     """
-    Materializes each keep-range as a .ts part (stream copy).
+    Materializes each keep-range as a .ts part.
+
+    Parts for the FINAL render re-encode (accurate): stream-copied
+    seeks land mid-GOP and can drop ALL video frames (found with
+    x264 sources: a 0.5 s input-seek left an audio-only part),
+    which breaks [0:v] binding downstream. Preview-speed copies
+    stay in the Editor (Phase 6) where fragments are acceptable.
 
     Returns the list of part paths in timeline order.
     """
@@ -279,7 +312,9 @@ def export_timeline_parts(segments, clip_paths, temp_dir):
     for i, seg in enumerate(segments):
         source = clip_paths[seg.clip]
         part = os.path.join(temp_dir, f"part_{i:03d}.ts")
-        cmd = segment_export_command(source, part, seg.in_s, seg.out_s)
+        cmd = segment_export_command(
+            source, part, seg.in_s, seg.out_s, reencode=True,
+        )
         result = subprocess.run(
             cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
             timeout=120, check=False,

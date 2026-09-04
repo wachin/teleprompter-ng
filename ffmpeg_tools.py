@@ -130,18 +130,28 @@ def segment_export_command(source, output, in_s, out_s, reencode=False):
         raise FFmpegToolError("Segment end must be after its start")
     cmd = [
         "ffmpeg", "-hide_banner", "-nostdin", "-y",
-        "-ss", f"{in_s:.3f}",
-        "-to", f"{out_s:.3f}",
         "-i", source,
     ]
     if reencode:
+        # OUTPUT seeking (after -i): decodes from the start and cuts
+        # exactly. Input-seeking on mpegts landed mid-GOP and produced
+        # AUDIO-ONLY parts (ffmpeg 7.1.5, x264 sources) — found live.
         cmd += [
+            "-ss", f"{in_s:.3f}",
+            "-to", f"{out_s:.3f}",
             "-c:v", "libx264", "-preset", "veryfast", "-crf", "18",
             "-pix_fmt", "yuv420p",
             "-c:a", "aac", "-b:a", "128k",
         ]
     else:
-        cmd += ["-c", "copy"]
+        # Stream copy keeps INPUT seeking (fast preview cuts)
+        cmd = [
+            "ffmpeg", "-hide_banner", "-nostdin", "-y",
+            "-ss", f"{in_s:.3f}",
+            "-to", f"{out_s:.3f}",
+            "-i", source,
+            "-c", "copy",
+        ]
     cmd += ["-f", "mpegts", output]
     return cmd
 
