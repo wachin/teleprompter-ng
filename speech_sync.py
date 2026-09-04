@@ -41,7 +41,8 @@ def _find_model(candidate_names):
     for base in _MODEL_DIRS:
         for name in candidate_names:
             path = os.path.join(base, name)
-            if os.path.isdir(path) and os.path.isfile(os.path.join(path, "conf")):
+            # In Vosk models 'conf' is a DIRECTORY (mfcc.conf, model.conf…)
+            if os.path.isdir(path) and os.path.isdir(os.path.join(path, "conf")):
                 return path
     return None
 

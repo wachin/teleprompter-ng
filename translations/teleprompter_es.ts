@@ -248,7 +248,7 @@ Phones must enter this code once to send commands.</source>
   <context>
     <name>EditorView</name>
     <message>
-      <location filename="../editor_view.py" line="213" />
+      <location filename="../editor_view.py" line="241" />
       <location filename="../editor_view.py" line="58" />
       <source>No take loaded.</source>
       <translation type="unfinished" />
@@ -299,7 +299,7 @@ Phones must enter this code once to send commands.</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="312" />
+      <location filename="../editor_view.py" line="340" />
       <location filename="../editor_view.py" line="106" />
       <source>🔇 Remove silences…</source>
       <translation type="unfinished" />
@@ -325,87 +325,102 @@ Phones must enter this code once to send commands.</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="145" />
+      <location filename="../editor_view.py" line="133" />
+      <source>💬 Subtitles…</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../editor_view.py" line="153" />
+      <source>Load a take first.</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../editor_view.py" line="156" />
+      <source>Subtitles</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../editor_view.py" line="173" />
       <source>Open a project first.</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="167" />
+      <location filename="../editor_view.py" line="195" />
       <source>Take: {0} ({1:.1f}s, {2}x{3})</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="174" />
+      <location filename="../editor_view.py" line="202" />
       <source>Silences not analyzed yet — click to analyze</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="185" />
+      <location filename="../editor_view.py" line="213" />
       <source>Range</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="196" />
+      <location filename="../editor_view.py" line="224" />
       <source>Total kept: {0:.1f}s</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="248" />
+      <location filename="../editor_view.py" line="276" />
       <source>❌ {0}</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="290" />
+      <location filename="../editor_view.py" line="318" />
       <source>No silences ≥ {0}s found</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="295" />
+      <location filename="../editor_view.py" line="323" />
       <source>{0} silences, {1:.1f}s total — click again to remove</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="298" />
+      <location filename="../editor_view.py" line="326" />
       <source>🔇 Remove them</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="316" />
+      <location filename="../editor_view.py" line="344" />
       <source>Silences removed from the timeline</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="323" />
+      <location filename="../editor_view.py" line="351" />
       <source>Nothing to preview</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="329" />
+      <location filename="../editor_view.py" line="357" />
       <source>ffplay not found — install ffmpeg</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="347" />
+      <location filename="../editor_view.py" line="375" />
       <source>Preview export failed</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="355" />
+      <location filename="../editor_view.py" line="383" />
       <source>Preview join failed</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="361" />
+      <location filename="../editor_view.py" line="389" />
       <source>Previewing the kept ranges…</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="363" />
+      <location filename="../editor_view.py" line="391" />
       <source>Preview error: {0}</source>
       <translation type="unfinished" />
     </message>
     <message>
-      <location filename="../editor_view.py" line="383" />
+      <location filename="../editor_view.py" line="411" />
       <source>Re-recording {0} — the old take stays untouched</source>
       <translation type="unfinished" />
     </message>
@@ -721,6 +736,134 @@ Usage: python main.py [path/to/script.txt]</source>
       <location filename="../main_window.py" line="296" />
       <source>Could not import:
 {0}</source>
+      <translation type="unfinished" />
+    </message>
+  </context>
+  <context>
+    <name>SubtitleView</name>
+    <message>
+      <location filename="../subtitle_view.py" line="179" />
+      <location filename="../subtitle_view.py" line="156" />
+      <location filename="../subtitle_view.py" line="114" />
+      <location filename="../subtitle_view.py" line="52" />
+      <source>✨ Generate from audio</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../subtitle_view.py" line="56" />
+      <source>📂 Import .srt/.vtt</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../subtitle_view.py" line="60" />
+      <source>💾 Save .srt</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../subtitle_view.py" line="64" />
+      <source>💾 Save .vtt</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../subtitle_view.py" line="78" />
+      <source>Start</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../subtitle_view.py" line="78" />
+      <source>End</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../subtitle_view.py" line="78" />
+      <source>Text</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../subtitle_view.py" line="94" />
+      <source>Load a take in the Editor first.</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../subtitle_view.py" line="99" />
+      <source>Vosk is not installed. Install it with: pip install --user vosk</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../subtitle_view.py" line="105" />
+      <source>No speech model found. Download the Spanish model from https://alphacephei.com/vosk/models and place it in models/model-es (see README).</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../subtitle_view.py" line="115" />
+      <source>Transcription cancelled.</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../subtitle_view.py" line="118" />
+      <source>⏹ Cancel</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../subtitle_view.py" line="119" />
+      <source>Extracting audio…</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../subtitle_view.py" line="139" />
+      <source>Transcribing… {0}%</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../subtitle_view.py" line="159" />
+      <source>{0} cues generated — edit and export below.</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../subtitle_view.py" line="164" />
+      <source>No speech detected in this take.</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../subtitle_view.py" line="233" />
+      <location filename="../subtitle_view.py" line="199" />
+      <location filename="../subtitle_view.py" line="178" />
+      <source>❌ {0}</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../subtitle_view.py" line="188" />
+      <source>Import subtitles</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../subtitle_view.py" line="189" />
+      <source>Subtitles (*.srt *.vtt);;All files (*)</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../subtitle_view.py" line="204" />
+      <source>Imported {0} cues.</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../subtitle_view.py" line="223" />
+      <source>Save subtitles</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../subtitle_view.py" line="236" />
+      <source>Saved {0} cues to {1}.</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../subtitle_view.py" line="275" />
+      <source>❌ Row {0}: {1}</source>
+      <translation type="unfinished" />
+    </message>
+    <message>
+      <location filename="../subtitle_view.py" line="285" />
+      <source>No cues yet.</source>
       <translation type="unfinished" />
     </message>
   </context>

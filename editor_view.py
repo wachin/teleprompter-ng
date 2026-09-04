@@ -128,6 +128,11 @@ class EditorView(QWidget):
         self.rerecord_btn = QPushButton(self.tr("⏺ Re-record this take"))
         self.rerecord_btn.clicked.connect(self._rerecord)
         row3.addWidget(self.rerecord_btn)
+
+        # Subtitles entry (Phase 7)
+        self.subtitles_btn = QPushButton(self.tr("💬 Subtitles…"))
+        self.subtitles_btn.clicked.connect(self._open_subtitles)
+        row3.addWidget(self.subtitles_btn)
         layout.addLayout(row3)
 
         self.status = QLabel("")
@@ -135,6 +140,29 @@ class EditorView(QWidget):
         layout.addWidget(self.status)
 
         self._set_enabled(False)
+
+    # ── Subtitles dialog (Phase 7) ─────────────────────────────
+
+    def _open_subtitles(self):
+        """Opens the SubtitleView as a child dialog for this take."""
+        from PyQt6.QtWidgets import QDialog, QVBoxLayout
+
+        from subtitle_view import SubtitleView
+
+        if self.clip_path is None:
+            self.status.setText(self.tr("Load a take first."))
+            return
+        dialog = QDialog(self)
+        dialog.setWindowTitle(self.tr("Subtitles"))
+        dialog.resize(720, 480)
+        layout = QVBoxLayout(dialog)
+        view = SubtitleView(self.main)
+        layout.addWidget(view)
+        # Clean shutdown of a running transcription on close
+        def _closing():
+            view.shutdown()
+        dialog.finished.connect(_closing)
+        dialog.exec()
 
     # ── Loading ──────────────────────────────────────────────
 

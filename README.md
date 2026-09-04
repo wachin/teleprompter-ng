@@ -26,10 +26,11 @@ preferred (see `ROADMAP.md`, section 4.1).
 ```bash
 sudo apt install \
     python3 python3-venv python3-pip \
-    python3-pyqt6 \
+    python3-pyqt6 python3-pyqt6.qtmultimedia \
+    python3-opencv \
     python3-flask python3-flask-socketio python3-qrcode \
     python3-numpy python3-pil \
-    python3-pytest \
+    python3-pytest python3-pytestqt \
     ffmpeg \
     v4l-utils \
     pulseaudio-utils \
@@ -51,20 +52,21 @@ pip install -r requirements-dev.txt
 |---|---|---|---|
 | `python3` | — | Interpreter (≥ 3.10) | All |
 | `python3-pyqt6` | `PyQt6` | Native user interface | All |
+| `python3-pyqt6.qtmultimedia` | `PyQt6-Multimedia` | Embedded review player (QMediaPlayer); ffplay fallback without it | Review / Editor |
+| `python3-opencv` | `opencv-python` | Camera capture (V4L2) | Camera |
 | `python3-flask` | `flask` | Local remote-control server | Remote |
 | `python3-flask-socketio` | `flask-socketio` | Real-time WebSocket events | Remote |
 | `python3-qrcode` | `qrcode[pil]` | QR code generation | Remote |
 | `python3-numpy` | `numpy` | Numeric operations (audio/video) | Voice / Camera |
 | `python3-pil` | `Pillow` | Image handling | Branding |
-| `python3-opencv` | `opencv-python` | Camera capture (V4L2) — *for the camera phase* | Camera |
-| `ffmpeg` | — | Recording muxing and export | Recording / Export |
+| `ffmpeg` | — | Recording muxing, probing, silence detection, segment export | Recording / Editor / Subtitles |
 | `v4l-utils` | — | Camera detection and diagnostics (`v4l2-ctl`) | Camera |
 | `pulseaudio-utils` | — | Audio device diagnostics (`pactl`) | Audio |
 | `libportaudio2` + `portaudio19-dev` | — | PortAudio backend for `sounddevice` | Voice |
-| — | `vosk` | Local speech recognition (no apt package; install via pip) | Voice |
+| — | `vosk` | Local speech recognition (no apt package; install via pip) | Voice / Subtitles |
 | — | `sounddevice` | Microphone capture via PortAudio (no apt package; install via pip) | Voice |
 | `python3-pytest` | `pytest` | Test framework | Development |
-| — | `pytest-qt` | Qt widget testing (Debian name: `python3-pytestqt`) | Development |
+| `python3-pytestqt` | `pytest-qt` | Qt widget testing | Development |
 | — | `ruff` | Linter and formatter (install via pip) | Development |
 | `mypy` | `mypy` | Gradual type checking | Development |
 | — | `pyinstaller` | Binary packaging, optional | Distribution |
@@ -116,15 +118,31 @@ python3 main.py scripts/mission_speech.txt   # a positional file also works
 
 ### Install voice model (optional)
 
-To use voice synchronization, download the Spanish model and place it in
-`models/model-es`:
+Voice sync and automatic subtitles need the Spanish Vosk model.
+Two options:
 
 ```bash
+# Small model (~40 MB download; takes ~30-35 minutes on slow
+# connections, ~2 s on fast ones). Enough for word-timing sync and
+# draft subtitles.
 mkdir -p models
+wget https://alphacephei.com/vosk/models/vosk-model-small-es-0.42.zip
+unzip vosk-model-small-es-0.42.zip
+mv vosk-model-small-es-0.42 models/model-es
+rm vosk-model-small-es-0.42.zip
+
+# Full model (1.3 GB): better accuracy for final subtitles. Only
+# needed if the small one misrecognizes your speech.
 wget https://alphacephei.com/vosk/models/vosk-model-es-0.42.zip
 unzip vosk-model-es-0.42.zip
 mv vosk-model-es-0.42 models/model-es
+rm vosk-model-es-0.42.zip
 ```
+
+> Download time note: on a slow connection the small model can take
+> **~35 minutes**; the full model can take hours. The app never
+> downloads models by itself — you decide (Roadmap rule: no model
+> downloads without consent).
 
 ---
 
