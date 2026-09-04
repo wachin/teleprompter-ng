@@ -133,6 +133,11 @@ class EditorView(QWidget):
         self.subtitles_btn = QPushButton(self.tr("💬 Subtitles…"))
         self.subtitles_btn.clicked.connect(self._open_subtitles)
         row3.addWidget(self.subtitles_btn)
+
+        # Brand kit / export entry (Phase 8)
+        self.brand_btn = QPushButton(self.tr("🎨 Brand & Export…"))
+        self.brand_btn.clicked.connect(self._open_branding)
+        row3.addWidget(self.brand_btn)
         layout.addLayout(row3)
 
         self.status = QLabel("")
@@ -159,9 +164,23 @@ class EditorView(QWidget):
         view = SubtitleView(self.main)
         layout.addWidget(view)
         # Clean shutdown of a running transcription on close
-        def _closing():
-            view.shutdown()
-        dialog.finished.connect(_closing)
+        dialog.finished.connect(view.shutdown)
+        dialog.exec()
+
+    # ── Brand & Export dialog (Phase 8) ─────────────────────────
+
+    def _open_branding(self):
+        """Opens the BrandingView (brand kit + final export)."""
+        from PyQt6.QtWidgets import QDialog, QVBoxLayout
+
+        from branding_view import BrandingView
+
+        dialog = QDialog(self)
+        dialog.setWindowTitle(self.tr("Brand & Export"))
+        dialog.resize(760, 640)
+        layout = QVBoxLayout(dialog)
+        view = BrandingView(self.main)
+        layout.addWidget(view)
         dialog.exec()
 
     # ── Loading ──────────────────────────────────────────────
