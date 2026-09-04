@@ -15,15 +15,21 @@ A desktop teleprompter for presentations and recordings. Designed for a real-wor
 
 ---
 
-## 🛠️ Developer dependencies
+## 🛠️ Installation and dependencies
 
-Everything needed to develop and test this program on **Debian 13 (trixie)**
-and derivatives. Two installation methods are supported; Debian packages are
-preferred (see `ROADMAP.md`, section 4.1).
+Everything needed to run and test this program on **Debian 13 (trixie)**
+and derivatives (Ubuntu included). Two ways to try it:
 
-### Option A — Debian 13 packages (recommended)
+- **Option A — system packages, no venv** (recommended): the way the
+  program is developed and tested on the reference machine. Run it
+  directly with `python3 main.py` after installing the apt packages.
+- **Option B — venv**: an isolated environment for developers who
+  prefer pip-managed dependencies.
+
+### Option A — Debian/Ubuntu packages, no venv (recommended)
 
 ```bash
+# 1. Install the dependencies (Debian 13 / Ubuntu 22.04+)
 sudo apt install \
     python3 python3-venv python3-pip \
     python3-pyqt6 python3-pyqt6.qtmultimedia \
@@ -35,15 +41,45 @@ sudo apt install \
     v4l-utils \
     pulseaudio-utils \
     libportaudio2 portaudio19-dev
+
+# 2. Vosk and sounddevice have no Debian package: install them
+#    for your user (no sudo needed)
+pip install --user vosk sounddevice
+
+# 3. Run — no virtual environment required
+python3 main.py
 ```
 
-### Option B — pip (virtual environment)
+The optional voice/subtitle model goes in `models/model-es`
+(see [Install voice model](#install-voice-model-optional) below).
+
+### Option B — venv (alternative for developers)
+
+Some developers prefer an isolated environment. Everything works the
+same; only the Python packages come from PyPI instead of Debian:
 
 ```bash
 python3 -m venv venv
-source venv/bin/activate
+source venv/bin/activate          # Linux/macOS
+# venv\Scripts\activate          # Windows
 pip install -r requirements.txt
 pip install -r requirements-dev.txt
+```
+
+ffmpeg, v4l-utils and the other system tools are still needed
+(option A installs them too); inside the venv the system-wide
+`vosk`/`sounddevice` (installed with `pip install --user`) are not
+visible — install them inside the venv as well:
+
+```bash
+pip install vosk sounddevice
+```
+
+To run inside the venv, activate it first in every session:
+
+```bash
+source venv/bin/activate
+python3 main.py
 ```
 
 ### Package reference table
@@ -82,38 +118,41 @@ Notes:
 
 ### Quick verification
 
-After installing, verify the environment:
+After installing (either option), verify the environment — this
+command works the same inside and outside a venv:
 
 ```bash
 python3 -c "import PyQt6, flask, flask_socketio, qrcode, numpy, vosk, sounddevice; print('OK')"
 ffmpeg -version | head -1
 v4l2-ctl --list-devices
-python3 -m pytest tests/ -q
+python3 -m pytest tests/ -q   # 387 tests; camera tests need hardware
 ```
 
 ---
 
-## 🚀 Installation
+## 🚀 Running
+
+**Without venv (option A):**
 
 ```bash
 # 1. Clone the repository
 git clone https://github.com/wachin/teleprompter.git
 cd teleprompter
 
-# 2. (Optional) Create virtual environment
-python3 -m venv venv
-source venv/bin/activate  # Linux/macOS
-# venv\Scripts\activate   # Windows
-
-# 3. Install dependencies
-pip install -r requirements.txt
-
-# 4. Run (project mode — default)
+# 2. Run (project mode — default)
 python3 main.py
 
-# 4b. Run in legacy reading mode
+# 2b. Legacy full-screen reading mode
 python3 main.py --read
 python3 main.py scripts/mission_speech.txt   # a positional file also works
+```
+
+**Inside the venv (option B):** activate it first, then the same
+commands:
+
+```bash
+source venv/bin/activate   # once per session
+python3 main.py
 ```
 
 ### Install voice model (optional)
