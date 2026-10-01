@@ -17,7 +17,9 @@ import qrcode
 from PyQt6.QtCore import QObject, Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import (
     QFont,
+    QKeySequence,
     QPixmap,
+    QShortcut,
 )
 from PyQt6.QtWidgets import (
     QDialog,
@@ -37,6 +39,7 @@ from PyQt6.QtWidgets import (
     QVBoxLayout as DialogLayout,
 )
 
+from about_dialog import AboutDialog, app_icon
 from config import save_config
 from logging_setup import get_logger
 
@@ -104,6 +107,7 @@ class Teleprompter(QMainWindow):
 
         # Ventana
         self.setWindowTitle("Teleprompter Pro")
+        self.setWindowIcon(app_icon())
         self.setMinimumSize(800, 600)
 
         if config["fullscreen"]:
@@ -141,6 +145,14 @@ class Teleprompter(QMainWindow):
         self.open_btn = QLabel("  " + self.tr("[O] Open script"))
         self.open_btn.setStyleSheet("color: #FFD700; font-size: 14px; background: transparent; font-weight: bold;")
         toolbar_layout.addWidget(self.open_btn)
+
+        # About (also reachable with F1): plain clickable label, styled
+        # like the rest of this legacy read-mode toolbar.
+        self.about_btn = QLabel("  " + self.tr("[F1] About"))
+        self.about_btn.setStyleSheet("color: #FFD700; font-size: 14px; background: transparent; font-weight: bold;")
+        self.about_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.about_btn.mousePressEvent = lambda _e: self.show_about()
+        toolbar_layout.addWidget(self.about_btn)
 
         toolbar_layout.addStretch()
 
@@ -304,6 +316,16 @@ class Teleprompter(QMainWindow):
         self._speech_signals.status_changed.connect(self._on_sync_status_change)
         self._speech_signals.wpm_updated.connect(self._on_wpm_update)
         self._speech_signals.speed_suggestion.connect(self._apply_speed_suggestion)
+
+        # About dialog: button-less in read mode, opened with F1.
+        self._about_shortcut = QShortcut(QKeySequence("F1"), self)
+        self._about_shortcut.activated.connect(self.show_about)
+
+    def show_about(self):
+        """Opens the About dialog (icon, authors, license, technologies)."""
+        self.about_dialog = AboutDialog(self)
+        self.about_dialog.exec()
+        return self.about_dialog
 
     def _separator(self):
         """Crea un separador vertical."""

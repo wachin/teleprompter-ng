@@ -129,7 +129,7 @@ command works the same inside and outside a venv:
 python3 -c "import PyQt6, flask, flask_socketio, qrcode, numpy, vosk, sounddevice; print('OK')"
 ffmpeg -version | head -1
 v4l2-ctl --list-devices
-python3 -m pytest tests/ -q   # 387 tests; camera tests need hardware
+python3 -m pytest tests/ -q   # 443 tests; camera tests need hardware
 ```
 
 ---
@@ -140,8 +140,8 @@ python3 -m pytest tests/ -q   # 387 tests; camera tests need hardware
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/wachin/teleprompter.git
-cd teleprompter
+git clone https://github.com/wachin/teleprompter-ng.git
+cd teleprompter-ng
 
 # 2. Run (project mode — default)
 python3 main.py
@@ -189,11 +189,15 @@ rm vosk-model-es-0.42.zip
 
 ---
 
-## 🗂️ Project mode (Phase 1)
+## 🗂️ Project mode (default)
 
-By default the app now opens in **project mode**: a sidebar navigates
-between Home, Script, Camera, Review, and Editor (the last three are
-placeholders for upcoming phases).
+By default the app opens in **project mode**: a sidebar navigates
+between Home, Script, Camera, Review, and Editor, all functional
+(Phases 1-10 complete). At the bottom of the sidebar there is an
+**About** button (keyboard shortcut `F1`) with the version, both
+authors, clickable e-mail addresses, the GPL3 notice, the technology
+list and the repository URL. The window uses the application icon
+(`resources/icons/teleprompter-pro.svg`).
 
 Projects live in `~/TeleprompterProjects` as self-contained
 `.bigprompt` folders:
@@ -270,9 +274,34 @@ python3 main.py scripts/mission_speech.txt
 | `G` | 📏 | Show/hide guide line |
 | `Q` | 📱 | Show QR code for remote control |
 | `V` | 🎤 | Toggle voice synchronization |
+| `F1` | ℹ️ | Open the About dialog |
 | `Escape` | ❌ | Close app (saves configuration) |
 
-### 4. Phone remote control 📱
+### 4. About dialog ℹ️
+
+Press `F1` (or click **About** at the bottom of the sidebar in project
+mode) to open a dialog with:
+
+- the **application icon** (large, centered, drawn from the SVG so it
+  stays sharp at any size),
+- the **version** and a short description of what the program does,
+- the **technologies** this application is built with (Python 3, PyQt6,
+  OpenCV, NumPy, FFmpeg, Flask, Flask-SocketIO, qrcode, Vosk,
+  PortAudio/sounddevice, Pillow, PyInstaller) and what each one is used
+  for,
+- both **authors with clickable e-mail addresses** — clicking one opens
+  your default mail client (`mailto:` handler, with `xdg-email` as
+  fallback),
+- the **license** (GPL3, GNU General Public License v3.0 or later) with
+  a link to the full text and a pointer to the shipped `LICENSE` file,
+- the **repository URL**
+  (<https://github.com/wachin/teleprompter-ng>).
+
+Everything shown there comes from `app_info.py`, so the version,
+authors and license are declared exactly once for the dialog, the
+packaging files and the tests.
+
+### 5. Phone remote control 📱
 
 You can control the teleprompter from your phone without touching the computer.
 
@@ -289,7 +318,7 @@ You can control the teleprompter from your phone without touching the computer.
 - 📊 **Progress bar** in real-time
 - 👆 **Touch control** (swipe up/down to change speed)
 
-### 5. Voice synchronization 🎤
+### 6. Voice synchronization 🎤
 
 The teleprompter can listen to your voice and automatically adjust the speed.
 
@@ -306,7 +335,7 @@ The teleprompter can listen to your voice and automatically adjust the speed.
 - ⚪ Gray = sync disabled
 - 🔴 Red = voice model not available
 
-### 6. Cross-platform configuration ⚙️
+### 7. Cross-platform configuration ⚙️
 
 Preferences are automatically saved to `config.json` when you close the app. The location depends on your operating system:
 
@@ -331,7 +360,7 @@ C:\Users\YourUsername\AppData\Roaming\TeleprompterPro\config.json
 /Users/yourusername/Library/Application Support/TeleprompterPro/config.json
 ```
 
-### 7. Configuration options
+### 8. Configuration options
 
 ```json
 {
@@ -397,9 +426,11 @@ If you mount a reflective glass in front of the phone camera:
 ## 📁 Project Structure
 
 ```
-teleprompter/
+teleprompter-ng/
 ├── main.py              # Entry point (projects mode / --read mode)
+├── app_info.py          # Single source of truth: version, authors, license
 ├── main_window.py       # MainWindow + Home and Script views
+├── about_dialog.py      # About dialog (icon, authors, license, repo)
 ├── project_service.py   # .bigprompt project format and lifecycle
 ├── text_import.py       # .txt/.md/.html/.docx import + WPM duration
 ├── templates_service.py # Script templates loader
@@ -414,15 +445,17 @@ teleprompter/
 ├── templates/
 │   └── remote.html      # Remote control page
 ├── resources/
+│   ├── icons/           # Application icon (teleprompter-pro.svg)
 │   └── script_templates/  # 6 starter scripts (.txt + .json)
 ├── translations/
-│   └── teleprompter_es.ts # Qt Linguist source (66 messages)
-├── tests/               # 130 tests (pytest + pytest-qt)
+│   └── teleprompter_es.ts # Qt Linguist source (242 messages)
+├── tests/               # 443 tests (pytest + pytest-qt)
 ├── scripts/
 │   ├── guion_actual.txt
-│   └── long_script_example.txt
+│   └── guion_largo_ejemplo.txt
 ├── docs/                # Phase reports + I18N guide
-├── model-es/            # Vosk model (downloaded)
+├── models/model-es/     # Vosk model (downloaded)
+├── debian/              # Debian packaging (control, copyright, desktop)
 ├── requirements.txt
 ├── requirements-dev.txt
 ├── .gitignore
@@ -462,10 +495,17 @@ See [ROADMAP.md](ROADMAP.md) for the full plan and
 **Status of the new application plan:**
 - ✅ Phase 0: Audit and code safety (41 tests) — see [docs/FASE-0.md](docs/FASE-0.md)
 - ✅ Phase 1: PyQt6 base and project management (130 tests) — see [docs/PHASE-1.md](docs/PHASE-1.md)
-- ⏭️ Phase 2: Live webcam (next)
-- Phases 3-12: teleprompter overlay, controls/recording, audio+video
-  capture, review/editor, subtitles, branding, optional local AI,
-  export, quality, distribution
+- ✅ Phases 2-10: camera, overlay, recording, review/editor, subtitles,
+  branding, export — see [docs/](docs/) for the per-phase reports
+  (PHASE-2.md … PHASE-10.md)
+- 🚧 Phase 11: Quality, testing and accessibility — in progress
+  (coverage, HiDPI, keyboard audit, **About dialog** with metadata
+  and the Inkscape-friendly SVG icon)
+- ⏭️ Phase 12: Linux distribution (Debian packaging, AppImage/PyInstaller)
+
+The test count grows with every phase; `python3 -m pytest tests/ -q`
+currently reports **443 tests** (camera/recording tests need real
+hardware and are skipped or flaky without it).
 
 **Legacy features (pre-existing, kept working via `--read` mode):**
 countdown, progress bar, script selector, guide line, mirror mode,
@@ -475,4 +515,17 @@ phone remote control (Flask + QR), voice sync (Vosk).
 
 ## 📄 License
 
-MIT
+**GNU General Public License v3.0 or later (GPL-3.0-or-later)** — see
+[LICENSE](LICENSE) for the full text.
+
+Copyright © 2026 Washington Indacochea Delgado and Juan Salazar Flores.
+
+This program is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation, either version 3 of the License, or (at your
+option) any later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+Public License for more details.

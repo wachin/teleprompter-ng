@@ -1,9 +1,9 @@
 # -*- mode: python ; coding: utf-8 -*-
 from PyInstaller.utils.hooks import collect_all
 
-datas = [('scripts', 'scripts'), ('templates', 'templates')]
+datas = [('scripts', 'scripts'), ('templates', 'templates'), ('resources', 'resources')]
 binaries = []
-hiddenimports = ['PyQt6.sip', 'PyQt6.QtWidgets', 'PyQt6.QtCore', 'PyQt6.QtGui', 'flask', 'flask_socketio', 'socketio', 'qrcode', 'vosk', 'sounddevice']
+hiddenimports = ['PyQt6.sip', 'PyQt6.QtWidgets', 'PyQt6.QtCore', 'PyQt6.QtGui', 'PyQt6.QtSvg', 'PyQt6.QtSvgWidgets', 'flask', 'flask_socketio', 'socketio', 'qrcode', 'vosk', 'sounddevice']
 tmp_ret = collect_all('vosk')
 datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
 tmp_ret = collect_all('qrcode')

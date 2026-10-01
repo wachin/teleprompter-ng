@@ -50,10 +50,13 @@ python3 -m PyInstaller \
     $MODE \
     --add-data "scripts:scripts" \
     --add-data "templates:templates" \
+    --add-data "resources:resources" \
     --hidden-import "PyQt6.sip" \
     --hidden-import "PyQt6.QtWidgets" \
     --hidden-import "PyQt6.QtCore" \
     --hidden-import "PyQt6.QtGui" \
+    --hidden-import "PyQt6.QtSvg" \
+    --hidden-import "PyQt6.QtSvgWidgets" \
     --hidden-import "flask" \
     --hidden-import "flask_socketio" \
     --hidden-import "socketio" \

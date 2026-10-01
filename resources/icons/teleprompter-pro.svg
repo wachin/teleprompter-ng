@@ -1,11 +1,166 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
-  <!-- Teleprompter Pro: slate + script lines + play accent -->
-  <rect x="14" y="26" width="100" height="76" rx="10" fill="#1a1a2e" stroke="#FFD700" stroke-width="4"/>
-  <circle cx="44" cy="52" r="9" fill="#FFD700"/>
-  <rect x="60" y="46" width="40" height="6" rx="3" fill="#FFD700" opacity="0.9"/>
-  <rect x="60" y="58" width="30" height="6" rx="3" fill="#FFD700" opacity="0.6"/>
-  <rect x="30" y="74" width="68" height="6" rx="3" fill="#FFFFFF" opacity="0.85"/>
-  <rect x="30" y="86" width="52" height="6" rx="3" fill="#FFFFFF" opacity="0.55"/>
-  <path d="M 102 88 L 116 96 L 102 104 Z" fill="#44FF44" stroke="#1a1a2e" stroke-width="3"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  Teleprompter Pro — application icon.
+
+  Editable plain SVG 1.1, designed to be opened and edited in Inkscape:
+    * every element is a plain <rect>/<circle>/<path> with direct
+      presentation attributes (no CSS <style>, no filters, no masks,
+      no clip-paths and no embedded raster data);
+    * every group is a named Inkscape layer ("badge", "screen",
+      "reading-band", "script-lines", "guide-arrows");
+    * the artwork scales from 16 px (tray/launcher) to 256 px (About).
+
+  Brand palette (see config.json): dark blue #1A1A2E, gold #FFD700.
+-->
+<svg
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   version="1.1"
+   id="teleprompter-pro"
+   width="512"
+   height="512"
+   viewBox="0 0 512 512">
+  <title
+     id="title">Teleprompter Pro</title>
+  <desc
+     id="desc">A dark badge with a screen showing script lines; the line being read is highlighted by a gold reading band and guide arrows on both sides.</desc>
+  <sodipodi:namedview
+     id="namedview"
+     pagecolor="#1a1a2e"
+     bordercolor="#FFD700"
+     inkscape:document-units="px"
+     showgrid="false"
+     inkscape:zoom="1"
+     inkscape:cx="256"
+     inkscape:cy="256"
+     inkscape:current-layer="script-lines" />
+
+  <g
+     inkscape:groupmode="layer"
+     inkscape:label="Badge background"
+     id="badge">
+    <rect
+       id="badge-body"
+       x="16"
+       y="16"
+       width="480"
+       height="480"
+       rx="96"
+       ry="96"
+       fill="#1A1A2E"
+       stroke="#FFD700"
+       stroke-width="16" />
+  </g>
+
+  <g
+     inkscape:groupmode="layer"
+     inkscape:label="Screen"
+     id="screen">
+    <rect
+       id="screen-panel"
+       x="88"
+       y="120"
+       width="336"
+       height="272"
+       rx="24"
+       ry="24"
+       fill="#0E0E1E"
+       stroke="#2A2A44"
+       stroke-width="6" />
+  </g>
+
+  <g
+     inkscape:groupmode="layer"
+     inkscape:label="Reading band (current line)"
+     id="reading-band">
+    <rect
+       id="band-fill"
+       x="88"
+       y="250"
+       width="336"
+       height="56"
+       fill="#FFD700"
+       opacity="0.18" />
+    <rect
+       id="band-edge-top"
+       x="88"
+       y="250"
+       width="336"
+       height="6"
+       rx="3"
+       ry="3"
+       fill="#FFD700"
+       opacity="0.8" />
+    <rect
+       id="band-edge-bottom"
+       x="88"
+       y="300"
+       width="336"
+       height="6"
+       rx="3"
+       ry="3"
+       fill="#FFD700"
+       opacity="0.8" />
+  </g>
+
+  <g
+     inkscape:groupmode="layer"
+     inkscape:label="Script lines"
+     id="script-lines">
+    <rect
+       id="line-1"
+       x="120"
+       y="176"
+       width="272"
+       height="28"
+       rx="14"
+       ry="14"
+       fill="#FFFFFF"
+       opacity="0.4" />
+    <rect
+       id="line-2"
+       x="120"
+       y="220"
+       width="248"
+       height="28"
+       rx="14"
+       ry="14"
+       fill="#FFFFFF"
+       opacity="0.7" />
+    <rect
+       id="line-3-current"
+       x="120"
+       y="264"
+       width="272"
+       height="28"
+       rx="14"
+       ry="14"
+       fill="#FFD700" />
+    <rect
+       id="line-4"
+       x="120"
+       y="308"
+       width="200"
+       height="28"
+       rx="14"
+       ry="14"
+       fill="#FFFFFF"
+       opacity="0.4" />
+  </g>
+
+  <g
+     inkscape:groupmode="layer"
+     inkscape:label="Guide arrows"
+     id="guide-arrows">
+    <path
+       id="guide-arrow-left"
+       d="M 88,278 L 56,262 L 56,294 Z"
+       fill="#FFD700" />
+    <path
+       id="guide-arrow-right"
+       d="M 424,278 L 456,262 L 456,294 Z"
+       fill="#FFD700" />
+  </g>
 </svg>

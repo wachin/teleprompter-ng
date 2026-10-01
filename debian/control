@@ -1,7 +1,8 @@
 Source: teleprompter-pro
 Section: x11
 Priority: optional
-Maintainer: Juan Salazar Flores <wachin@debian.org>
+Maintainer: Juan Salazar Flores <juancarlosalazar.jcsf@gmail.com>
+Uploaders: Washington Indacochea Delgado <linuxfrontier@proton.me>
 Build-Depends: debhelper-compat (= 13),
                dh-python,
                python3-all,
@@ -13,9 +14,9 @@ Build-Depends: debhelper-compat (= 13),
                python3-vosk,
                python3-sounddevice
 Standards-Version: 4.6.2
-Homepage: https://github.com/wachin/teleprompter
-Vcs-Git: https://github.com/wachin/teleprompter.git
-Vcs-Browser: https://github.com/wachin/teleprompter
+Homepage: https://github.com/wachin/teleprompter-ng
+Vcs-Git: https://github.com/wachin/teleprompter-ng.git
+Vcs-Browser: https://github.com/wachin/teleprompter-ng
 Rules-Requires-Root: no
 
 Package: teleprompter-pro
@@ -47,6 +48,7 @@ Description: Desktop teleprompter with projects, camera pipeline and remote cont
   * Guide line for eye focus and real mirror mode
   * Persistent configuration per platform (XDG on Linux)
   * PyQt6 modern interface, translatable with Qt Linguist
+  * About dialog (F1) with authors, technologies, license and repository
 
 Package: teleprompter-pro-model-es
 Architecture: all

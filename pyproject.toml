@@ -3,14 +3,18 @@ name = "teleprompter-pro"
 version = "2.0.0.dev1"
 description = "Desktop teleprompter with camera, recording, projects, and remote control"
 readme = "README.md"
-license = { text = "MIT" }
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
 requires-python = ">=3.10"
-authors = [{ name = "Juan Salazar Flores", email = "wachin@debian.org" }]
+authors = [
+    { name = "Washington Indacochea Delgado", email = "linuxfrontier@proton.me" },
+    { name = "Juan Salazar Flores", email = "juancarlosalazar.jcsf@gmail.com" },
+]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: X11 Applications",
     "Intended Audience :: End Users/Desktop",
-    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
     "Operating System :: POSIX :: Linux",
     "Programming Language :: Python :: 3",
     "Topic :: Multimedia :: Video",
@@ -44,10 +48,27 @@ requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
+# Every application module must be listed: a plain `pip install` copies
+# only these files, so anything missing would make the installed
+# program unusable (camera, recording, render and export were absent
+# from the original list).
 py-modules = [
-    "main", "ui", "config", "remote_server", "speech_sync",
-    "logging_setup", "paths", "project_service", "text_import",
-    "templates_service", "main_window",
+    "about_dialog", "app_info", "audio_service", "branding_model",
+    "branding_view", "camera_preview", "camera_service", "config",
+    "edit_model", "editor_view", "export_profiles", "export_view",
+    "ffmpeg_tools", "logging_setup", "main", "main_window",
+    "overlay_model", "paths", "project_service", "recording_service",
+    "remote_server", "render_pipeline", "review_view", "scroll_engine",
+    "speech_sync", "subtitle_model", "subtitle_service", "subtitle_view",
+    "teleprompter_overlay", "templates_service", "text_import", "ui",
+]
+
+[tool.setuptools.package-data]
+"*" = [
+    "resources/icons/*.svg",
+    "resources/script_templates/*.txt",
+    "resources/script_templates/*.json",
+    "translations/*.qm",
 ]
 
 [tool.ruff]

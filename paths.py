@@ -39,8 +39,28 @@ def templates_dir():
 
 
 def models_dir():
-    """Directorio de modelos de voz (Vosk)."""
+    """Voice model directory (Vosk)."""
     return resource_path("models")
+
+
+def icons_dir():
+    """Directory holding the application icons (SVG sources)."""
+    from app_info import ICON_DIR
+
+    return resource_path(*ICON_DIR)
+
+
+def icon_path(filename=None):
+    """
+    Path to the application icon file.
+
+    Returns the file even when it does not exist, so callers can decide
+    whether to fall back to the built-in icon (QIcon accepts an empty
+    path without raising).
+    """
+    from app_info import ICON_FILENAME
+
+    return os.path.join(icons_dir(), filename or ICON_FILENAME)
 
 
 def resolve_script_path(name="guion_actual.txt"):

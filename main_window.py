@@ -13,6 +13,7 @@ import contextlib
 import os
 
 from PyQt6.QtCore import Qt, QTimer, pyqtSlot
+from PyQt6.QtGui import QKeySequence, QShortcut
 from PyQt6.QtWidgets import (
     QComboBox,
     QFileDialog,
@@ -33,6 +34,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from about_dialog import AboutDialog, app_icon
 from audio_service import list_microphones
 from camera_preview import CameraPreview
 from camera_service import CameraError, CameraService, device_formats, grouped_modes, list_devices
@@ -1020,6 +1022,7 @@ class MainWindow(QMainWindow):
         self.project = None
 
         self.setWindowTitle(self.tr("Teleprompter Pro"))
+        self.setWindowIcon(app_icon())
         self.resize(1100, 700)
 
         central = QWidget()
@@ -1045,6 +1048,17 @@ class MainWindow(QMainWindow):
             side.addWidget(btn)
             self.nav_buttons[key] = btn
         side.addStretch()
+
+        # ── About button ───────────────────────────────────────
+        # Deliberately kept OUT of _nav_defs/nav_buttons: it is not a
+        # project view, so the sidebar still exposes exactly the five
+        # roadmap views and the project-gating logic stays untouched.
+        self.about_btn = QPushButton(self.tr("About"))
+        self.about_btn.setIcon(app_icon())
+        self.about_btn.setAccessibleName(self.tr("About Teleprompter Pro"))
+        self.about_btn.setToolTip(self.tr("About Teleprompter Pro (F1)"))
+        self.about_btn.clicked.connect(self.show_about)
+        side.addWidget(self.about_btn)
         outer.addLayout(side)
 
         # ── Views ──────────────────────────────────────────────
@@ -1058,6 +1072,9 @@ class MainWindow(QMainWindow):
                      self.review_view, self.editor_view):
             self.views.addWidget(view)
         outer.addWidget(self.views, 1)
+
+        self._about_shortcut = QShortcut(QKeySequence("F1"), self)
+        self._about_shortcut.activated.connect(self.show_about)
 
         self.show_view("home")
 
@@ -1125,6 +1142,12 @@ class MainWindow(QMainWindow):
         event.accept()
 
     # ── Dialogs ───────────────────────────────────────────────
+
+    def show_about(self):
+        """Opens the About dialog (icon, authors, license, technologies)."""
+        self.about_dialog = AboutDialog(self)
+        self.about_dialog.exec()
+        return self.about_dialog
 
     def create_dialog_template(self):
         """
