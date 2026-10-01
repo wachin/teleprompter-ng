@@ -10,9 +10,7 @@ Build-Depends: debhelper-compat (= 13),
                python3-pyqt6,
                python3-flask,
                python3-flask-socketio,
-               python3-qrcode,
-               python3-vosk,
-               python3-sounddevice
+               python3-qrcode
 Standards-Version: 4.6.2
 Homepage: https://github.com/wachin/teleprompter-ng
 Vcs-Git: https://github.com/wachin/teleprompter-ng.git
@@ -28,8 +26,7 @@ Depends: ${python3:Depends},
          python3-flask,
          python3-flask-socketio,
          python3-qrcode,
-         python3-vosk,
-         python3-sounddevice
+         libportaudio2
 Recommends: teleprompter-pro-model-es
 Description: Desktop teleprompter with projects, camera pipeline and remote control
  Teleprompter Pro is a desktop teleprompter designed for real-world
