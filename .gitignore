@@ -72,10 +72,6 @@ debian/substvars
 .kdev4/
 *.kate-swp
 
-# ── Agent scratch notes ───────────────────────────────
-# Local working notes of the coding agent (Cline); not project source.
-last-agent.md
-
 # ── OS junk ────────────────────────────────────────────
 .DS_Store
 Thumbs.db
